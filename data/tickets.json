@@ -1,0 +1,39 @@
+{
+  "run_ticket": {
+    "name": "Run Ticket",
+    "description": "Used to unlock a new run or continue after permadeath in special modes.",
+    "price": 0,
+    "rarity": "unlimited"
+  },
+  "revive_ticket": {
+    "name": "Revive Ticket",
+    "description": "Used to revive a fainted creature in nuzlocke or challenge modes.",
+    "price": 100,
+    "rarity": "unlimited"
+  },
+  "capture_boost": {
+    "name": "Capture Boost",
+    "description": "Increases catch rate by 50% for one encounter.",
+    "price": 50,
+    "rarity": "unlimited"
+  },
+  "guaranteed_capture": {
+    "name": "Guaranteed Capture",
+    "description": "Ensures the next capture attempt will succeed.",
+    "price": 200,
+    "rarity": "rare"
+  },
+  "rare_candy": {
+    "name": "Rare Candy",
+    "description": "Instantly levels up a creature by 1 level.",
+    "price": 150,
+    "rarity": "unlimited"
+  },
+  "ability_capsule": {
+    "name": "Ability Capsule",
+    "description": "Allows changing between regular abilities.",
+    "price": 300,
+    "rarity": "unlimited"
+  },
+  "_comment": "LUNARIS_TODO: Add more ticket types. Each ticket should have: id, name, description, price, rarity"
+}

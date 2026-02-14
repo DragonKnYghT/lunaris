@@ -1,4 +1,55 @@
 {
-  "zones": [],
-  "_comment": "LUNARIS_TODO: Add zone/biome definitions here. Each zone should have: id, name, description, encounterRates, availableCreatures"
+  "LunarForest": {
+    "name": "Lunar Forest",
+    "biome": "forest",
+    "description": "A mystical forest bathed in moonlight.",
+    "difficulty": 1,
+    "encounters": [
+      { "creature": "example_creature", "rarity": 60, "minLevel": 1, "maxLevel": 3 },
+      { "creature": "starlight_wisp", "rarity": 30, "minLevel": 1, "maxLevel": 2 },
+      { "creature": "lunar_phantom", "rarity": 10, "minLevel": 3, "maxLevel": 5 }
+    ],
+    "boss": null,
+    "requiredZone": null
+  },
+  "StarlitPlains": {
+    "name": "Starlit Plains",
+    "biome": "plains",
+    "description": "Vast plains illuminated by countless stars.",
+    "difficulty": 2,
+    "encounters": [
+      { "creature": "example_creature_stage2", "rarity": 50, "minLevel": 10, "maxLevel": 15 },
+      { "creature": "starlight_wisp", "rarity": 35, "minLevel": 8, "maxLevel": 12 },
+      { "creature": "lunar_phantom", "rarity": 15, "minLevel": 12, "maxLevel": 18 }
+    ],
+    "boss": "example_creature_stage3",
+    "requiredZone": "LunarForest"
+  },
+  "CelestialMountain": {
+    "name": "Celestial Mountain",
+    "biome": "mountain",
+    "description": "A towering mountain reaching into the heavens.",
+    "difficulty": 3,
+    "encounters": [
+      { "creature": "example_creature_stage2", "rarity": 40, "minLevel": 20, "maxLevel": 25 },
+      { "creature": "lunar_phantom", "rarity": 40, "minLevel": 22, "maxLevel": 28 },
+      { "creature": "example_creature_stage3", "rarity": 20, "minLevel": 30, "maxLevel": 35 }
+    ],
+    "boss": null,
+    "requiredZone": "StarlitPlains"
+  },
+  "AstralVoid": {
+    "name": "Astral Void",
+    "biome": "void",
+    "description": "A mysterious dimension between worlds.",
+    "difficulty": 4,
+    "encounters": [
+      { "creature": "example_creature_stage3", "rarity": 60, "minLevel": 40, "maxLevel": 45 },
+      { "creature": "lunar_phantom", "rarity": 30, "minLevel": 35, "maxLevel": 42 },
+      { "creature": "starlight_wisp", "rarity": 10, "minLevel": 38, "maxLevel": 44 }
+    ],
+    "boss": "example_creature_stage3",
+    "requiredZone": "CelestialMountain"
+  },
+  "_comment": "LUNARIS_TODO: Add new zones here. Each zone should have: id, name, biome, description, difficulty, encounters, boss, requiredZone"
 }

@@ -1,4 +1,49 @@
 {
-  "modes": [],
-  "_comment": "LUNARIS_TODO: Add game mode definitions here. Each mode should have: id, name, description, rules, isEnabled"
+  "roguelike": {
+    "name": "Roguelike",
+    "description": "Standard Lunaris roguelike mode.",
+    "rules": {
+      "permadeath": false,
+      "randomized_zones": true,
+      "heal_after_battle": false,
+      "catch_rate": 1.0,
+      "max_party_size": 6
+    }
+  },
+  "nuzlocke": {
+    "name": "Nuzlocke",
+    "description": "Hardcore mode with permanent death.",
+    "rules": {
+      "permadeath": true,
+      "one_capture_per_zone": true,
+      "heal_after_battle": false,
+      "catch_rate": 1.0,
+      "max_party_size": 6
+    }
+  },
+  "casual": {
+    "name": "Casual",
+    "description": "Relaxed mode for enjoying the story.",
+    "rules": {
+      "permadeath": false,
+      "randomized_zones": false,
+      "heal_after_battle": true,
+      "catch_rate": 1.0,
+      "max_party_size": 6
+    }
+  },
+  "challenge": {
+    "name": "Challenge",
+    "description": "Extra hard mode with various restrictions.",
+    "rules": {
+      "permadeath": true,
+      "randomized_zones": true,
+      "heal_after_battle": false,
+      "catch_rate": 0.5,
+      "max_party_size": 3,
+      "no_items_in_battle": true,
+      "level_cap": true
+    }
+  },
+  "_comment": "LUNARIS_TODO: Add multiplayer and versus modes later. Each mode should have: id, name, description, rules"
 }

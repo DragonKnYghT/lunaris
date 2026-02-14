@@ -1,4 +1,103 @@
 {
-  "moves": [],
-  "_comment": "LUNARIS_TODO: Add move definitions here. Each move should have: id, name, type, power, accuracy, pp, effect"
+  "MoonSlash": {
+    "name": "Moon Slash",
+    "type": "Astral",
+    "category": "Physical",
+    "power": 70,
+    "accuracy": 100,
+    "priority": 0,
+    "pp": 20,
+    "effect": "May lower opponent's defense"
+  },
+  "StarPulse": {
+    "name": "Star Pulse",
+    "type": "Astral",
+    "category": "Special",
+    "power": 80,
+    "accuracy": 95,
+    "priority": 0,
+    "pp": 15,
+    "effect": "May cause flinching"
+  },
+  "SolarFlare": {
+    "name": "Solar Flare",
+    "type": "Light",
+    "category": "Special",
+    "power": 120,
+    "accuracy": 85,
+    "priority": 0,
+    "pp": 5,
+    "effect": "May burn the opponent"
+  },
+  "CosmicRay": {
+    "name": "Cosmic Ray",
+    "type": "Astral",
+    "category": "Special",
+    "power": 90,
+    "accuracy": 100,
+    "priority": 0,
+    "pp": 10,
+    "effect": "May confuse the opponent"
+  },
+  "CelestialJudgment": {
+    "name": "Celestial Judgment",
+    "type": "Divine",
+    "category": "Special",
+    "power": 140,
+    "accuracy": 80,
+    "priority": 0,
+    "pp": 5,
+    "effect": "May lower opponent's special defense"
+  },
+  "AstralDimension": {
+    "name": "Astral Dimension",
+    "type": "Astral",
+    "category": "Special",
+    "power": 150,
+    "accuracy": 70,
+    "priority": 0,
+    "pp": 3,
+    "effect": "User takes recoil damage"
+  },
+  "Astonish": {
+    "name": "Astonish",
+    "type": "Ghost",
+    "category": "Physical",
+    "power": 30,
+    "accuracy": 100,
+    "priority": 0,
+    "pp": 15,
+    "effect": "May cause flinching"
+  },
+  "ConfuseRay": {
+    "name": "Confuse Ray",
+    "type": "Ghost",
+    "category": "Status",
+    "power": 0,
+    "accuracy": 100,
+    "priority": 0,
+    "pp": 15,
+    "effect": "Confuses the opponent"
+  },
+  "ShadowBall": {
+    "name": "Shadow Ball",
+    "type": "Ghost",
+    "category": "Special",
+    "power": 80,
+    "accuracy": 100,
+    "priority": 0,
+    "pp": 15,
+    "effect": "May lower opponent's special defense"
+  },
+  "DreamEater": {
+    "name": "Dream Eater",
+    "type": "Psychic",
+    "category": "Special",
+    "power": 100,
+    "accuracy": 100,
+    "priority": 0,
+    "pp": 10,
+    "effect": "Restores HP equal to half the damage dealt to sleeping opponents"
+  },
+  "_comment": "LUNARIS_TODO: Add new moves here. Each move should have: id, name, type, category, power, accuracy, priority, pp, effect"
 }

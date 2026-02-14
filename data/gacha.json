@@ -1,0 +1,57 @@
+{
+  "standard_banner": {
+    "name": "Standard Banner",
+    "description": "The standard creature banner with balanced rates.",
+    "rates": {
+      "common": 70,
+      "rare": 20,
+      "epic": 8,
+      "legendary": 2
+    },
+    "pool": {
+      "common": ["example_creature", "starlight_wisp"],
+      "rare": ["example_creature_stage2", "lunar_phantom"],
+      "epic": ["example_creature_stage2"],
+      "legendary": ["example_creature_stage3"]
+    },
+    "featured": null,
+    "expiration": null
+  },
+  "starter_banner": {
+    "name": "Starter Banner",
+    "description": "Banner focused on starter creatures.",
+    "rates": {
+      "common": 50,
+      "rare": 30,
+      "epic": 15,
+      "legendary": 5
+    },
+    "pool": {
+      "common": ["example_creature"],
+      "rare": ["starlight_wisp", "lunar_phantom"],
+      "epic": ["example_creature_stage2"],
+      "legendary": ["example_creature_stage3"]
+    },
+    "featured": ["example_creature"],
+    "expiration": null
+  },
+  "limited_banner": {
+    "name": "Limited Celestial Banner",
+    "description": "Limited time banner with increased legendary rates.",
+    "rates": {
+      "common": 50,
+      "rare": 25,
+      "epic": 15,
+      "legendary": 10
+    },
+    "pool": {
+      "common": ["example_creature", "starlight_wisp"],
+      "rare": ["example_creature_stage2", "lunar_phantom"],
+      "epic": ["example_creature_stage3"],
+      "legendary": ["example_creature_stage3"]
+    },
+    "featured": ["example_creature_stage3"],
+    "expiration": "2024-12-31"
+  },
+  "_comment": "LUNARIS_TODO: Add more banners and pools. Each banner should have: id, name, description, rates, pool, featured, expiration"
+}

@@ -1,4 +1,97 @@
 {
-  "creatures": [],
-  "_comment": "LUNARIS_TODO: Add creature definitions here. Each creature should have: id, name, type, stats, abilities, moves, evolutions"
+  "example_creature": {
+    "name": "Example Creature",
+    "types": ["Astral"],
+    "baseStats": {
+      "hp": 50,
+      "atk": 40,
+      "def": 35,
+      "spa": 50,
+      "spd": 40,
+      "spe": 60
+    },
+    "abilities": ["InnerLight"],
+    "hiddenAbility": "LunarBlessing",
+    "moveset": ["MoonSlash", "StarPulse"],
+    "evolution": {
+      "level": 25,
+      "into": "example_creature_stage2"
+    },
+    "description": "A celestial creature born from starlight."
+  },
+  "example_creature_stage2": {
+    "name": "Example Creature Stage 2",
+    "types": ["Astral", "Light"],
+    "baseStats": {
+      "hp": 70,
+      "atk": 55,
+      "def": 50,
+      "spa": 70,
+      "spd": 55,
+      "spe": 80
+    },
+    "abilities": ["InnerLight", "Radiance"],
+    "hiddenAbility": "LunarBlessing",
+    "moveset": ["MoonSlash", "StarPulse", "SolarFlare", "CosmicRay"],
+    "evolution": {
+      "level": 50,
+      "into": "example_creature_stage3"
+    },
+    "description": "An evolved form of the Example Creature."
+  },
+  "example_creature_stage3": {
+    "name": "Example Creature Stage 3",
+    "types": ["Astral", "Light", "Divine"],
+    "baseStats": {
+      "hp": 100,
+      "atk": 80,
+      "def": 75,
+      "spa": 100,
+      "spd": 80,
+      "spe": 110
+    },
+    "abilities": ["InnerLight", "Radiance", "DivineAura"],
+    "hiddenAbility": "LunarBlessing",
+    "moveset": ["MoonSlash", "StarPulse", "SolarFlare", "CosmicRay", "CelestialJudgment", "AstralDimension"],
+    "evolution": null,
+    "description": "The ultimate form of the Example Creature."
+  },
+  "starlight_wisp": {
+    "name": "Starlight Wisp",
+    "types": ["Astral"],
+    "baseStats": {
+      "hp": 30,
+      "atk": 25,
+      "def": 20,
+      "spa": 40,
+      "spd": 30,
+      "spe": 45
+    },
+    "abilities": ["Levitate"],
+    "hiddenAbility": "MagicGuard",
+    "moveset": ["Astonish", "ConfuseRay", "MoonSlash"],
+    "evolution": {
+      "level": 18,
+      "into": "lunar_phantom"
+    },
+    "description": "A ghostly wisp made of starlight."
+  },
+  "lunar_phantom": {
+    "name": "Lunar Phantom",
+    "types": ["Astral", "Ghost"],
+    "baseStats": {
+      "hp": 55,
+      "atk": 40,
+      "def": 35,
+      "spa": 65,
+      "spd": 50,
+      "spe": 70
+    },
+    "abilities": ["Levitate", "PhantomStrike"],
+    "hiddenAbility": "BadDreams",
+    "moveset": ["MoonSlash", "ShadowBall", "ConfuseRay", "DreamEater"],
+    "evolution": null,
+    "description": "A phantom born from moonlight shadows."
+  },
+  "_comment": "LUNARIS_TODO: Add new creatures here. Each creature should have: id, name, types, baseStats, abilities, hiddenAbility, moveset, evolution, description"
 }

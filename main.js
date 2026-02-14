@@ -8,6 +8,66 @@
 // LUNARIS_TODO: Add game loop
 // LUNARIS_TODO: Add scene management
 
+// Data Loader Functions
+
+/**
+ * Loads all Lunaris game data from JSON files
+ * @returns {Promise<Object>} Object containing all game data
+ */
+async function loadLunarisData() {
+    const [creatures, moves, items, zones, modes, gacha, tickets] = await Promise.all([
+        fetch("data/creatures.json").then(r => r.json()),
+        fetch("data/moves.json").then(r => r.json()),
+        fetch("data/items.json").then(r => r.json()),
+        fetch("data/zones.json").then(r => r.json()),
+        fetch("data/modes.json").then(r => r.json()),
+        fetch("data/gacha.json").then(r => r.json()),
+        fetch("data/tickets.json").then(r => r.json())
+    ]);
+    
+    console.log('Lunaris data loaded:', {
+        creaturesCount: Object.keys(creatures).filter(k => !k.startsWith('_')).length,
+        movesCount: Object.keys(moves).filter(k => !k.startsWith('_')).length,
+        itemsCount: Object.keys(items).filter(k => !k.startsWith('_')).length,
+        zonesCount: Object.keys(zones).filter(k => !k.startsWith('_')).length,
+        modesCount: Object.keys(modes).filter(k => !k.startsWith('_')).length,
+        bannersCount: Object.keys(gacha).filter(k => !k.startsWith('_')).length,
+        ticketsCount: Object.keys(tickets).filter(k => !k.startsWith('_')).length
+    });
+    
+    return { creatures, moves, items, zones, modes, gacha, tickets };
+}
+
+// Global game data store
+let lunarisData = null;
+
+/**
+ * Initialize game data
+ * @returns {Promise<void>}
+ */
+async function initGameData() {
+    try {
+        lunarisData = await loadLunarisData();
+        console.log('Game data initialized successfully');
+        return lunarisData;
+    } catch (error) {
+        console.error('Failed to load game data:', error);
+        // Return empty data structure if loading fails
+        return {
+            creatures: {},
+            moves: {},
+            items: {},
+            zones: {},
+            modes: {},
+            gacha: {},
+            tickets: {}
+        };
+    }
+}
+
+// LUNARIS_TODO: integrate data into the engine later
+
+
 // Screen Manager Functions
 
 /**

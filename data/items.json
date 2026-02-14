@@ -1,4 +1,90 @@
 {
-  "items": [],
-  "_comment": "LUNARIS_TODO: Add item definitions here. Each item should have: id, name, type, effect, description"
+  "LunarPotion": {
+    "name": "Lunar Potion",
+    "type": "healing",
+    "heal": 20,
+    "description": "Restores 20 HP to a creature.",
+    "price": 50
+  },
+  "SuperLunarPotion": {
+    "name": "Super Lunar Potion",
+    "type": "healing",
+    "heal": 50,
+    "description": "Restores 50 HP to a creature.",
+    "price": 150
+  },
+  "HyperLunarPotion": {
+    "name": "Hyper Lunar Potion",
+    "type": "healing",
+    "heal": 100,
+    "description": "Restores 100 HP to a creature.",
+    "price": 300
+  },
+  "FullRestore": {
+    "name": "Full Restore",
+    "type": "healing",
+    "heal": "full",
+    "description": "Fully restores a creature's HP and cures status conditions.",
+    "price": 500
+  },
+  "MoonStone": {
+    "name": "Moon Stone",
+    "type": "evolution",
+    "description": "A mysterious stone that evolves certain creatures.",
+    "price": 1000
+  },
+  "SunStone": {
+    "name": "Sun Stone",
+    "type": "evolution",
+    "description": "A radiant stone that evolves certain creatures.",
+    "price": 1000
+  },
+  "Revive": {
+    "name": "Revive",
+    "type": "revival",
+    "description": "Revives a fainted creature with half HP.",
+    "price": 400
+  },
+  "MaxRevive": {
+    "name": "Max Revive",
+    "type": "revival",
+    "description": "Revives a fainted creature with full HP.",
+    "price": 800
+  },
+  "Antidote": {
+    "name": "Antidote",
+    "type": "status",
+    "statusCure": "poison",
+    "description": "Cures poison.",
+    "price": 100
+  },
+  "ParalyzeHeal": {
+    "name": "Paralyze Heal",
+    "type": "status",
+    "statusCure": "paralysis",
+    "description": "Cures paralysis.",
+    "price": 100
+  },
+  "Awakening": {
+    "name": "Awakening",
+    "type": "status",
+    "statusCure": "sleep",
+    "description": "Wakes up a sleeping creature.",
+    "price": 100
+  },
+  "IceHeal": {
+    "name": "Ice Heal",
+    "type": "status",
+    "statusCure": "freeze",
+    "description": "Thaws a frozen creature.",
+    "price": 100
+  },
+  "BurnHeal": {
+    "name": "Burn Heal",
+    "type": "status",
+    "statusCure": "burn",
+    "description": "Cures a burn.",
+    "price": 100
+  },
+  "_comment": "LUNARIS_TODO: Add new items here. Each item should have: id, name, type, heal/description/price/statusCure, description, price"
 }
