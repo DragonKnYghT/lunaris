@@ -50,3 +50,67 @@ h1 {
 /* LUNARIS_TODO: Add UI component styles */
 /* LUNARIS_TODO: Add battle scene styles */
 /* LUNARIS_TODO: Add menu styles */
+
+/* Menu Button Styles */
+.menu-button {
+    display: block;
+    width: 200px;
+    padding: 15px 30px;
+    margin: 10px auto;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e0e0e0;
+    background: linear-gradient(180deg, #3a3a5e 0%, #2a2a4e 100%);
+    border: 2px solid #5a5a8e;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.menu-button:hover {
+    background: linear-gradient(180deg, #4a4a7e 0%, #3a3a6e 100%);
+    border-color: #7a7aae;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Screen Container Styles */
+#screen-container {
+    margin-top: 20px;
+    min-height: 200px;
+}
+
+.screen {
+    padding: 20px;
+}
+
+.screen h2 {
+    font-size: 2rem;
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.screen p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+/* Submenu specific styles */
+.submenu-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* LUNARIS_TODO: customize UI theme here - change colors, fonts, effects */
+/* LUNARIS_TODO: add UI animations later */
+/* LUNARIS_TODO: add responsive menu styles for mobile */
