@@ -8,9 +8,24 @@
 </head>
 <body>
     <div id="game-container">
-        <h1>Lunaris</h1>
-        <p id="loading-message">Lunaris is loading...</p>
+        <div id="title-section">
+            <h1>Lunaris</h1>
+        </div>
+        
+        <!-- Main menu buttons -->
+        <div id="main-menu">
+            <button id="btn-play" class="menu-button">Play</button>
+            <button id="btn-settings" class="menu-button">Settings</button>
+            <button id="btn-credits" class="menu-button">Credits</button>
+        </div>
+        
+        <!-- Container for dynamic screens -->
+        <div id="screen-container"></div>
+        
+        <!-- Loading message (hidden after init) -->
+        <p id="loading-message" style="display: none;">Lunaris is loading...</p>
     </div>
+    
     <script src="main.js"></script>
 </body>
 </html>
