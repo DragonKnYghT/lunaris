@@ -1,0 +1,4 @@
+{
+  "modes": [],
+  "_comment": "LUNARIS_TODO: Add game mode definitions here. Each mode should have: id, name, description, rules, isEnabled"
+}

@@ -1,0 +1,4 @@
+{
+  "creatures": [],
+  "_comment": "LUNARIS_TODO: Add creature definitions here. Each creature should have: id, name, type, stats, abilities, moves, evolutions"
+}

@@ -1,0 +1,14 @@
+Lunaris Assets Directory
+=======================
+
+This directory contains all game assets including:
+- Images (creatures, UI elements, backgrounds, etc.)
+- Audio (music, sound effects)
+- Animations
+- Fonts
+- Other media files
+
+LUNARIS_TODO: Add asset files here
+LUNARIS_TODO: Organize assets by type (images/, audio/, fonts/, etc.)
+LUNARIS_TODO: Optimize assets for web performance
+LUNARIS_TODO: Consider using sprite sheets for creature animations

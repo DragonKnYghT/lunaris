@@ -1,0 +1,4 @@
+{
+  "zones": [],
+  "_comment": "LUNARIS_TODO: Add zone/biome definitions here. Each zone should have: id, name, description, encounterRates, availableCreatures"
+}

@@ -1,0 +1,4 @@
+{
+  "moves": [],
+  "_comment": "LUNARIS_TODO: Add move definitions here. Each move should have: id, name, type, power, accuracy, pp, effect"
+}
