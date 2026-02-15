@@ -305,6 +305,84 @@ function simulateSimpleRun(data) {
 }
 
 
+// Multiplayer System Integration
+
+// Global lobby manager instance
+let lobbyManager = null;
+
+/**
+ * Start a test multiplayer session
+ * LUNARIS_TODO: connect this to the Versus menu later
+ * @param {Object} data - Game data
+ */
+async function startTestMultiplayer(data) {
+    console.log('Starting test multiplayer...');
+    
+    // Check if we have data
+    if (!data || !data.modes) {
+        console.error('No game data available!');
+        alert('Please wait for game data to load!');
+        return;
+    }
+    
+    console.log('=== Test Multiplayer Started ===');
+    console.log('Available modes:', Object.keys(data.modes).join(', '));
+    
+    alert('Test Multiplayer Started!\n\nCheck console for lobby details.\n\nMode: versus');
+    
+    // Simulate a simple multiplayer session
+    simulateSimpleMultiplayer(data);
+    
+    return lobbyManager;
+}
+
+/**
+ * Simulate a simple multiplayer session for testing
+ * LUNARIS_TODO: Replace with actual lobby manager when available
+ */
+function simulateSimpleMultiplayer(data) {
+    console.log('\n--- Simulating Simple Multiplayer ---');
+    
+    // Simulate creating a lobby
+    const mode = 'versus';
+    console.log(`Creating ${mode} lobby...`);
+    
+    // Simulate lobby code
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let roomCode = '';
+    for (let i = 0; i < 6; i++) {
+        roomCode += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    
+    console.log(`Lobby created! Room code: ${roomCode}`);
+    
+    // Simulate players joining
+    console.log('\n--- Players ---');
+    console.log('Host: Player (You)');
+    console.log('Player 2: Bot_Alpha (Ready)');
+    console.log('Player 3: Bot_Beta (Ready)');
+    console.log('Player 4: Bot_Gamma (Not Ready)');
+    
+    // Simulate game start
+    console.log('\n--- Game Starting ---');
+    console.log('All players ready! Starting match...');
+    
+    // Simulate match
+    console.log('\n--- Match in Progress ---');
+    console.log('Player vs Bot_Alpha');
+    console.log('Player chose: MoonSlash');
+    console.log('Bot_Alpha chose: StarPulse');
+    console.log('Player wins the round!');
+    
+    console.log('\n--- Match Complete ---');
+    console.log('Player wins 2-0!');
+    console.log('Gained: 100 EXP, MoonStone');
+    
+    console.log('\n--- Multiplayer Simulation Complete ---');
+    console.log('Thanks for testing the multiplayer system!');
+}
+
+
 // Screen Manager Functions
 
 /**
