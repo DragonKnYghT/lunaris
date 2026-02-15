@@ -68,6 +68,243 @@ async function initGameData() {
 // LUNARIS_TODO: integrate data into the engine later
 
 
+// Combat Engine Integration
+
+// Global combat engine instance
+let combatEngine = null;
+
+/**
+ * Start a test battle with placeholder teams
+ * LUNARIS_TODO: connect this to the Play menu later
+ * @param {Object} data - Game data (creatures, moves, etc.)
+ */
+async function startTestBattle(data) {
+    console.log('Starting test battle...');
+    
+    // Check if we have data
+    if (!data || !data.creatures) {
+        console.error('No game data available!');
+        alert('Please wait for game data to load!');
+        return;
+    }
+    
+    // Create placeholder player team
+    const playerTeam = [
+        { id: 'example_creature', level: 5 },
+        { id: 'starlight_wisp', level: 5 }
+    ];
+    
+    // Create placeholder enemy team
+    const enemyTeam = [
+        { id: 'example_creature', level: 5 }
+    ];
+    
+    console.log('=== Test Battle Started ===');
+    console.log('Player team:', playerTeam.map(p => data.creatures[p.id]?.name || p.id));
+    console.log('Enemy team:', enemyTeam.map(e => data.creatures[e.id]?.name || e.id));
+    
+    alert('Test Battle Started!\n\nCheck console for battle details.\n\nPlayer: ' + 
+          playerTeam.map(p => data.creatures[p.id]?.name || p.id).join(', ') + 
+          '\nEnemy: ' + 
+          enemyTeam.map(e => data.creatures[e.id]?.name || e.id).join(', '));
+    
+    // Simulate a simple battle
+    simulateSimpleBattle(data, playerTeam, enemyTeam);
+    
+    return combatEngine;
+}
+
+/**
+ * Simulate a simple text-based battle for testing
+ * LUNARIS_TODO: Replace with actual combat engine when available
+ */
+function simulateSimpleBattle(data, playerTeam, enemyTeam) {
+    console.log('\n--- Simulating Simple Battle ---');
+    
+    const playerCreatureId = playerTeam[0].id;
+    const enemyCreatureId = enemyTeam[0].id;
+    const playerLevel = playerTeam[0].level;
+    const enemyLevel = enemyTeam[0].level;
+    
+    const playerData = data.creatures[playerCreatureId];
+    const enemyData = data.creatures[enemyCreatureId];
+    
+    if (!playerData || !enemyData) {
+        console.error('Could not find creature data!');
+        return;
+    }
+    
+    const calculateStat = (base, level) => {
+        return Math.floor((base * 2 + 31) * level / 100) + level + 5;
+    };
+    
+    const player = {
+        name: playerData.name,
+        types: playerData.types,
+        hp: calculateStat(playerData.baseStats.hp, playerLevel),
+        maxHp: calculateStat(playerData.baseStats.hp, playerLevel),
+        atk: calculateStat(playerData.baseStats.atk, playerLevel),
+        def: calculateStat(playerData.baseStats.def, playerLevel),
+        moves: playerData.moveset
+    };
+    
+    const enemy = {
+        name: enemyData.name,
+        types: enemyData.types,
+        hp: calculateStat(enemyData.baseStats.hp, enemyLevel),
+        maxHp: calculateStat(enemyData.baseStats.hp, enemyLevel),
+        atk: calculateStat(enemyData.baseStats.atk, enemyLevel),
+        def: calculateStat(enemyData.baseStats.def, enemyLevel),
+        moves: enemyData.moveset
+    };
+    
+    console.log(`Go! ${player.name}! (Level ${playerLevel})`);
+    console.log(`Enemy sent out ${enemy.name}! (Level ${enemyLevel})`);
+    
+    for (let turn = 1; turn <= 3; turn++) {
+        console.log(`\n--- Turn ${turn} ---`);
+        
+        const playerMove = data.moves[player.moves[0]];
+        const playerDmg = Math.floor((2 * playerLevel / 5 + 2) * playerMove.power * player.atk / enemy.def / 50 + 2);
+        enemy.hp = Math.max(0, enemy.hp - playerDmg);
+        console.log(`${player.name} used ${playerMove.name}!`);
+        console.log(`Dealt ${playerDmg} damage! (${enemy.name}: ${enemy.hp}/${enemy.maxHp})`);
+        
+        if (enemy.hp <= 0) {
+            console.log(`\n${enemy.name} fainted!`);
+            console.log('You won!');
+            break;
+        }
+        
+        const enemyMove = data.moves[enemy.moves[0]];
+        const enemyDmg = Math.floor((2 * enemyLevel / 5 + 2) * enemyMove.power * enemy.atk / player.def / 50 + 2);
+        player.hp = Math.max(0, player.hp - enemyDmg);
+        console.log(`Enemy ${enemy.name} used ${enemyMove.name}!`);
+        console.log(`Dealt ${enemyDmg} damage! (${player.name}: ${player.hp}/${player.maxHp})`);
+        
+        if (player.hp <= 0) {
+            console.log(`\n${player.name} fainted!`);
+            console.log('You lost!');
+            break;
+        }
+    }
+    
+    if (player.hp > 0 && enemy.hp > 0) {
+        console.log('\nBattle ended in a draw!');
+    }
+    
+    console.log('\n--- Battle Simulation Complete ---');
+}
+
+
+// Run System Integration
+
+// Global run manager instance
+let runManager = null;
+
+/**
+ * Start a test run with the roguelike mode
+ * LUNARIS_TODO: connect this to the Play menu later
+ * @param {Object} data - Game data (creatures, moves, zones, modes, etc.)
+ */
+async function startTestRun(data) {
+    console.log('Starting test run...');
+    
+    // Check if we have data
+    if (!data || !data.modes || !data.zones) {
+        console.error('No game data available!');
+        alert('Please wait for game data to load!');
+        return;
+    }
+    
+    console.log('=== Test Run Started ===');
+    console.log('Available modes:', Object.keys(data.modes).join(', '));
+    console.log('Available zones:', Object.keys(data.zones).join(', '));
+    
+    alert('Test Run Started!\n\nCheck console for run details.\n\nMode: roguelike\nZones: ' + Object.keys(data.zones).join(', '));
+    
+    // Simulate a simple run
+    simulateSimpleRun(data);
+    
+    return runManager;
+}
+
+/**
+ * Simulate a simple run for testing
+ * LUNARIS_TODO: Replace with actual run manager when available
+ */
+function simulateSimpleRun(data) {
+    console.log('\n--- Simulating Simple Run ---');
+    
+    // Simulate a basic run with the roguelike mode
+    const mode = 'roguelike';
+    const modeData = data.modes[mode];
+    
+    console.log(`Mode: ${modeData.name}`);
+    console.log(`Description: ${modeData.description}`);
+    console.log(`Rules:`, modeData.rules);
+    
+    // Get starting zone
+    const zones = Object.keys(data.zones);
+    const startingZone = zones.find(z => !data.zones[z].requiredZone) || zones[0];
+    const zoneData = data.zones[startingZone];
+    
+    console.log(`\nStarting zone: ${zoneData.name}`);
+    console.log(`Biome: ${zoneData.biome}`);
+    console.log(`Difficulty: ${zoneData.difficulty}`);
+    
+    // Simulate encounters
+    console.log('\n--- Simulating Encounters ---');
+    
+    // Get a sample encounter
+    if (zoneData.encounters && zoneData.encounters.length > 0) {
+        const encounter = zoneData.encounters[0];
+        const creatureData = data.creatures[encounter.creature];
+        console.log(`Wild ${creatureData.name} appeared! (Level ${encounter.minLevel}-${encounter.maxLevel})`);
+        
+        // Simulate battle
+        const playerLevel = 5;
+        const enemyLevel = encounter.minLevel;
+        
+        const playerAtk = Math.floor((50 * 2 + 31) * playerLevel / 100) + playerLevel + 5;
+        const enemyDef = Math.floor((35 * 2 + 31) * enemyLevel / 100) + enemyLevel + 5;
+        const movePower = 70;
+        
+        const damage = Math.floor((2 * playerLevel / 5 + 2) * movePower * playerAtk / enemyDef / 50 + 2);
+        console.log(`Player used MoonSlash! Dealt ${damage} damage!`);
+        console.log(`${creatureData.name} fainted! You won!`);
+    }
+    
+    // Simulate zone completion
+    console.log('\n--- Zone Completed ---');
+    console.log('Received: MoonStone, LunarPotion');
+    console.log('Advanced to next zone!');
+    
+    // Simulate second zone
+    const nextZones = zones.filter(z => data.zones[z].requiredZone === startingZone);
+    if (nextZones.length > 0) {
+        const nextZone = nextZones[0];
+        const nextZoneData = data.zones[nextZone];
+        console.log(`\nEntering: ${nextZoneData.name}`);
+        console.log(`Biome: ${nextZoneData.biome}`);
+        console.log(`Difficulty: ${nextZoneData.difficulty}`);
+        
+        if (nextZoneData.boss) {
+            const bossData = data.creatures[nextZoneData.boss];
+            console.log(`Boss: ${bossData.name} appeared!`);
+        }
+    }
+    
+    console.log('\n--- Run Simulation Complete ---');
+    console.log('Run Summary:');
+    console.log('- Zones completed: 2');
+    console.log('- Battles won: 5');
+    console.log('- Creatures caught: 3');
+    console.log('- Items collected: 10');
+    console.log('\nCongratulations! You completed the test run!');
+}
+
+
 // Screen Manager Functions
 
 /**
