@@ -329,6 +329,40 @@ const statusEffects = {
         canApply: function(creature) {
             return true;
         }
+    },
+    
+    /**
+     * Curse status (Lunaris-specific)
+     * - Deals damage each turn
+     * - Reduces speed
+     */
+    curse: {
+        name: "Curse",
+        description: "Takes damage each turn. Speed is reduced.",
+        type: "damage",
+        onApply: function(creature) {
+            // Curse reduces speed by 50%
+            creature.stats.spe = Math.floor(creature.stats.spe * 0.5);
+            return { success: true, message: `${creature.name} is cursed!` };
+        },
+        onTurnStart: function(creature) {
+            // Take 1/4 of max HP as damage
+            const damage = Math.floor(creature.maxHp / 4);
+            const fainted = creature.takeDamage(damage);
+            return { 
+                damage: damage, 
+                fainted: fainted, 
+                message: `${creature.name} is hurt by its curse!` 
+            };
+        },
+        onTurnEnd: function(creature) {
+            // Curse doesn't have end of turn effects
+            return null;
+        },
+        canApply: function(creature) {
+            // Can apply to any creature
+            return true;
+        }
     }
 };
 
