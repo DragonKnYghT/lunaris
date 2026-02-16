@@ -810,6 +810,15 @@ function toggleFullscreen() {
     }
 }
 
+/**
+ * Opens the settings menu
+ * LUNARIS_TODO: connect this to the Settings button in the main menu
+ * @param {Object} data - Optional data parameter
+ */
+async function openSettingsMenu(data) {
+    showSettingsMenu();
+}
+
 // Initialize navigation when DOM is ready
 function initNavigation() {
     // Set up button event listeners
