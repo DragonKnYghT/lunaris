@@ -383,6 +383,104 @@ function simulateSimpleMultiplayer(data) {
 }
 
 
+// Versus Mode Integration
+
+// Global versus manager instance
+let versusManager = null;
+
+/**
+ * Start a test versus session
+ * LUNARIS_TODO: connect this to the Versus button in the main menu
+ * @param {Object} data - Game data
+ */
+async function startTestVersus(data) {
+    console.log('Starting test versus...');
+    
+    // Check if we have data
+    if (!data || !data.creatures) {
+        console.error('No game data available!');
+        alert('Please wait for game data to load!');
+        return;
+    }
+    
+    console.log('=== Test Versus Started ===');
+    console.log('Available rulesets: standard, no_legendaries, balanced_level_50');
+    
+    alert('Test Versus Started!\n\nCheck console for versus details.\n\nRuleset: standard');
+    
+    // Simulate a simple versus session
+    simulateSimpleVersus(data);
+    
+    return versusManager;
+}
+
+/**
+ * Simulate a simple versus session for testing
+ * LUNARIS_TODO: Replace with actual versus manager when available
+ */
+function simulateSimpleVersus(data) {
+    console.log('\n--- Simulating Simple Versus ---');
+    
+    // Simulate creating a match
+    const ruleset = 'standard';
+    console.log(`Creating versus match with ruleset: ${ruleset}`);
+    
+    // Simulate match creation
+    console.log('\n--- Match Created ---');
+    console.log('Ruleset: Standard');
+    console.log('Best of: 3');
+    console.log('Timer: Disabled');
+    
+    // Simulate team building
+    console.log('\n--- Team Builder ---');
+    console.log('Player team:');
+    console.log('  1. Example Creature (Level 50)');
+    console.log('  2. Starlight Wisp (Level 50)');
+    console.log('  3. Lunar Phantom (Level 50)');
+    
+    // Simulate matchmaking
+    console.log('\n--- Matchmaking ---');
+    console.log('Searching for opponent...');
+    console.log('Opponent found: Bot_Champion');
+    
+    // Simulate match start
+    console.log('\n--- Match Starting ---');
+    console.log('Player vs Bot_Champion');
+    console.log('Battle format: Best of 3');
+    
+    // Simulate rounds
+    console.log('\n--- Round 1 ---');
+    console.log('Player: Example Creature');
+    console.log('Opponent: Example Creature Stage 2');
+    console.log('Player used MoonSlash!');
+    console.log('Opponent used StarPulse!');
+    console.log('Player wins Round 1!');
+    
+    console.log('\n--- Round 2 ---');
+    console.log('Player: Starlight Wisp');
+    console.log('Opponent: Lunar Phantom');
+    console.log('Player used MoonSlash!');
+    console.log('Opponent used ShadowBall!');
+    console.log('Opponent wins Round 2!');
+    
+    console.log('\n--- Round 3 ---');
+    console.log('Player: Lunar Phantom');
+    console.log('Opponent: Example Creature');
+    console.log('Player used MoonSlash!');
+    console.log('Opponent used MoonSlash!');
+    console.log('Player wins Round 3!');
+    
+    // Match result
+    console.log('\n--- Match Result ---');
+    console.log('Player wins 2-1!');
+    console.log('Gained: 200 EXP, MoonStone');
+    console.log('Rating: +15');
+    
+    console.log('\n--- Versus Simulation Complete ---');
+    console.log('Thanks for testing the versus mode!');
+}
+
+
 // Screen Manager Functions
 
 /**
