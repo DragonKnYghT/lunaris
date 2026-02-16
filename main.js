@@ -451,6 +451,54 @@ function simulateSimpleShop(data) {
 }
 
 
+// Gacha System Integration
+
+// Global gacha manager instance
+let gachaManager = null;
+
+/**
+ * Start a test gacha session
+ * LUNARIS_TODO: connect this to the Shop or Rewards system later
+ * @param {Object} data - Game data (gacha, tickets, creatures)
+ */
+async function startTestGacha(data) {
+    console.log('Starting test gacha...');
+    
+    // Check if we have data
+    if (!data || !data.gacha || !data.tickets) {
+        console.error('No game data available!');
+        alert('Please wait for game data to load!');
+        return;
+    }
+    
+    console.log('=== Test Gacha Started ===');
+    console.log('Available banners:', Object.keys(data.gacha).join(', '));
+    
+    alert('Test Gacha Started!\n\nCheck console for gacha details.\n\nBanner: standard_banner');
+    
+    // Create gacha manager
+    const { GachaManager } = require('./src/gacha/gachaManager.js');
+    gachaManager = new GachaManager(data);
+    
+    // Test single pull
+    console.log('\n--- Testing Single Pull ---');
+    const singleResult = gachaManager.pull('standard_banner', 1);
+    console.log('Single pull result:', singleResult);
+    
+    // Test multi pull
+    console.log('\n--- Testing Multi Pull ---');
+    const multiResult = gachaManager.pull('standard_banner', 10);
+    console.log('Multi pull result:', multiResult);
+    
+    // List banners
+    console.log('\n--- Available Banners ---');
+    const banners = gachaManager.listBanners();
+    console.log('Banners:', banners);
+    
+    return gachaManager;
+}
+
+
 // Versus Mode Integration
 
 // Global versus manager instance
