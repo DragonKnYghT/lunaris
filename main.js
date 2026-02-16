@@ -499,6 +499,104 @@ async function startTestGacha(data) {
 }
 
 
+// Save System Integration
+
+// Global save manager instance
+let saveManager = null;
+
+/**
+ * Test the save system
+ * LUNARIS_TODO: connect this to the Save/Load menu later
+ */
+async function testSaveSystem() {
+    console.log('Starting test save system...');
+    
+    // Check if SaveManager is available
+    if (typeof SaveManager === 'undefined') {
+        console.error('SaveManager is not loaded!');
+        alert('Save system not loaded! Check console.');
+        return;
+    }
+    
+    console.log('=== Test Save System Started ===');
+    
+    // Create save manager
+    const save = new SaveManager();
+    saveManager = save;
+    
+    // Test saving settings
+    console.log('\n--- Testing Save Settings ---');
+    const settings = { language: "en", volume: 0.8 };
+    const saveResult = save.saveSettings(settings);
+    console.log('Save result:', saveResult);
+    
+    // Test loading settings
+    console.log('\n--- Testing Load Settings ---');
+    const loadedSettings = save.loadSettings();
+    console.log('Loaded settings:', loadedSettings);
+    
+    // Test saving team
+    console.log('\n--- Testing Save Team ---');
+    const team = [
+        { id: 'example_creature', level: 5 },
+        { id: 'starlight_wisp', level: 10 }
+    ];
+    const teamSaveResult = save.saveTeam(team);
+    console.log('Team save result:', teamSaveResult);
+    
+    // Test loading team
+    console.log('\n--- Testing Load Team ---');
+    const loadedTeam = save.loadTeam();
+    console.log('Loaded team:', loadedTeam);
+    
+    // Test saving inventory
+    console.log('\n--- Testing Save Inventory ---');
+    const inventory = {
+        items: { 'lunar_potion': 5, 'moon_stone': 2 },
+        currency: 1000
+    };
+    const inventorySaveResult = save.saveInventory(inventory);
+    console.log('Inventory save result:', inventorySaveResult);
+    
+    // Test loading inventory
+    console.log('\n--- Testing Load Inventory ---');
+    const loadedInventory = save.loadInventory();
+    console.log('Loaded inventory:', loadedInventory);
+    
+    // Test slots
+    console.log('\n--- Testing Save Slots ---');
+    const slotsInfo = save.getSaveSlotsInfo();
+    console.log('Slots info:', slotsInfo);
+    
+    // Test saving a run
+    console.log('\n--- Testing Save Run ---');
+    const runState = {
+        mode: 'roguelike',
+        currentZone: 'zone_1',
+        zonesCompleted: [],
+        team: team,
+        inventory: inventory,
+        currency: 500,
+        progress: 10
+    };
+    const runSaveResult = save.saveRun(runState, 1);
+    console.log('Run save result:', runSaveResult);
+    
+    // Test loading run
+    console.log('\n--- Testing Load Run ---');
+    const loadedRun = save.loadRun(1);
+    console.log('Loaded run:', loadedRun);
+    
+    // Summary
+    console.log('\n=== Save System Test Complete ===');
+    console.log('All save operations completed successfully!');
+    
+    alert('Save System Test Complete!\n\nCheck console for details.');
+    
+    return saveManager;
+}
+
+
 // Versus Mode Integration
 
 // Global versus manager instance

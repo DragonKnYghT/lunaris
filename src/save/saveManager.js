@@ -16,14 +16,17 @@ class SaveManager {
         this.serializer = null;
         this.validator = null;
         
-        // Import other save modules
-        const { SaveSlots } = require('./saveSlots.js');
-        const { SaveSerializer } = require('./saveSerializer.js');
-        const { SaveValidator } = require('./saveValidator.js');
-        
-        this.saveSlots = new SaveSlots();
-        this.serializer = new SaveSerializer();
-        this.validator = new SaveValidator();
+        // Initialize other save modules
+        // For browser: classes are loaded globally via script tags
+        if (typeof SaveSlots !== 'undefined') {
+            this.saveSlots = new SaveSlots();
+        }
+        if (typeof SaveSerializer !== 'undefined') {
+            this.serializer = new SaveSerializer();
+        }
+        if (typeof SaveValidator !== 'undefined') {
+            this.validator = new SaveValidator();
+        }
         
         console.log('[SaveManager] Initialized');
     }
