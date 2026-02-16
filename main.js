@@ -383,6 +383,74 @@ function simulateSimpleMultiplayer(data) {
 }
 
 
+// Shop System Integration
+
+// Global shop manager instance
+let shopManager = null;
+
+/**
+ * Start a test shop session
+ * LUNARIS_TODO: connect this to the Shop menu later
+ * @param {Object} data - Game data (items, tickets)
+ */
+async function startTestShop(data) {
+    console.log('Starting test shop...');
+    
+    // Check if we have data
+    if (!data || !data.items || !data.tickets) {
+        console.error('No game data available!');
+        alert('Please wait for game data to load!');
+        return;
+    }
+    
+    console.log('=== Test Shop Started ===');
+    console.log('Available items:', Object.keys(data.items).join(', '));
+    
+    alert('Test Shop Started!\n\nCheck console for shop details.\n\nShop: Lunar Store');
+    
+    // Simulate a simple shop session
+    simulateSimpleShop(data);
+    
+    return shopManager;
+}
+
+/**
+ * Simulate a simple shop session for testing
+ * LUNARIS_TODO: Replace with actual shop manager when available
+ */
+function simulateSimpleShop(data) {
+    console.log('\n--- Simulating Simple Shop ---');
+    
+    // Simulate shop inventory
+    console.log('\n--- Shop Inventory ---');
+    console.log('1. Lunar Potion - 50 coins (Restores 20 HP)');
+    console.log('2. Super Lunar Potion - 150 coins (Restores 50 HP)');
+    console.log('3. Hyper Lunar Potion - 300 coins (Restores 100 HP)');
+    console.log('4. Full Restore - 500 coins (Fully restores HP)');
+    console.log('5. Moon Stone - 1000 coins (Evolution stone)');
+    console.log('6. Sun Stone - 1000 coins (Evolution stone)');
+    console.log('7. Rare Candy - 150 coins (Level up)');
+    
+    // Simulate player currency
+    console.log('\n--- Player Currency ---');
+    const playerCoins = 500;
+    console.log(`Current coins: ${playerCoins}`);
+    
+    // Simulate purchases
+    console.log('\n--- Purchase Simulation ---');
+    console.log('Player bought: Lunar Potion (x2) for 100 coins');
+    console.log('Player bought: Moon Stone for 1000 coins');
+    console.log('Not enough coins for Moon Stone! Transaction failed.');
+    
+    console.log('\n--- Final Inventory ---');
+    console.log('Lunar Potion: 2');
+    console.log('Coins remaining: 400');
+    
+    console.log('\n--- Shop Simulation Complete ---');
+    console.log('Thanks for testing the shop system!');
+}
+
+
 // Versus Mode Integration
 
 // Global versus manager instance
