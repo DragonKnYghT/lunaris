@@ -819,6 +819,25 @@ async function openSettingsMenu(data) {
     showSettingsMenu();
 }
 
+/**
+ * Test the UI Framework
+ * LUNARIS_TODO: use this framework for all future menus
+ */
+async function testUIFramework() {
+    const ui = new UIManager();
+    ui.init();
+    ui.showScreen(new Button("Hello Lunaris", () => console.log("Clicked")));
+}
+
+/**
+ * Start the Lunaris game
+ * LUNARIS_TODO: call this on page load later
+ */
+async function startLunaris() {
+    const game = new GameController();
+    await game.start();
+}
+
 // Initialize navigation when DOM is ready
 function initNavigation() {
     // Set up button event listeners
