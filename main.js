@@ -838,6 +838,16 @@ async function startLunaris() {
     await game.start();
 }
 
+/**
+ * Test the core game logic
+ * LUNARIS_TODO: expand core logic tests later
+ */
+async function testCoreLogic(data) {
+    const game = new GameController(data);
+    await game.start();
+    console.log("Core logic test initialized.");
+}
+
 // Initialize navigation when DOM is ready
 function initNavigation() {
     // Set up button event listeners
