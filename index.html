@@ -3,36 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunaris</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Lunaris - A Modular Creature-Battling Roguelike</title>
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/loader.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <!-- LUNARIS_TODO: replace placeholder colors with final Lunaris theme -->
 </head>
 <body>
-    <div id="game-container">
-        <div id="title-section">
-            <h1>Lunaris</h1>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="assets/logo.png" alt="Lunaris Logo" class="logo-img">
+                    <!-- LUNARIS_TODO: replace with Lunaris animated logo later -->
+                </a>
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="nav-link active">Home</a></li>
+                        <li><a href="play.html" class="nav-link">Play</a></li>
+                        <li><a href="howto.html" class="nav-link">How to Play</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                        <li><a href="patchnotes.html" class="nav-link">Patch Notes</a></li>
+                        <li><a href="credits.html" class="nav-link">Credits</a></li>
+                    </ul>
+                </nav>
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
-        
-        <!-- Main menu buttons -->
-        <div id="main-menu">
-            <button id="btn-play" class="menu-button">Play</button>
-            <button id="btn-settings" class="menu-button">Settings</button>
-            <button id="btn-credits" class="menu-button">Credits</button>
+    </header>
+
+    <main class="site-main">
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">Welcome to Lunaris</h1>
+                    <p class="hero-subtitle">A Modular Creature-Battling Roguelike</p>
+                    <div class="hero-cta">
+                        <a href="play.html" class="btn btn-primary">Play Now</a>
+                        <a href="howto.html" class="btn btn-secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Game Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>Roguelike Adventure</h3>
+                        <p>Explore procedurally generated zones in this roguelike adventure.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Creature Collection</h3>
+                        <p>Collect and train unique creatures with diverse abilities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Strategic Combat</h3>
+                        <p>Master turn-based battles with type advantages and abilities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Online Multiplayer</h3>
+                        <p>Battle against other players in versus matches.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="container">
+                <h2>Ready to Begin Your Adventure?</h2>
+                <p>Join thousands of trainers in the world of Lunaris.</p>
+                <a href="play.html" class="btn btn-primary">Start Playing</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="howto.html">How to Play</a>
+                    <a href="patchnotes.html">Patch Notes</a>
+                    <a href="credits.html">Credits</a>
+                </div>
+                <div class="footer-info">
+                    <p>&copy; 2024 Lunaris. All rights reserved.</p>
+                    <p class="version">Version 0.1.0</p>
+                </div>
+            </div>
         </div>
-        
-        <!-- Container for dynamic screens -->
-        <div id="screen-container"></div>
-        
-        <!-- Loading message (hidden after init) -->
-        <p id="loading-message" style="display: none;">Lunaris is loading...</p>
-    </div>
-    
-    <!-- Save System Scripts -->
-    <script src="src/save/saveSerializer.js"></script>
-    <script src="src/save/saveValidator.js"></script>
-    <script src="src/save/saveSlots.js"></script>
-    <script src="src/save/saveManager.js"></script>
-    <script src="src/save/settingsManager.js"></script>
-    
-    <script src="main.js"></script>
+    </footer>
+
+    <script src="assets/js/navigation.js"></script>
+    <!-- LUNARIS_TODO: add analytics later -->
 </body>
 </html>
