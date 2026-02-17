@@ -101,7 +101,8 @@
                         <div class="game-loading-spinner"></div>
                         <p class="game-loading-text">Loading Lunaris...</p>
                     </div>
-                    <!-- Game canvas will be inserted here -->
+                    <!-- Game screen will be rendered here -->
+                    <div id="screen-container"></div>
                 </div>
             </div>
         </section>
@@ -126,32 +127,62 @@
     </footer>
 
     <script src="assets/js/navigation.js"></script>
+    <!-- Game container for screen rendering -->
     <script>
         // Hide loading screen when game is ready
         window.addEventListener('load', function() {
-            // Simulate game loading
-            setTimeout(function() {
-                var loading = document.getElementById('game-loading');
-                if (loading) {
-                    loading.classList.add('hidden');
-                }
-            }, 2000);
-            
             // Load game script
-            // LUNARIS_TODO: Load built game bundle (dist/main.js or equivalent)
             var script = document.createElement('script');
-            script.src = '../main.js';
+            script.src = 'main.js';
             script.onload = function() {
-                console.log('Game loaded successfully');
-                // Initialize game if needed
-                if (typeof init === 'function') {
+                console.log('Game script loaded successfully');
+                // Initialize game after data loads
+                if (typeof startLunaris === 'function') {
+                    startLunaris().then(function() {
+                        // Hide loading screen after game starts
+                        setTimeout(function() {
+                            var loading = document.getElementById('game-loading');
+                            if (loading) {
+                                loading.classList.add('hidden');
+                            }
+                        }, 1000);
+                    });
+                } else if (typeof init === 'function') {
                     init();
+                    // Hide loading screen after init
+                    setTimeout(function() {
+                        var loading = document.getElementById('game-loading');
+                        if (loading) {
+                            loading.classList.add('hidden');
+                        }
+                    }, 1000);
                 }
             };
             script.onerror = function() {
-                console.error('Failed to load game script');
+                console.error('Failed to load game script from main.js');
+                // Try alternative path
+                var altScript = document.createElement('script');
+                altScript.src = 'main.js';
+                altScript.onload = function() {
+                    console.log('Game loaded from alternative path');
+                    if (typeof startLunaris === 'function') {
+                        startLunaris();
+                    } else if (typeof init === 'function') {
+                        init();
+                    }
+                    setTimeout(function() {
+                        var loading = document.getElementById('game-loading');
+                        if (loading) {
+                            loading.classList.add('hidden');
+                        }
+                    }, 1000);
+                };
+                altScript.onerror = function() {
+                    console.error('Failed to load game script from main.js');
+                };
+                document.body.appendChild(altScript);
             };
-            document.body.appendChild(script);
+            document.head.appendChild(script);
         });
     </script>
 </body>
