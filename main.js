@@ -704,12 +704,19 @@ function showMainMenu() {
     const container = document.getElementById('screen-container');
     container.innerHTML = `
         <div class="screen" id="main-menu-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
             <h2>Main Menu</h2>
+            <div class="decoration-line"></div>
             <div class="submenu-buttons">
                 <button class="menu-button" onclick="showPlayMenu()">Play</button>
                 <button class="menu-button" onclick="showSettingsMenu()">Settings</button>
                 <button class="menu-button" onclick="showCreditsMenu()">Credits</button>
             </div>
+            <div class="version-info">v0.1.0</div>
         </div>
     `;
     console.log('Main menu displayed');
@@ -723,13 +730,35 @@ function showPlayMenu() {
     const container = document.getElementById('screen-container');
     container.innerHTML = `
         <div class="screen" id="play-menu-screen">
-            <h2>Play</h2>
-            <div class="submenu-buttons">
-                <button class="menu-button" onclick="startNewRun()">New Run</button>
-                <button class="menu-button" onclick="showMainMenu()">Back</button>
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
             </div>
-            <p>Select a game mode to begin your adventure!</p>
-            <!-- LUNARIS_TODO: add game mode selection here -->
+            <h2>Choose Your Adventure</h2>
+            <div class="decoration-line"></div>
+            <p>Select a game mode to begin your journey!</p>
+            <div class="game-mode-grid">
+                <div class="game-mode-card" onclick="startNewRun()">
+                    <h3>Roguelike</h3>
+                    <p>Explore procedurally generated zones in this roguelike adventure.</p>
+                </div>
+                <div class="game-mode-card" onclick="startTestBattle(lunarisData)">
+                    <h3>Battle Test</h3>
+                    <p>Test your team in a simulated battle.</p>
+                </div>
+                <div class="game-mode-card" onclick="startTestVersus(lunarisData)">
+                    <h3>Versus</h3>
+                    <p>Battle against other players in versus matches.</p>
+                </div>
+                <div class="game-mode-card" onclick="startTestGacha(lunarisData)">
+                    <h3>Gacha</h3>
+                    <p>Try your luck with the gacha system.</p>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
         </div>
     `;
     console.log('Play menu displayed');
@@ -743,13 +772,32 @@ function showSettingsMenu() {
     const container = document.getElementById('screen-container');
     container.innerHTML = `
         <div class="screen" id="settings-menu-screen">
-            <h2>Settings</h2>
-            <div class="submenu-buttons">
-                <button class="menu-button" onclick="toggleSound()">Sound: ON</button>
-                <button class="menu-button" onclick="toggleFullscreen()">Fullscreen</button>
-                <button class="menu-button" onclick="showMainMenu()">Back</button>
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
             </div>
-            <!-- LUNARIS_TODO: expand settings options -->
+            <h2>Settings</h2>
+            <div class="decoration-line"></div>
+            <div class="settings-options">
+                <div class="settings-option">
+                    <label>Sound Effects</label>
+                    <span class="value" id="sound-value">ON</span>
+                </div>
+                <div class="settings-option">
+                    <label>Music</label>
+                    <span class="value" id="music-value">ON</span>
+                </div>
+                <div class="settings-option">
+                    <label>Fullscreen</label>
+                    <span class="value" id="fullscreen-value">OFF</span>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button" onclick="toggleSound()">Toggle Sound</button>
+                <button class="menu-button" onclick="toggleFullscreen()">Toggle Fullscreen</button>
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
         </div>
     `;
     console.log('Settings menu displayed');
@@ -762,12 +810,24 @@ function showCreditsMenu() {
     const container = document.getElementById('screen-container');
     container.innerHTML = `
         <div class="screen" id="credits-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
             <h2>Credits</h2>
-            <p>Lunaris - A modular creature-battling roguelike game</p>
-            <p>Version 0.1.0</p>
-            <p>Created with passion for gaming!</p>
+            <div class="decoration-line"></div>
+            <p><strong>Lunaris</strong></p>
+            <p>A Modular Creature-Battling Roguelike</p>
+            <p style="margin-top: 20px;"><strong>Version 0.1.0</strong></p>
+            <p style="margin-top: 30px; color: var(--text-muted);">
+                Created with passion for gaming!
+            </p>
+            <p style="margin-top: 20px; color: var(--text-muted);">
+                © 2024 Lunaris. All rights reserved.
+            </p>
             <div class="submenu-buttons">
-                <button class="menu-button" onclick="showMainMenu()">Back</button>
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
         </div>
     `;
