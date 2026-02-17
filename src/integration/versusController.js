@@ -15,19 +15,46 @@ class VersusController {
         this.currentMatch = null;
         this.isHost = false;
         this.roomCode = null;
+        this.multiplayerController = null;
         
         console.log('[VersusController] Initialized');
     }
 
     /**
-     * Create a new versus match
+     * Set the multiplayer controller
+     * @param {MultiplayerController} controller - Multiplayer controller instance
+     */
+    setMultiplayerController(controller) {
+        this.multiplayerController = controller;
+    }
+
+    /**
+     * Create a new versus match (now joins queue via networking)
      * @param {string} ruleset - Ruleset to use
      * @returns {Object} Match data
      */
     createVersusMatch(ruleset = 'standard') {
-        console.log('[VersusController] Creating versus match');
+        console.log('[VersusController] Creating versus match via networking');
         
-        // Generate room code
+        // If we have a multiplayer controller, join the queue
+        if (this.multiplayerController) {
+            this.multiplayerController.joinQueue();
+            
+            this.currentMatch = {
+                ruleset: ruleset,
+                status: 'searching',
+                players: [
+                    { id: 'player_1', name: 'You', isHost: true, isReady: true }
+                ]
+            };
+            
+            this.isHost = true;
+            console.log('[VersusController] Joined matchmaking queue');
+            
+            return this.currentMatch;
+        }
+        
+        // Fallback to local mode if no multiplayer controller
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         this.roomCode = '';
         for (let i = 0; i < 6; i++) {
@@ -46,7 +73,7 @@ class VersusController {
             maxPlayers: 2
         };
         
-        console.log('[VersusController] Match created:', this.roomCode);
+        console.log('[VersusController] Match created (offline):', this.roomCode);
         
         return this.currentMatch;
     }
@@ -62,7 +89,24 @@ class VersusController {
         this.roomCode = roomCode;
         this.isHost = false;
         
-        // Simulate joining
+        // If we have a multiplayer controller, leave queue and wait for match
+        if (this.multiplayerController) {
+            this.currentMatch = {
+                roomCode: roomCode,
+                ruleset: 'standard',
+                status: 'found',
+                players: [
+                    { id: 'player_1', name: 'Host', isHost: true, isReady: true },
+                    { id: 'player_2', name: 'You', isHost: false, isReady: true }
+                ]
+            };
+            
+            console.log('[VersusController] Joined match via networking:', roomCode);
+            
+            return this.currentMatch;
+        }
+        
+        // Fallback to local mode
         this.currentMatch = {
             roomCode: roomCode,
             ruleset: 'standard',
@@ -74,13 +118,13 @@ class VersusController {
             maxPlayers: 2
         };
         
-        console.log('[VersusController] Joined match:', roomCode);
+        console.log('[VersusController] Joined match (offline):', roomCode);
         
         return this.currentMatch;
     }
 
     /**
-     * Start the versus battle
+     * Start the versus battle (triggered by MATCH_START from server)
      * @returns {Object} Battle data
      */
     startVersusBattle() {
@@ -106,7 +150,7 @@ class VersusController {
     }
 
     /**
-     * End the versus battle
+     * End the versus battle (triggered by MATCH_END from server)
      * @param {string} winnerId - Winner player ID
      * @returns {Object} Match result
      */
@@ -141,6 +185,11 @@ class VersusController {
      */
     leaveMatch() {
         console.log('[VersusController] Leaving match');
+        
+        // If in queue, leave queue via multiplayer controller
+        if (this.multiplayerController && this.currentMatch && this.currentMatch.status === 'searching') {
+            this.multiplayerController.leaveQueue();
+        }
         
         this.currentMatch = null;
         this.roomCode = null;

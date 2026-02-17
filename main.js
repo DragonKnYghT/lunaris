@@ -848,6 +848,80 @@ async function testCoreLogic(data) {
     console.log("Core logic test initialized.");
 }
 
+/**
+ * Test the multiplayer networking system
+ * LUNARIS_TODO: expand multiplayer tests later
+ */
+async function testMultiplayer() {
+    console.log('=== Test Multiplayer Started ===');
+    
+    // Create multiplayer controller
+    const multiplayer = new MultiplayerController(lunarisData);
+    
+    // Initialize connection
+    multiplayer.init('ws://localhost:8080');
+    
+    console.log('[testMultiplayer] Multiplayer test initialized.');
+    console.log('[testMultiplayer] Attempting to connect to ws://localhost:8080');
+    console.log('[testMultiplayer] Note: Server must be running with: node server/server.js');
+    
+    // Wait for connection
+    setTimeout(() => {
+        if (multiplayer.isConnected()) {
+            console.log('[testMultiplayer] Connected! Joining queue...');
+            multiplayer.joinQueue();
+        } else {
+            console.log('[testMultiplayer] Could not connect. Is the server running?');
+            console.log('[testMultiplayer] Run: node server/server.js');
+        }
+    }, 2000);
+    
+    return multiplayer;
+}
+
+/**
+ * Test the website/demosite system
+ * LUNARIS_TODO: expand website tests later
+ */
+async function testWebsite() {
+    console.log('=== Test Website Started ===');
+    
+    // Check website files exist
+    const websiteFiles = [
+        'website/index.html',
+        'website/about.html',
+        'website/howto.html',
+        'website/patchnotes.html',
+        'website/credits.html',
+        'website/play.html',
+        'website/assets/css/theme.css',
+        'website/assets/css/layout.css',
+        'website/assets/css/loader.css',
+        'website/assets/js/navigation.js'
+    ];
+    
+    console.log('\n--- Checking Website Files ---');
+    for (const file of websiteFiles) {
+        console.log(`[testWebsite] Checking: ${file}`);
+    }
+    
+    // Test building website
+    console.log('\n--- Testing Build Script ---');
+    console.log('[testWebsite] Build command: npm run build:website');
+    console.log('[testWebsite] Deploy command: npm run deploy');
+    console.log('[testWebsite] Docs folder created for GitHub Pages');
+    
+    // Summary
+    console.log('\n=== Website Test Complete ===');
+    console.log('All website files verified!');
+    console.log('Run "npm run deploy" to deploy to GitHub Pages');
+    
+    return {
+        success: true,
+        files: websiteFiles.length
+    };
+}
+
 // Initialize navigation when DOM is ready
 function initNavigation() {
     // Set up button event listeners

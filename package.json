@@ -1,0 +1,21 @@
+{
+  "name": "lunaris",
+  "version": "0.1.0",
+  "description": "A modular creature-battling roguelike game",
+  "main": "main.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "build:website": "echo 'Building website...' && xcopy /E /I website dist\\website",
+    "build:game": "echo 'Bundling game...'",
+    "build": "npm run build:website && npm run build:game",
+    "deploy": "npm run build && xcopy /E /I dist\\website docs",
+    "test": "echo 'No tests specified'"
+  },
+  "keywords": [
+    "game",
+    "roguelike",
+    "creature-battle"
+  ],
+  "author": "",
+  "license": "MIT"
+}
