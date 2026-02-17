@@ -14,6 +14,10 @@
  * @returns {Object} Damage calculation result
  */
 function calculateDamage(attacker, defender, move, typeChart) {
+    // Check for multi-hit moves
+    if (move.multihit) {
+        return calculateMultiHitDamage(attacker, defender, move, typeChart);
+    }
     // If move does 0 damage (status moves, etc.)
     if (!move.power || move.power === 0) {
         return {
@@ -87,6 +91,157 @@ function calculateDamage(attacker, defender, move, typeChart) {
         critical: critical,
         stab: stab,
         message: message
+    };
+}
+
+/**
+ * Calculate damage for multi-hit moves
+ * @param {Object} attacker - The attacking BattleCreature
+ * @param {Object} defender - The defending BattleCreature
+ * @param {Object} move - The move being used
+ * @param {Object} typeChart - The type effectiveness chart
+ * @returns {Object} Multi-hit damage calculation result
+ */
+function calculateMultiHitDamage(attacker, defender, move, typeChart) {
+    // Get number of hits (can be 2-5 or a specific array like [2, 3])
+    let minHits = 2;
+    let maxHits = 5;
+    
+    if (Array.isArray(move.multihit)) {
+        minHits = move.multihit[0];
+        maxHits = move.multihit[1] || move.multihit[0];
+    } else if (typeof move.multihit === 'number') {
+        maxHits = move.multihit;
+        minHits = move.multihit;
+    }
+    
+    // Determine actual number of hits (with decreasing probability for more hits)
+    // In games, typically: 2 hits = 37.5%, 3 hits = 37.5%, 4 hits = 12.5%, 5 hits = 12.5%
+    let numHits;
+    const hitRoll = Math.random();
+    
+    if (minHits === maxHits) {
+        numHits = minHits;
+    } else {
+        if (hitRoll < 0.375) {
+            numHits = 2;
+        } else if (hitRoll < 0.75) {
+            numHits = 3;
+        } else if (hitRoll < 0.875) {
+            numHits = 4;
+        } else {
+            numHits = 5;
+        }
+    }
+    
+    // Calculate damage for each hit
+    const hits = [];
+    let totalDamage = 0;
+    let effectiveness = 1.0;
+    let critical = false;
+    let stab = false;
+    
+    // Create a copy of defender to track HP through hits
+    const defenderCopy = {
+        ...defender,
+        currentHp: defender.currentHp,
+        types: [...defender.types]
+    };
+    
+    for (let i = 0; i < numHits; i++) {
+        // Calculate damage for this hit
+        const isPhysical = move.category === "Physical";
+        const attackStat = isPhysical ? attacker.stats.atk : attacker.stats.spa;
+        const defenseStat = isPhysical ? defenderCopy.stats.def : defenderCopy.stats.spd;
+        
+        let baseDamage = Math.floor(
+            (2 * attacker.level / 5 + 2) * move.power * attackStat / defenseStat / 50 + 2
+        );
+        
+        // STAB
+        const isStab = attacker.types.includes(move.type);
+        if (i === 0) stab = isStab;
+        const stabMultiplier = isStab ? 1.5 : 1.0;
+        
+        // Type effectiveness (calculate once, same for all hits)
+        let hitEffectiveness = 1.0;
+        if (i === 0 && typeChart) {
+            if (typeChart.calculateMoveEffectiveness) {
+                hitEffectiveness = typeChart.calculateMoveEffectiveness(move, defender.types);
+            } else if (typeChart.getTypeEffectiveness) {
+                for (const defenderType of defender.types) {
+                    hitEffectiveness *= typeChart.getTypeEffectiveness(move.type, defenderType);
+                }
+            }
+            effectiveness = hitEffectiveness;
+        }
+        
+        // Critical hit (check only once per multi-hit move)
+        let hitCritical = false;
+        let criticalMultiplier = 1.0;
+        if (i === 0) {
+            hitCritical = Math.random() < 0.0625;
+            critical = hitCritical;
+            criticalMultiplier = hitCritical ? 1.5 : 1.0;
+        }
+        
+        // Random variance
+        const randomVariance = 0.85 + Math.random() * 0.15;
+        
+        // Calculate final damage for this hit
+        let hitDamage = Math.floor(
+            baseDamage * stabMultiplier * hitEffectiveness * criticalMultiplier * randomVariance
+        );
+        
+        hitDamage = Math.max(1, hitDamage);
+        
+        // Apply damage to defender copy
+        defenderCopy.currentHp = Math.max(0, defenderCopy.currentHp - hitDamage);
+        
+        hits.push({
+            hitNum: i + 1,
+            damage: hitDamage,
+            effectiveness: hitEffectiveness,
+            critical: hitCritical
+        });
+        
+        totalDamage += hitDamage;
+        
+        // If defender fainted, stop hitting
+        if (defenderCopy.currentHp <= 0) {
+            break;
+        }
+    }
+    
+    // Generate message
+    let message = "";
+    if (numHits > 1) {
+        message = `Hit ${numHits} times!`;
+    }
+    
+    if (effectiveness > 1.0) {
+        message += " It's super effective!";
+    } else if (effectiveness < 1.0 && effectiveness > 0) {
+        message += " It's not very effective...";
+    } else if (effectiveness === 0) {
+        message = "It had no effect!";
+    }
+    
+    if (critical && numHits > 1) {
+        message = "A critical hit! " + message;
+    }
+    
+    const fainted = defenderCopy.currentHp <= 0;
+    
+    return {
+        damage: totalDamage,
+        hits: hits,
+        numHits: numHits,
+        effectiveness: effectiveness,
+        critical: critical,
+        stab: stab,
+        fainted: fainted,
+        message: message.trim()
     };
 }
 
@@ -218,6 +373,7 @@ function attemptCatch(creature, ballType = 'standard') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         calculateDamage,
+        calculateMultiHitDamage,
         calculateDamageWithModifiers,
         calculateCatchRate,
         attemptCatch
