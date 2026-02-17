@@ -834,18 +834,20 @@ async function testUIFramework() {
  * LUNARIS_TODO: call this on page load later
  */
 async function startLunaris() {
-    const game = new GameController();
-    await game.start();
+    console.log("Starting Lunaris...");
+    await initGameData();
+    showMainMenu();
 }
 
 /**
  * Test the core game logic
  * LUNARIS_TODO: expand core logic tests later
  */
-async function testCoreLogic(data) {
-    const game = new GameController(data);
-    await game.start();
+
+async function testCoreLogic() {
+    await initGameData();
     console.log("Core logic test initialized.");
+    showMainMenu();
 }
 
 /**
