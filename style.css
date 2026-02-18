@@ -793,20 +793,178 @@ body {
     font-weight: 700;
 }
 
-/* ===== Responsive Language Toggle ===== */
+/* ===== Theme Toggle Switch (Light/Dark) ===== */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.theme-toggle-switch {
+    position: relative;
+    width: 80px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-card) 100%);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    overflow: hidden;
+}
+
+.theme-toggle-switch:hover {
+    border-color: var(--color-secondary);
+    box-shadow: var(--shadow-md), var(--shadow-glow-secondary);
+}
+
+.theme-toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 34px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Dark mode (default) - slider on left */
+.theme-toggle-switch.dark .theme-toggle-slider {
+    left: 2px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
+}
+
+/* Light mode - slider on right */
+.theme-toggle-switch.light .theme-toggle-slider {
+    left: calc(100% - 36px);
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+}
+
+.theme-toggle-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    pointer-events: none;
+}
+
+.theme-toggle-icon {
+    font-size: var(--font-size-xs);
+    transition: color var(--transition-fast);
+}
+
+/* Dark icon (moon) */
+.theme-toggle-icon.dark {
+    color: #ffd700;
+}
+
+/* Light icon (sun) */
+.theme-toggle-icon.light {
+    color: var(--text-muted);
+}
+
+.theme-toggle-switch.dark .theme-toggle-icon.dark {
+    color: var(--text-primary);
+}
+
+.theme-toggle-switch.light .theme-toggle-icon.light {
+    color: var(--text-primary);
+}
+
+/* Current theme indicator */
+.theme-toggle-current {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.theme-toggle-current span {
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+/* ===== Combined Language and Theme Toggle Container ===== */
+.settings-toggle-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ===== Light Mode CSS Variables (when body has .light-mode class) ===== */
+body.light-mode {
+    --bg-dark: #f5f5f5;
+    --bg-darker: #e0e0e0;
+    --bg-light: #ffffff;
+    --bg-card: #ffffff;
+    --bg-gradient-start: #f5f5f5;
+    --bg-gradient-end: #ffffff;
+    
+    --text-primary: #1a1a2e;
+    --text-secondary: #4a4a5a;
+    --text-muted: #8a8a9a;
+    
+    --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
+    --shadow-glow-secondary: 0 0 20px rgba(0, 217, 255, 0.3);
+}
+
+body.light-mode #game-container {
+    box-shadow: var(--shadow-xl), var(--shadow-glow);
+}
+
+body.light-mode .game-title {
+    color: #6c5ce7;
+    text-shadow: 0 0 10px rgba(108, 92, 231, 0.5), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .menu-button {
+    color: #ffffff;
+}
+
+body.light-mode .screen h2 {
+    color: #6c5ce7;
+}
+
+body.light-mode .game-mode-card,
+body.light-mode .switch-creature-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f5 100%);
+}
+
+body.light-mode .settings-option {
+    background-color: #ffffff;
+}
+
+/* ===== Responsive Theme Toggle ===== */
 @media (max-width: 480px) {
-    .language-toggle-switch {
+    .theme-toggle-switch {
         width: 70px;
         height: 32px;
     }
     
-    .language-toggle-slider {
+    .theme-toggle-slider {
         width: 30px;
         height: 24px;
     }
     
-    .language-toggle-switch.fr .language-toggle-slider {
+    .theme-toggle-switch.light .theme-toggle-slider {
         left: calc(100% - 32px);
+    }
+    
+    .settings-toggle-group {
+        flex-direction: column;
+        gap: var(--spacing-md);
     }
 }
 
