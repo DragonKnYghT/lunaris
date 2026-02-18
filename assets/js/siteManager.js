@@ -150,11 +150,9 @@ const siteManager = {
         // Update button in navbar
         const themeSwitch = document.getElementById('themeSwitch');
         if (themeSwitch) {
-            const darkSpan = themeSwitch.querySelector('.theme-dark');
-            const lightSpan = themeSwitch.querySelector('.theme-light');
-            if (darkSpan && lightSpan) {
-                darkSpan.style.fontWeight = this.currentTheme === 'dark' ? 'bold' : 'normal';
-                lightSpan.style.fontWeight = this.currentTheme === 'light' ? 'bold' : 'normal';
+            const themeIcon = themeSwitch.querySelector('.theme-icon');
+            if (themeIcon) {
+                themeIcon.textContent = this.currentTheme === 'dark' ? '🌙' : '☀️';
             }
         }
         

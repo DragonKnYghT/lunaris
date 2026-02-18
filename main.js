@@ -897,6 +897,11 @@ async function startLunaris() {
     console.log("Starting Lunaris...");
     await initGameData();
     showMainMenu();
+    
+    // Dispatch gameStart event to signal that the game has begun
+    // This ensures siteManager.js can hide the navbar reliably
+    window.dispatchEvent(new Event('gameStart'));
+    console.log('Game start event dispatched');
 }
 
 /**
