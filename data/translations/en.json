@@ -1,0 +1,272 @@
+{
+    "_meta": {
+        "language": "en",
+        "name": "English",
+        "version": "1.0.0"
+    },
+    "common": {
+        "home": "Home",
+        "play": "Play",
+        "howToPlay": "How to Play",
+        "about": "About",
+        "patchNotes": "Patch Notes",
+        "credits": "Credits",
+        "settings": "Settings",
+        "back": "Back",
+        "version": "Version",
+        "loading": "Loading...",
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "close": "Close",
+        "next": "Next",
+        "previous": "Previous",
+        "yes": "Yes",
+        "no": "No",
+        "ok": "OK",
+        "error": "Error",
+        "success": "Success",
+        "warning": "Warning"
+    },
+    "website": {
+        "hero": {
+            "title": "Welcome to Lunaris",
+            "subtitle": "A Modular Creature-Battling Roguelike",
+            "playNow": "Play Now",
+            "learnMore": "Learn More"
+        },
+        "features": {
+            "title": "Game Features",
+            "roguelike": {
+                "title": "Roguelike Adventure",
+                "description": "Explore procedurally generated zones in this roguelike adventure."
+            },
+            "collection": {
+                "title": "Creature Collection",
+                "description": "Collect and train unique creatures with diverse abilities."
+            },
+            "combat": {
+                "title": "Strategic Combat",
+                "description": "Master turn-based battles with type advantages and abilities."
+            },
+            "multiplayer": {
+                "title": "Online Multiplayer",
+                "description": "Battle against other players in versus matches."
+            }
+        },
+        "cta": {
+            "title": "Ready to Begin Your Adventure?",
+            "description": "Join thousands of trainers in the world of Lunaris.",
+            "button": "Start Playing"
+        },
+        "footer": {
+            "copyright": "© 2024 Lunaris. All rights reserved."
+        }
+    },
+    "howto": {
+        "title": "How to Play",
+        "gettingStarted": {
+            "title": "Getting Started",
+            "description": "Welcome to Lunaris! This guide will help you understand the basics of the game."
+        },
+        "gameModes": {
+            "title": "Game Modes",
+            "roguelike": {
+                "title": "Roguelike Mode",
+                "description": "Embark on an adventure through procedurally generated zones. Each run is unique as you face random encounters, collect creatures, and try to reach the end."
+            },
+            "versus": {
+                "title": "Versus Mode",
+                "description": "Battle against other players in real-time matches. Build your team, strategize, and climb the ranks!"
+            }
+        },
+        "combat": {
+            "title": "Combat Basics",
+            "description": "Lunaris features turn-based combat where creatures take turns using moves, items, or switching to another creature.",
+            "types": {
+                "title": "Type Advantages",
+                "description": "Each creature has one or two types. Certain types have advantages over others. Use type matchups to gain the upper hand!"
+            },
+            "abilities": {
+                "title": "Abilities",
+                "description": "Creatures can have unique abilities that provide passive bonuses or activate under certain conditions."
+            }
+        },
+        "collecting": {
+            "title": "Collecting Creatures",
+            "description": "Throughout your adventure, you'll encounter wild creatures. Capture them using special items to add them to your team!"
+        },
+        "tips": {
+            "title": "Tips for Beginners",
+            "list": [
+                "Pay attention to type advantages in battle",
+                "Build a balanced team with different types",
+                "Don't forget to use items during battle",
+                "Save your progress regularly",
+                "Experiment with different strategies"
+            ]
+        }
+    },
+    "about": {
+        "title": "About Lunaris",
+        "whatIs": {
+            "title": "What is Lunaris?",
+            "description": "Lunaris is a modular creature-battling roguelike game where players explore procedurally generated zones, capture and train unique creatures, and engage in strategic turn-based battles."
+        },
+        "development": {
+            "title": "Development",
+            "description": "Lunaris is being developed as a modular, expandable game system. The core mechanics are designed to be flexible, allowing for easy addition of new creatures, abilities, zones, and game modes."
+        },
+        "technology": {
+            "title": "Technology",
+            "items": [
+                "Built with vanilla JavaScript",
+                "WebSocket-based multiplayer",
+                "Responsive web design",
+                "Modular architecture"
+            ]
+        },
+        "roadmap": {
+            "title": "Roadmap",
+            "description": "Future updates will include:",
+            "items": [
+                "More creatures and zones",
+                "Enhanced multiplayer features",
+                "Additional game modes",
+                "Visual improvements and animations"
+            ]
+        }
+    },
+    "patchnotes": {
+        "title": "Patch Notes",
+        "current": {
+            "title": "Current Version",
+            "description": "Latest updates and improvements"
+        }
+    },
+    "credits": {
+        "title": "Credits",
+        "team": {
+            "title": "Development Team",
+            "description": "Lunaris is being developed by a small team of passionate game developers."
+        },
+        "acknowledgments": {
+            "title": "Acknowledgments",
+            "description": "We would like to thank:",
+            "items": [
+                "Our testers and community",
+                "Open source projects that made this possible",
+                "Inspiration from classic creature-battling games"
+            ]
+        },
+        "technology": {
+            "title": "Technology",
+            "description": "This game was built using:",
+            "items": [
+                "JavaScript (Vanilla)",
+                "WebSocket for multiplayer",
+                "HTML5/CSS3",
+                "GitHub Pages for hosting"
+            ]
+        },
+        "contact": {
+            "title": "Contact",
+            "description": "For questions, feedback, or bug reports, please reach out to us."
+        },
+        "license": {
+            "title": "License",
+            "description": "Lunaris is open source and available under the MIT License."
+        }
+    },
+    "game": {
+        "loading": "Loading Lunaris...",
+        "mainMenu": {
+            "title": "Main Menu",
+            "play": "Play",
+            "settings": "Settings",
+            "credits": "Credits"
+        },
+        "playMenu": {
+            "title": "Choose Your Adventure",
+            "description": "Select a game mode to begin your journey!",
+            "modes": {
+                "roguelike": {
+                    "title": "Roguelike",
+                    "description": "Explore procedurally generated zones in this roguelike adventure."
+                },
+                "battleTest": {
+                    "title": "Battle Test",
+                    "description": "Test your team in a simulated battle."
+                },
+                "versus": {
+                    "title": "Versus",
+                    "description": "Battle against other players in versus matches."
+                },
+                "gacha": {
+                    "title": "Gacha",
+                    "description": "Try your luck with the gacha system."
+                }
+            }
+        },
+        "settingsMenu": {
+            "title": "Settings",
+            "soundEffects": "Sound Effects",
+            "music": "Music",
+            "fullscreen": "Fullscreen",
+            "language": "Language",
+            "toggleOn": "ON",
+            "toggleOff": "OFF"
+        },
+        "creditsMenu": {
+            "title": "Credits",
+            "description": "A Modular Creature-Battling Roguelike",
+            "createdWith": "Created with passion for gaming!",
+            "copyright": "© 2024 Lunaris. All rights reserved."
+        },
+        "gacha": {
+            "title": "Gacha",
+            "pull": "Pull",
+            "multiPull": "Multi Pull",
+            "banner": "Banner",
+            "characters": "Characters",
+            "weapons": "Weapons",
+            "rare": "Rare",
+            "epic": "Epic",
+            "legendary": "Legendary"
+        },
+        "inventory": {
+            "title": "Inventory",
+            "items": "Items",
+            "creatures": "Creatures",
+            "equipment": "Equipment",
+            "currency": "Currency"
+        },
+        "achievements": {
+            "title": "Achievements",
+            "unlocked": "Unlocked",
+            "locked": "Locked",
+            "progress": "Progress"
+        },
+        "lunadex": {
+            "title": "Lunadex",
+            "creatures": "Creatures",
+            "types": "Types",
+            "locations": "Locations",
+            "caught": "Caught",
+            "seen": "Seen"
+        },
+        "battle": {
+            "yourTurn": "Your Turn",
+            "enemyTurn": "Enemy Turn",
+            "chooseAction": "Choose an action",
+            "attack": "Attack",
+            "defend": "Defend",
+            "item": "Item",
+            "switch": "Switch",
+            "flee": "Flee",
+            "victory": "Victory!",
+            "defeat": "Defeat!",
+            "draw": "Draw!"
+        }
+    }
+}

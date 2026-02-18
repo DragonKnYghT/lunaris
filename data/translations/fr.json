@@ -1,0 +1,272 @@
+{
+    "_meta": {
+        "language": "fr",
+        "name": "Français",
+        "version": "1.0.0"
+    },
+    "common": {
+        "home": "Accueil",
+        "play": "Jouer",
+        "howToPlay": "Comment Jouer",
+        "about": "À Propos",
+        "patchNotes": "Notes de Version",
+        "credits": "Crédits",
+        "settings": "Paramètres",
+        "back": "Retour",
+        "version": "Version",
+        "loading": "Chargement...",
+        "save": "Sauvegarder",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "close": "Fermer",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "yes": "Oui",
+        "no": "Non",
+        "ok": "OK",
+        "error": "Erreur",
+        "success": "Succès",
+        "warning": "Avertissement"
+    },
+    "website": {
+        "hero": {
+            "title": "Bienvenue sur Lunaris",
+            "subtitle": "Un Roguelike de Combat de Créatures Modulaire",
+            "playNow": "Jouer Maintenant",
+            "learnMore": "En Savoir Plus"
+        },
+        "features": {
+            "title": "Fonctionnalités du Jeu",
+            "roguelike": {
+                "title": "Aventure Roguelike",
+                "description": "Explorez des zones procéduralement générées dans cette aventure roguelike."
+            },
+            "collection": {
+                "title": "Collection de Créatures",
+                "description": "Collectez et entraînez des créatures uniques avec des capacités diverses."
+            },
+            "combat": {
+                "title": "Combat Stratégique",
+                "description": "Maîtrisez les combats au tour par tour avec les avantages de types et les capacités."
+            },
+            "multiplayer": {
+                "title": "Multijoueur en Ligne",
+                "description": "Affrontez d'autres joueurs dans des matchs versus."
+            }
+        },
+        "cta": {
+            "title": "Prêt à Commencer Votre Aventure ?",
+            "description": "Rejoignez des milliers de dresseurs dans le monde de Lunaris.",
+            "button": "Commencer à Jouer"
+        },
+        "footer": {
+            "copyright": "© 2024 Lunaris. Tous droits réservés."
+        }
+    },
+    "howto": {
+        "title": "Comment Jouer",
+        "gettingStarted": {
+            "title": "Commencer",
+            "description": "Bienvenue sur Lunaris ! Ce guide vous aidera à comprendre les bases du jeu."
+        },
+        "gameModes": {
+            "title": "Modes de Jeu",
+            "roguelike": {
+                "title": "Mode Roguelike",
+                "description": "Participez à une aventure à travers des zones générées procéduralement. Chaque course est unique alors que vous affrontez des rencontres aléatoires, collectez des créatures, et essayez d'atteindre la fin."
+            },
+            "versus": {
+                "title": "Mode Versus",
+                "description": "Affrontez d'autres joueurs en temps réel. Construisez votre équipe,.stratégisez et grimpez dans les rangs !"
+            }
+        },
+        "combat": {
+            "title": "Bases du Combat",
+            "description": "Lunaris dispose d'un combat au tour par tour où les créatures utilisent des capacités, des objets, ou changent de créature.",
+            "types": {
+                "title": "Avantages de Types",
+                "description": "Chaque créature a un ou deux types. Certains types ont des avantages sur d'autres. Utilisez les correspondances de types pour prendre l'avantage !"
+            },
+            "abilities": {
+                "title": "Capacités",
+                "description": "Les créatures peuvent avoir des capacités uniques qui offrent des bonus passifs ou s'activent sous certaines conditions."
+            }
+        },
+        "collecting": {
+            "title": "Collecter des Créatures",
+            "description": "Au cours de votre aventure, vous rencontrerez des créatures sauvages. Capturez-les en utilisant des objets spéciaux pour les ajouter à votre équipe !"
+        },
+        "tips": {
+            "title": "Conseils pour les Débutants",
+            "list": [
+                "Faites attention aux avantages de types au combat",
+                "Construisez une équipe équilibrée avec différents types",
+                "N'oubliez pas d'utiliser des objets pendant le combat",
+                "Sauvegardez régulièrement votre progression",
+                "Expérimentez avec différentes stratégies"
+            ]
+        }
+    },
+    "about": {
+        "title": "À Propos de Lunaris",
+        "whatIs": {
+            "title": "Qu'est-ce que Lunaris ?",
+            "description": "Lunaris est un jeu roguelike de combat de créatures modulaire où les joueurs explorent des zones générées procéduralement, capturent et entraînent des créatures uniques, et s'engagent dans des combats stratégiques au tour par tour."
+        },
+        "development": {
+            "title": "Développement",
+            "description": "Lunaris est développé comme un système de jeu modulaire et extensible. Les mécaniques de base sont conçues pour être flexibles, permettant l'ajout facile de nouvelles créatures, capacités, zones et modes de jeu."
+        },
+        "technology": {
+            "title": "Technologie",
+            "items": [
+                "Construit avec JavaScript pur",
+                "Multijoueur basé sur WebSocket",
+                "Design web réactif",
+                "Architecture modulaire"
+            ]
+        },
+        "roadmap": {
+            "title": "Feuille de Route",
+            "description": "Les futures mises à jour incluront :",
+            "items": [
+                "Plus de créatures et zones",
+                "Fonctionnalités multijoueur améliorées",
+                "Modes de jeu supplémentaires",
+                "Améliorations visuelles et animations"
+            ]
+        }
+    },
+    "patchnotes": {
+        "title": "Notes de Version",
+        "current": {
+            "title": "Version Actuelle",
+            "description": "Dernières mises à jour et améliorations"
+        }
+    },
+    "credits": {
+        "title": "Crédits",
+        "team": {
+            "title": "Équipe de Développement",
+            "description": "Lunaris est développé par une petite équipe de développeurs de jeux passionnés."
+        },
+        "acknowledgments": {
+            "title": "Remerciements",
+            "description": "Nous tenons à remercier :",
+            "items": [
+                "Nos testeurs et la communauté",
+                "Les projets open source qui ont rendu cela possible",
+                "L'inspiration des jeux classiques de combat de créatures"
+            ]
+        },
+        "technology": {
+            "title": "Technologie",
+            "description": "Ce jeu a été construit avec :",
+            "items": [
+                "JavaScript (Vanilla)",
+                "WebSocket pour le multijoueur",
+                "HTML5/CSS3",
+                "GitHub Pages pour l'hébergement"
+            ]
+        },
+        "contact": {
+            "title": "Contact",
+            "description": "Pour toute question, retour ou signalement de bug, n'hésitez pas à nous contacter."
+        },
+        "license": {
+            "title": "Licence",
+            "description": "Lunaris est open source et disponible sous licence MIT."
+        }
+    },
+    "game": {
+        "loading": "Chargement de Lunaris...",
+        "mainMenu": {
+            "title": "Menu Principal",
+            "play": "Jouer",
+            "settings": "Paramètres",
+            "credits": "Crédits"
+        },
+        "playMenu": {
+            "title": "Choisissez Votre Aventure",
+            "description": "Sélectionnez un mode de jeu pour commencer votre voyage !",
+            "modes": {
+                "roguelike": {
+                    "title": "Roguelike",
+                    "description": "Explorez des zones générées procéduralement dans cette aventure roguelike."
+                },
+                "battleTest": {
+                    "title": "Test de Combat",
+                    "description": "Testez votre équipe dans un combat simulé."
+                },
+                "versus": {
+                    "title": "Versus",
+                    "description": "Affrontez d'autres joueurs dans des matchs versus."
+                },
+                "gacha": {
+                    "title": "Gacha",
+                    "description": "Essayez votre chance avec le système gacha."
+                }
+            }
+        },
+        "settingsMenu": {
+            "title": "Paramètres",
+            "soundEffects": "Effets Sonores",
+            "music": "Musique",
+            "fullscreen": "Plein Écran",
+            "language": "Langue",
+            "toggleOn": "ON",
+            "toggleOff": "OFF"
+        },
+        "creditsMenu": {
+            "title": "Crédits",
+            "description": "Un Roguelike de Combat de Créatures Modulaire",
+            "createdWith": "Créé avec passion pour le jeu !",
+            "copyright": "© 2024 Lunaris. Tous droits réservés."
+        },
+        "gacha": {
+            "title": "Gacha",
+            "pull": "Tirer",
+            "multiPull": "Tir Multiple",
+            "banner": "Bannière",
+            "characters": "Personnages",
+            "weapons": "Armes",
+            "rare": "Rare",
+            "epic": "Épique",
+            "legendary": "Légendaire"
+        },
+        "inventory": {
+            "title": "Inventaire",
+            "items": "Objets",
+            "creatures": "Créatures",
+            "equipment": "Équipement",
+            "currency": "Monnaie"
+        },
+        "achievements": {
+            "title": "Succès",
+            "unlocked": "Débloqué",
+            "locked": "Verrouillé",
+            "progress": "Progression"
+        },
+        "lunadex": {
+            "title": "Lunadex",
+            "creatures": "Créatures",
+            "types": "Types",
+            "locations": "Lieux",
+            "caught": "Capturées",
+            "seen": "Vues"
+        },
+        "battle": {
+            "yourTurn": "Votre Tour",
+            "enemyTurn": "Tour de l'Adversaire",
+            "chooseAction": "Choisissez une action",
+            "attack": "Attaquer",
+            "defend": "Défendre",
+            "item": "Objet",
+            "switch": "Changer",
+            "flee": "Fuir",
+            "victory": "Victoire !",
+            "defeat": "Défaite !",
+            "draw": "Match Nul !"
+        }
+    }
+}

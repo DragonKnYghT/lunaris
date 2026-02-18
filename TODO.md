@@ -1,21 +1,26 @@
-# Step 16 - Multiplayer Networking (WebSockets) - COMPLETED
+# TODO - FR/EN Language Support Implementation
 
-## Server-Side Files (/server folder) ✅
-- [x] messageProtocol.js - Define Lunaris network protocol
-- [x] playerSession.js - Handle individual player sessions  
-- [x] matchManager.js - Manage matches between players
-- [x] websocketServer.js - WebSocket server implementation
-- [x] server.js - Entry point
+## Task 1 — Add FR/EN Language Support
 
-## Client-Side Files (/src/multiplayer) ✅
-- [x] clientSocket.js - WebSocket client implementation
-- [x] multiplayerController.js - Controller for multiplayer
+### Step 1: Create Translation Files
+- [x] Create `data/translations/` directory
+- [x] Create `data/translations/en.json` with all English translations
+- [x] Create `data/translations/fr.json` with all French translations
 
-## Update Existing Files ✅
-- [x] Update versusController.js to use real networking
-- [x] Add testMultiplayer() to main.js
+### Step 2: Create Translation Manager
+- [ ] Create `src/settings/translationManager.js` to handle loading and applying translations
 
-## Status: COMPLETED
-- Step 16 is complete! The multiplayer networking foundation is now in place.
-- To run the server: `node server/server.js`
-- To test multiplayer: Call `testMultiplayer()` in the browser console
+### Step 3: Update LanguageSettings
+- [ ] Modify `src/settings/languageSettings.js` to integrate with TranslationManager
+- [ ] Change default language from 'en' to 'fr'
+- [ ] Add methods to apply translations to website and game UI
+
+### Step 4: Add Language Switch Button
+- [ ] Add language switch button to all HTML pages in the navigation (next to Credits)
+- [ ] Add CSS styling for the language switch button
+
+### Step 5: Update main.js
+- [ ] Update game UI text to use translation system
+
+### Step 6: Update navigation.js
+- [ ] Add language switch functionality for the website
