@@ -454,3 +454,283 @@ body {
         padding: var(--spacing-sm) var(--spacing-md);
     }
 }
+
+/* ===== Switch Battle Action ===== */
+.battle-action-switch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-light) 100%);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    min-width: 120px;
+    text-align: center;
+}
+
+.battle-action-switch:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--color-secondary);
+}
+
+.battle-action-switch .switch-icon {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-secondary);
+}
+
+.battle-action-switch .switch-label {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ===== Switch Menu / Modal ===== */
+.switch-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.switch-menu-content {
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl), var(--shadow-glow);
+}
+
+.switch-menu-title {
+    font-size: var(--font-size-2xl);
+    color: var(--text-gold);
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.switch-menu-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* ===== Creature Selection for Switch ===== */
+.switch-creature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.switch-creature-card {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-light) 100%);
+    border: 2px solid var(--text-muted);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.switch-creature-card:hover {
+    border-color: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), var(--shadow-glow-secondary);
+}
+
+.switch-creature-card.selected {
+    border-color: var(--color-gold);
+    box-shadow: var(--shadow-lg), 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.switch-creature-card.current {
+    border-color: var(--color-primary);
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.2) 0%, var(--bg-card) 100%);
+}
+
+.switch-creature-card.fainted {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--color-error);
+}
+
+.switch-creature-card.fainted:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.switch-creature-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--bg-darker);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+}
+
+.switch-creature-info {
+    flex: 1;
+}
+
+.switch-creature-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.switch-creature-types {
+    display: flex;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-xs);
+}
+
+.switch-creature-hp {
+    font-size: var(--font-size-sm);
+    color: var(--color-success);
+}
+
+.switch-creature-hp.low {
+    color: var(--color-warning);
+}
+
+.switch-creature-hp.critical {
+    color: var(--color-error);
+}
+
+/* ===== Switch Menu Buttons ===== */
+.switch-menu-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.switch-confirm-button {
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--color-success) 0%, #00a085 100%);
+    border: 2px solid #55efc4;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.switch-confirm-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md), 0 0 15px rgba(0, 184, 148, 0.5);
+}
+
+.switch-confirm-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== Switch Animations ===== */
+@keyframes switchOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+}
+
+@keyframes switchIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.switching-out {
+    animation: switchOut 0.5s ease-in-out forwards;
+}
+
+.switching-in {
+    animation: switchIn 0.5s ease-in-out forwards;
+}
+
+/* ===== Language-Specific Switch Label ===== */
+/* French: "Changer" */
+.lang-fr .battle-action-switch .switch-label,
+.lang-fr .switch-menu-title {
+    letter-spacing: 0;
+}
+
+/* ===== Responsive Switch Styles ===== */
+@media (max-width: 768px) {
+    .switch-menu-content {
+        padding: var(--spacing-lg);
+    }
+    
+    .switch-creature-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .switch-menu-buttons {
+        flex-direction: column;
+    }
+    
+    .switch-confirm-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .battle-action-switch {
+        min-width: 100px;
+        padding: var(--spacing-md);
+    }
+    
+    .battle-action-switch .switch-icon {
+        font-size: var(--font-size-xl);
+    }
+    
+    .battle-action-switch .switch-label {
+        font-size: var(--font-size-sm);
+    }
+}
