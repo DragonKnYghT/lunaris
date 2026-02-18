@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,12 +19,20 @@
                 </a>
                 <nav class="main-nav">
                     <ul class="nav-list">
-                        <li><a href="index.html" class="nav-link">Home</a></li>
-                        <li><a href="play.html" class="nav-link">Play</a></li>
-                        <li><a href="howto.html" class="nav-link">How to Play</a></li>
-                        <li><a href="about.html" class="nav-link">About</a></li>
-                        <li><a href="patchnotes.html" class="nav-link active">Patch Notes</a></li>
-                        <li><a href="credits.html" class="nav-link">Credits</a></li>
+                        <li><a href="index.html" class="nav-link" data-i18n="common.home">Home</a></li>
+                        <li><a href="play.html" class="nav-link" data-i18n="common.play">Play</a></li>
+                        <li><a href="howto.html" class="nav-link" data-i18n="common.howToPlay">How to Play</a></li>
+                        <li><a href="about.html" class="nav-link" data-i18n="common.about">About</a></li>
+                        <li><a href="patchnotes.html" class="nav-link active" data-i18n="common.patchNotes">Patch Notes</a></li>
+                        <li><a href="credits.html" class="nav-link" data-i18n="common.credits">Credits</a></li>
+                        <li class="nav-buttons">
+                            <button class="language-switch" id="languageSwitch" aria-label="Switch language">
+                                <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
+                            </button>
+                            <button class="theme-switch" id="themeSwitch" aria-label="Switch theme">
+                                <span class="theme-icon">🌙</span>
+                            </button>
+                        </li>
                     </ul>
                 </nav>
                 <button class="mobile-menu-toggle" aria-label="Toggle menu">
@@ -39,7 +47,7 @@
     <main class="site-main">
         <section class="page-header">
             <div class="container">
-                <h1>Patch Notes</h1>
+                <h1 data-i18n="patchnotes.title">Patch Notes</h1>
             </div>
         </section>
 
@@ -87,20 +95,29 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="howto.html">How to Play</a>
-                    <a href="patchnotes.html">Patch Notes</a>
-                    <a href="credits.html">Credits</a>
+                    <a href="index.html" data-i18n="common.home">Home</a>
+                    <a href="about.html" data-i18n="common.about">About</a>
+                    <a href="howto.html" data-i18n="common.howToPlay">How to Play</a>
+                    <a href="patchnotes.html" data-i18n="common.patchNotes">Patch Notes</a>
+                    <a href="credits.html" data-i18n="common.credits">Credits</a>
                 </div>
                 <div class="footer-info">
-                    <p>&copy; 2024 Lunaris. All rights reserved.</p>
-                    <p class="version">Version 0.1.0</p>
+                    <p data-i18n="website.footer.copyright">&copy; 2024 Lunaris. All rights reserved.</p>
+                    <p class="version"><span data-i18n="common.version">Version</span> 0.1.0</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Scripts - Load in order: translationManager, siteManager, navigation -->
+    <script src="src/settings/translationManager.js"></script>
+    <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
+    <script>
+        // Initialize site manager on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            await siteManager.init();
+        });
+    </script>
 </body>
 </html>

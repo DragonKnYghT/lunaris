@@ -1,32 +1,19 @@
-# TODO - FR/EN Language Support Implementation
+# TODO: Fix FR/EN Language Switch, Theme Switch, and Navbar Behavior
 
-## Task 1 — Add FR/EN Language Support
+## Phase 1: CSS Updates
+- [ ] Update theme.css - Add theme toggle button styles and light mode variables
+- [ ] Update layout.css - Add .game-active class to hide navbar on play page
 
-### Step 1: Create Translation Files
-- [x] Create `data/translations/` directory
-- [x] Create `data/translations/en.json` with all English translations
-- [x] Create `data/translations/fr.json` with all French translations
+## Phase 2: HTML Pages Update
+- [ ] Update index.html - Unified navbar with language and theme switches, use siteManager.js
+- [ ] Update play.html - Unified navbar with language and theme switches, ensure navbar hides when game starts
+- [ ] Update howto.html - Unified navbar with language and theme switches
+- [ ] Update about.html - Add language/theme switches, add translations, use siteManager.js
+- [ ] Update patchnotes.html - Add language/theme switches, add translations, use siteManager.js
+- [ ] Update credits.html - Add language/theme switches, add translations, use siteManager.js
 
-### Step 2: Create Translation Manager
-- [x] Create `src/settings/translationManager.js` to handle loading and applying translations
-
-### Step 3: Update LanguageSettings
-- [x] Modify `src/settings/languageSettings.js` to integrate with TranslationManager
-- [x] Change default language from 'en' to 'fr'
-- [x] Add methods to apply translations to website and game UI
-
-### Step 4: Add Language Switch Button
-- [ ] Add language switch button to all HTML pages in the navigation (next to Credits)
-  - [ ] Update index.html
-  - [ ] Update play.html
-  - [ ] Update howto.html
-  - [ ] Update about.html
-  - [ ] Update patchnotes.html
-  - [ ] Update credits.html
-- [ ] Add CSS styling for the language switch button in layout.css
-
-### Step 5: Update main.js
-- [ ] Update game UI text to use translation system
-
-### Step 6: Update navigation.js
-- [ ] Add language switch functionality for the website
+## Phase 3: Testing
+- [ ] Verify language switch works on all pages
+- [ ] Verify theme switch works on all pages
+- [ ] Verify theme persists in localStorage
+- [ ] Verify navbar hides on play page when game starts

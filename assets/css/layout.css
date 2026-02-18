@@ -270,3 +270,25 @@
         width: 100%;
     }
 }
+
+/* ===== Game Active State (Hide Navbar) ===== */
+body.game-active .site-header {
+    display: none;
+}
+
+body.game-active .site-footer {
+    display: none;
+}
+
+body.game-active .site-main {
+    padding: 0;
+    min-height: 100vh;
+}
+
+body.game-active .page-header {
+    display: none;
+}
+
+body.game-active .content-section {
+    padding: 0;
+}

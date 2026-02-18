@@ -77,9 +77,12 @@
                         <li><a href="about.html" class="nav-link" data-i18n="common.about">About</a></li>
                         <li><a href="patchnotes.html" class="nav-link" data-i18n="common.patchNotes">Patch Notes</a></li>
                         <li><a href="credits.html" class="nav-link" data-i18n="common.credits">Credits</a></li>
-                        <li>
+                        <li class="nav-buttons">
                             <button class="language-switch" id="languageSwitch" aria-label="Switch language">
                                 <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
+                            </button>
+                            <button class="theme-switch" id="themeSwitch" aria-label="Switch theme">
+                                <span class="theme-icon">🌙</span>
                             </button>
                         </li>
                     </ul>
@@ -135,22 +138,14 @@
         </div>
     </footer>
 
+    <!-- Scripts - Load in order: translationManager, siteManager, navigation -->
     <script src="src/settings/translationManager.js"></script>
+    <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
     <script>
-        // Initialize translation manager
+        // Initialize site manager on page load
         document.addEventListener('DOMContentLoaded', async function() {
-            await translationManager.init();
-            
-            // Add language switch event listener
-            const langSwitch = document.getElementById('languageSwitch');
-            if (langSwitch) {
-                langSwitch.addEventListener('click', function() {
-                    const currentLang = translationManager.getLanguage();
-                    const newLang = currentLang === 'en' ? 'fr' : 'en';
-                    translationManager.setLanguage(newLang);
-                });
-            }
+            await siteManager.init();
         });
     </script>
     <!-- Game container for screen rendering -->

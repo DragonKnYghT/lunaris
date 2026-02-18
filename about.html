@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,12 +19,20 @@
                 </a>
                 <nav class="main-nav">
                     <ul class="nav-list">
-                        <li><a href="index.html" class="nav-link">Home</a></li>
-                        <li><a href="play.html" class="nav-link">Play</a></li>
-                        <li><a href="howto.html" class="nav-link">How to Play</a></li>
-                        <li><a href="about.html" class="nav-link active">About</a></li>
-                        <li><a href="patchnotes.html" class="nav-link">Patch Notes</a></li>
-                        <li><a href="credits.html" class="nav-link">Credits</a></li>
+                        <li><a href="index.html" class="nav-link" data-i18n="common.home">Home</a></li>
+                        <li><a href="play.html" class="nav-link" data-i18n="common.play">Play</a></li>
+                        <li><a href="howto.html" class="nav-link" data-i18n="common.howToPlay">How to Play</a></li>
+                        <li><a href="about.html" class="nav-link active" data-i18n="common.about">About</a></li>
+                        <li><a href="patchnotes.html" class="nav-link" data-i18n="common.patchNotes">Patch Notes</a></li>
+                        <li><a href="credits.html" class="nav-link" data-i18n="common.credits">Credits</a></li>
+                        <li class="nav-buttons">
+                            <button class="language-switch" id="languageSwitch" aria-label="Switch language">
+                                <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
+                            </button>
+                            <button class="theme-switch" id="themeSwitch" aria-label="Switch theme">
+                                <span class="theme-icon">🌙</span>
+                            </button>
+                        </li>
                     </ul>
                 </nav>
                 <button class="mobile-menu-toggle" aria-label="Toggle menu">
@@ -39,40 +47,40 @@
     <main class="site-main">
         <section class="page-header">
             <div class="container">
-                <h1>About Lunaris</h1>
+                <h1 data-i18n="about.title">About Lunaris</h1>
             </div>
         </section>
 
         <section class="content-section">
             <div class="container">
                 <article class="about-content">
-                    <h2>What is Lunaris?</h2>
-                    <p>Lunaris is a modular creature-battling roguelike game where players explore procedurally generated zones, capture and train unique creatures, and engage in strategic turn-based battles.</p>
+                    <h2 data-i18n="about.whatIs.title">What is Lunaris?</h2>
+                    <p data-i18n="about.whatIs.description">Lunaris is a modular creature-battling roguelike game where players explore procedurally generated zones, capture and train unique creatures, and engage in strategic turn-based battles.</p>
                     
                     <!-- LUNARIS_TODO: add final game description -->
                     
-                    <h2>Development</h2>
-                    <p>Lunaris is being developed as a modular, expandable game system. The core mechanics are designed to be flexible, allowing for easy addition of new creatures, abilities, zones, and game modes.</p>
+                    <h2 data-i18n="about.development.title">Development</h2>
+                    <p data-i18n="about.development.description">Lunaris is being developed as a modular, expandable game system. The core mechanics are designed to be flexible, allowing for easy addition of new creatures, abilities, zones, and game modes.</p>
                     
                     <!-- LUNARIS_TODO: add development details -->
                     
-                    <h2>Technology</h2>
+                    <h2 data-i18n="about.technology.title">Technology</h2>
                     <ul>
-                        <li>Built with vanilla JavaScript</li>
-                        <li>WebSocket-based multiplayer</li>
-                        <li>Responsive web design</li>
-                        <li>Modular architecture</li>
+                        <li data-i18n="about.technology.items.0">Built with vanilla JavaScript</li>
+                        <li data-i18n="about.technology.items.1">WebSocket-based multiplayer</li>
+                        <li data-i18n="about.technology.items.2">Responsive web design</li>
+                        <li data-i18n="about.technology.items.3">Modular architecture</li>
                     </ul>
                     
                     <!-- LUNARIS_TODO: add technology stack details -->
                     
-                    <h2>Roadmap</h2>
-                    <p>Future updates will include:</p>
+                    <h2 data-i18n="about.roadmap.title">Roadmap</h2>
+                    <p data-i18n="about.roadmap.description">Future updates will include:</p>
                     <ul>
-                        <li>More creatures and zones</li>
-                        <li>Enhanced multiplayer features</li>
-                        <li>Additional game modes</li>
-                        <li>Visual improvements and animations</li>
+                        <li data-i18n="about.roadmap.items.0">More creatures and zones</li>
+                        <li data-i18n="about.roadmap.items.1">Enhanced multiplayer features</li>
+                        <li data-i18n="about.roadmap.items.2">Additional game modes</li>
+                        <li data-i18n="about.roadmap.items.3">Visual improvements and animations</li>
                     </ul>
                     
                     <!-- LUNARIS_TODO: add detailed roadmap -->
@@ -85,20 +93,29 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="howto.html">How to Play</a>
-                    <a href="patchnotes.html">Patch Notes</a>
-                    <a href="credits.html">Credits</a>
+                    <a href="index.html" data-i18n="common.home">Home</a>
+                    <a href="about.html" data-i18n="common.about">About</a>
+                    <a href="howto.html" data-i18n="common.howToPlay">How to Play</a>
+                    <a href="patchnotes.html" data-i18n="common.patchNotes">Patch Notes</a>
+                    <a href="credits.html" data-i18n="common.credits">Credits</a>
                 </div>
                 <div class="footer-info">
-                    <p>&copy; 2024 Lunaris. All rights reserved.</p>
-                    <p class="version">Version 0.1.0</p>
+                    <p data-i18n="website.footer.copyright">&copy; 2024 Lunaris. All rights reserved.</p>
+                    <p class="version"><span data-i18n="common.version">Version</span> 0.1.0</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- Scripts - Load in order: translationManager, siteManager, navigation -->
+    <script src="src/settings/translationManager.js"></script>
+    <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
+    <script>
+        // Initialize site manager on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            await siteManager.init();
+        });
+    </script>
 </body>
 </html>
