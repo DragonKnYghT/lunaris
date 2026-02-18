@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -71,12 +71,17 @@
                 </a>
                 <nav class="main-nav">
                     <ul class="nav-list">
-                        <li><a href="index.html" class="nav-link">Home</a></li>
-                        <li><a href="play.html" class="nav-link active">Play</a></li>
-                        <li><a href="howto.html" class="nav-link">How to Play</a></li>
-                        <li><a href="about.html" class="nav-link">About</a></li>
-                        <li><a href="patchnotes.html" class="nav-link">Patch Notes</a></li>
-                        <li><a href="credits.html" class="nav-link">Credits</a></li>
+                        <li><a href="index.html" class="nav-link" data-i18n="common.home">Home</a></li>
+                        <li><a href="play.html" class="nav-link active" data-i18n="common.play">Play</a></li>
+                        <li><a href="howto.html" class="nav-link" data-i18n="common.howToPlay">How to Play</a></li>
+                        <li><a href="about.html" class="nav-link" data-i18n="common.about">About</a></li>
+                        <li><a href="patchnotes.html" class="nav-link" data-i18n="common.patchNotes">Patch Notes</a></li>
+                        <li><a href="credits.html" class="nav-link" data-i18n="common.credits">Credits</a></li>
+                        <li>
+                            <button class="language-switch" id="languageSwitch" aria-label="Switch language">
+                                <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
+                            </button>
+                        </li>
                     </ul>
                 </nav>
                 <button class="mobile-menu-toggle" aria-label="Toggle menu">
@@ -91,7 +96,7 @@
     <main class="site-main">
         <section class="page-header">
             <div class="container">
-                <h1>Play Lunaris</h1>
+                <h1 data-i18n="game.playMenu.title">Play Lunaris</h1>
             </div>
         </section>
 
@@ -100,11 +105,11 @@
                 <div id="game-container">
                     <div id="game-loading">
                         <div class="game-loading-spinner"></div>
-                        <p class="game-loading-text">Loading Lunaris...</p>
+                        <p class="game-loading-text" data-i18n="game.loading">Loading Lunaris...</p>
                     </div>
                     <!-- Game title -->
                     <h1 class="game-title">Lunaris</h1>
-                    <p class="game-subtitle">A Modular Creature-Battling Roguelike</p>
+                    <p class="game-subtitle" data-i18n="game.creditsMenu.description">A Modular Creature-Battling Roguelike</p>
                     <!-- Game screen will be rendered here -->
                     <div id="screen-container"></div>
                 </div>
@@ -116,21 +121,38 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="howto.html">How to Play</a>
-                    <a href="patchnotes.html">Patch Notes</a>
-                    <a href="credits.html">Credits</a>
+                    <a href="index.html" data-i18n="common.home">Home</a>
+                    <a href="about.html" data-i18n="common.about">About</a>
+                    <a href="howto.html" data-i18n="common.howToPlay">How to Play</a>
+                    <a href="patchnotes.html" data-i18n="common.patchNotes">Patch Notes</a>
+                    <a href="credits.html" data-i18n="common.credits">Credits</a>
                 </div>
                 <div class="footer-info">
-                    <p>&copy; 2024 Lunaris. All rights reserved.</p>
-                    <p class="version">Version 0.1.0</p>
+                    <p data-i18n="website.footer.copyright">&copy; 2024 Lunaris. All rights reserved.</p>
+                    <p class="version"><span data-i18n="common.version">Version</span> 0.1.0</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="src/settings/translationManager.js"></script>
     <script src="assets/js/navigation.js"></script>
+    <script>
+        // Initialize translation manager
+        document.addEventListener('DOMContentLoaded', async function() {
+            await translationManager.init();
+            
+            // Add language switch event listener
+            const langSwitch = document.getElementById('languageSwitch');
+            if (langSwitch) {
+                langSwitch.addEventListener('click', function() {
+                    const currentLang = translationManager.getLanguage();
+                    const newLang = currentLang === 'en' ? 'fr' : 'en';
+                    translationManager.setLanguage(newLang);
+                });
+            }
+        });
+    </script>
     <!-- Game container for screen rendering -->
     <script>
         // Hide loading screen when game is ready

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,12 +20,17 @@
                 </a>
                 <nav class="main-nav">
                     <ul class="nav-list">
-                        <li><a href="index.html" class="nav-link active">Home</a></li>
-                        <li><a href="play.html" class="nav-link">Play</a></li>
-                        <li><a href="howto.html" class="nav-link">How to Play</a></li>
-                        <li><a href="about.html" class="nav-link">About</a></li>
-                        <li><a href="patchnotes.html" class="nav-link">Patch Notes</a></li>
-                        <li><a href="credits.html" class="nav-link">Credits</a></li>
+                        <li><a href="index.html" class="nav-link active" data-i18n="common.home">Home</a></li>
+                        <li><a href="play.html" class="nav-link" data-i18n="common.play">Play</a></li>
+                        <li><a href="howto.html" class="nav-link" data-i18n="common.howToPlay">How to Play</a></li>
+                        <li><a href="about.html" class="nav-link" data-i18n="common.about">About</a></li>
+                        <li><a href="patchnotes.html" class="nav-link" data-i18n="common.patchNotes">Patch Notes</a></li>
+                        <li><a href="credits.html" class="nav-link" data-i18n="common.credits">Credits</a></li>
+                        <li>
+                            <button class="language-switch" id="languageSwitch" aria-label="Switch language">
+                                <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
+                            </button>
+                        </li>
                     </ul>
                 </nav>
                 <button class="mobile-menu-toggle" aria-label="Toggle menu">
@@ -41,11 +46,11 @@
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1 class="hero-title">Welcome to Lunaris</h1>
-                    <p class="hero-subtitle">A Modular Creature-Battling Roguelike</p>
+                    <h1 class="hero-title" data-i18n="website.hero.title">Welcome to Lunaris</h1>
+                    <p class="hero-subtitle" data-i18n="website.hero.subtitle">A Modular Creature-Battling Roguelike</p>
                     <div class="hero-cta">
-                        <a href="play.html" class="btn btn-primary">Play Now</a>
-                        <a href="howto.html" class="btn btn-secondary">Learn More</a>
+                        <a href="play.html" class="btn btn-primary" data-i18n="website.hero.playNow">Play Now</a>
+                        <a href="howto.html" class="btn btn-secondary" data-i18n="website.hero.learnMore">Learn More</a>
                     </div>
                 </div>
             </div>
@@ -53,23 +58,23 @@
 
         <section class="features">
             <div class="container">
-                <h2 class="section-title">Game Features</h2>
+                <h2 class="section-title" data-i18n="website.features.title">Game Features</h2>
                 <div class="features-grid">
                     <div class="feature-card">
-                        <h3>Roguelike Adventure</h3>
-                        <p>Explore procedurally generated zones in this roguelike adventure.</p>
+                        <h3 data-i18n="website.features.roguelike.title">Roguelike Adventure</h3>
+                        <p data-i18n="website.features.roguelike.description">Explore procedurally generated zones in this roguelike adventure.</p>
                     </div>
                     <div class="feature-card">
-                        <h3>Creature Collection</h3>
-                        <p>Collect and train unique creatures with diverse abilities.</p>
+                        <h3 data-i18n="website.features.collection.title">Creature Collection</h3>
+                        <p data-i18n="website.features.collection.description">Collect and train unique creatures with diverse abilities.</p>
                     </div>
                     <div class="feature-card">
-                        <h3>Strategic Combat</h3>
-                        <p>Master turn-based battles with type advantages and abilities.</p>
+                        <h3 data-i18n="website.features.combat.title">Strategic Combat</h3>
+                        <p data-i18n="website.features.combat.description">Master turn-based battles with type advantages and abilities.</p>
                     </div>
                     <div class="feature-card">
-                        <h3>Online Multiplayer</h3>
-                        <p>Battle against other players in versus matches.</p>
+                        <h3 data-i18n="website.features.multiplayer.title">Online Multiplayer</h3>
+                        <p data-i18n="website.features.multiplayer.description">Battle against other players in versus matches.</p>
                     </div>
                 </div>
             </div>
@@ -77,9 +82,9 @@
 
         <section class="cta-section">
             <div class="container">
-                <h2>Ready to Begin Your Adventure?</h2>
-                <p>Join thousands of trainers in the world of Lunaris.</p>
-                <a href="play.html" class="btn btn-primary">Start Playing</a>
+                <h2 data-i18n="website.cta.title">Ready to Begin Your Adventure?</h2>
+                <p data-i18n="website.cta.description">Join thousands of trainers in the world of Lunaris.</p>
+                <a href="play.html" class="btn btn-primary" data-i18n="website.cta.button">Start Playing</a>
             </div>
         </section>
     </main>
@@ -88,21 +93,38 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-links">
-                    <a href="index.html">Home</a>
-                    <a href="about.html">About</a>
-                    <a href="howto.html">How to Play</a>
-                    <a href="patchnotes.html">Patch Notes</a>
-                    <a href="credits.html">Credits</a>
+                    <a href="index.html" data-i18n="common.home">Home</a>
+                    <a href="about.html" data-i18n="common.about">About</a>
+                    <a href="howto.html" data-i18n="common.howToPlay">How to Play</a>
+                    <a href="patchnotes.html" data-i18n="common.patchNotes">Patch Notes</a>
+                    <a href="credits.html" data-i18n="common.credits">Credits</a>
                 </div>
                 <div class="footer-info">
-                    <p>&copy; 2024 Lunaris. All rights reserved.</p>
-                    <p class="version">Version 0.1.0</p>
+                    <p data-i18n="website.footer.copyright">&copy; 2024 Lunaris. All rights reserved.</p>
+                    <p class="version"><span data-i18n="common.version">Version</span> 0.1.0</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="src/settings/translationManager.js"></script>
     <script src="assets/js/navigation.js"></script>
+    <script>
+        // Initialize translation manager
+        document.addEventListener('DOMContentLoaded', async function() {
+            await translationManager.init();
+            
+            // Add language switch event listener
+            const langSwitch = document.getElementById('languageSwitch');
+            if (langSwitch) {
+                langSwitch.addEventListener('click', function() {
+                    const currentLang = translationManager.getLanguage();
+                    const newLang = currentLang === 'en' ? 'fr' : 'en';
+                    translationManager.setLanguage(newLang);
+                });
+            }
+        });
+    </script>
     <!-- LUNARIS_TODO: add analytics later -->
 </body>
 </html>
