@@ -26,9 +26,6 @@ const siteManager = {
         // Setup event listeners
         this.setupEventListeners();
         
-        // Setup navbar behavior for play page
-        this.setupNavbarBehavior();
-        
         console.log('SiteManager: Initialization complete');
     },
     
