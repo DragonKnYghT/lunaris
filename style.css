@@ -1022,20 +1022,19 @@ body.game-active .site-main {
     display: none !important;
 }
 
-/* Expand the game container to fill the screen when game is active */
+/* Expand the game container when game is active - but respect navbar height */
 body.game-active #game-container {
-    max-width: calc(100vw - 20px);
-    width: calc(100vw - 20px);
-    height: calc(100vh - 20px);
-    min-height: calc(100vh - 20px);
-    margin: 10px;
+    max-width: 100%;
+    width: 100%;
+    height: calc(100vh - 150px);
+    min-height: calc(100vh - 150px);
+    margin: 0;
     padding: var(--spacing-lg);
-    border-radius: 8px;
-    position: fixed;
+    border-radius: 0;
+    position: relative;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     overflow: auto;
 }
 
