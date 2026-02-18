@@ -125,6 +125,28 @@
             }
         });
     </script>
+
+    <div id="languageSwitch" class="language-toggle-switch en">
+        <div class="language-toggle-labels">
+            <span class="language-toggle-label en">EN</span>
+            <span class="language-toggle-label fr">FR</span>
+         </div>
+         <div class="language-toggle-slider">EN</div>
+    </div>
+
+    <script>
+        const switchBtn = document.getElementById("languageSwitch");
+
+        switchBtn.addEventListener("click", () => {
+            if (switchBtn.classList.contains("en")) {
+               switchBtn.classList.remove("en");
+               switchBtn.classList.add("fr");
+            } else {
+                switchBtn.classList.remove("fr");
+               switchBtn.classList.add("en");
+            }
+        });
+    </script>
     <!-- LUNARIS_TODO: add analytics later -->
 </body>
 </html>
