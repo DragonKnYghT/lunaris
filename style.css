@@ -694,11 +694,120 @@ body {
     animation: switchIn 0.5s ease-in-out forwards;
 }
 
-/* ===== Language-Specific Switch Label ===== */
-/* French: "Changer" */
-.lang-fr .battle-action-switch .switch-label,
-.lang-fr .switch-menu-title {
-    letter-spacing: 0;
+/* ===== Language Toggle Switch (Fr/En) ===== */
+.language-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.language-toggle-switch {
+    position: relative;
+    width: 80px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-card) 100%);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    overflow: hidden;
+}
+
+.language-toggle-switch:hover {
+    border-color: var(--color-secondary);
+    box-shadow: var(--shadow-md), var(--shadow-glow-secondary);
+}
+
+.language-toggle-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 34px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.language-toggle-switch.en .language-toggle-slider {
+    left: 2px;
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dark) 100%);
+}
+
+.language-toggle-switch.fr .language-toggle-slider {
+    left: calc(100% - 36px);
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+}
+
+.language-toggle-labels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    pointer-events: none;
+}
+
+.language-toggle-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color var(--transition-fast);
+    text-transform: uppercase;
+}
+
+.language-toggle-switch.en .language-toggle-label.en,
+.language-toggle-switch.fr .language-toggle-label.fr {
+    color: var(--text-primary);
+}
+
+/* French label styling */
+.language-toggle-label.fr {
+    color: var(--text-primary);
+}
+
+.language-toggle-switch:not(.fr) .language-toggle-label.fr {
+    color: var(--text-muted);
+}
+
+/* Current language indicator */
+.language-toggle-current {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.language-toggle-current span {
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+/* ===== Responsive Language Toggle ===== */
+@media (max-width: 480px) {
+    .language-toggle-switch {
+        width: 70px;
+        height: 32px;
+    }
+    
+    .language-toggle-slider {
+        width: 30px;
+        height: 24px;
+    }
+    
+    .language-toggle-switch.fr .language-toggle-slider {
+        left: calc(100% - 32px);
+    }
 }
 
 /* ===== Responsive Switch Styles ===== */
