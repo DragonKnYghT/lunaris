@@ -1,6 +1,6 @@
 /**
  * Lunaris - A modular creature-battling roguelike game
- * Main entry point
+ * Main entry point - MODIFIED
  */
 
 // LUNARIS_TODO: Game initialization logic will go here
@@ -716,7 +716,7 @@ function showMainMenu() {
                 <button class="menu-button" onclick="showSettingsMenu()">Settings</button>
                 <button class="menu-button" onclick="showCreditsMenu()">Credits</button>
             </div>
-            <div class="version-info">v0.1.0</div>
+            <div class="version-info">v1.2.16</div>
         </div>
     `;
     console.log('Main menu displayed');
