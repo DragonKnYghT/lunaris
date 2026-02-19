@@ -255,6 +255,9 @@
             "caught": "Caught",
             "seen": "Seen"
         },
+        "logout": {
+            "title": "Log Out"
+        },
         "battle": {
             "yourTurn": "Your Turn",
             "enemyTurn": "Enemy Turn",

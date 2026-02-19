@@ -255,6 +255,9 @@
             "caught": "Capturées",
             "seen": "Vues"
         },
+        "logout": {
+            "title": "Se déconnecter"
+        },
         "battle": {
             "yourTurn": "Votre Tour",
             "enemyTurn": "Tour de l'Adversaire",
