@@ -1261,12 +1261,12 @@ function logout() {
 }
 
 /**
- * Initialize TAB key event listeners
+ * Initialize I key event listeners
  */
 function initTabMenu() {
-    // Listen for TAB key press (keydown)
+    // Listen for I key press (keydown)
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Tab') {
+        if (event.key === 'i' || event.key === 'I') {
             event.preventDefault();
             if (!tabMenuOpen) {
                 showTabMenu();
@@ -1274,9 +1274,9 @@ function initTabMenu() {
         }
     });
     
-    // Listen for TAB key release (keyup)
+    // Listen for I key release (keyup)
     document.addEventListener('keyup', function(event) {
-        if (event.key === 'Tab') {
+        if (event.key === 'i' || event.key === 'I') {
             if (tabMenuOpen) {
                 hideTabMenu();
             }
