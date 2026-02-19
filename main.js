@@ -3,6 +3,10 @@
  * Main entry point - MODIFIED
  */
 
+// Initialize audio settings globally
+const audioSettings = new AudioSettings();
+
+
 // LUNARIS_TODO: Game initialization logic will go here
 // LUNARIS_TODO: Add game state management
 // LUNARIS_TODO: Add game loop
@@ -808,6 +812,21 @@ function showSettingsMenu() {
             </div>
         </div>
     `;
+
+    
+        // SFX Toggle
+    document.getElementById("toggle-sfx-btn").onclick = () => {
+        audioSettings.toggleSfx();
+        document.getElementById("toggle-sfx-btn").innerText =
+            audioSettings.sfxEnabled ? "ON" : "OFF";
+    };
+
+    // Music Volume Slider
+    document.getElementById("music-volume").oninput = (e) => {
+        const value = e.target.value / 100;
+        audioSettings.setMusicVolume(value);
+    };
+
     console.log('Settings menu displayed');
 }
 
@@ -839,6 +858,7 @@ function showCreditsMenu() {
             </div>
         </div>
     `;
+
     console.log('Credits screen displayed');
 }
 
