@@ -769,24 +769,40 @@ function showSettingsMenu() {
                 <span>✦</span>
                 <span>✦</span>
             </div>
+
             <h2>Settings</h2>
             <div class="decoration-line"></div>
+
             <div class="settings-options">
+
+                <!-- SFX Toggle -->
                 <div class="settings-option">
                     <label>Sound Effects</label>
-                    <span class="value" id="sound-value">ON</span>
+                    <button id="toggle-sfx-btn" class="value">
+                        ${audioSettings.sfxEnabled ? "ON" : "OFF"}
+                    </button>
                 </div>
+
+                <!-- Music Volume Slider -->
                 <div class="settings-option">
-                    <label>Music</label>
-                    <span class="value" id="music-value">ON</span>
+                    <label>Music Volume</label>
+                    <input 
+                        type="range" 
+                        id="music-volume" 
+                        min="0" 
+                        max="100" 
+                        value="${audioSettings.musicVolume * 100}"
+                    >
                 </div>
+
+                <!-- Fullscreen -->
                 <div class="settings-option">
                     <label>Fullscreen</label>
                     <span class="value" id="fullscreen-value">OFF</span>
                 </div>
             </div>
+
             <div class="submenu-buttons">
-                <button class="menu-button" onclick="toggleSound()">Toggle Sound</button>
                 <button class="menu-button" onclick="toggleFullscreen()">Toggle Fullscreen</button>
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>

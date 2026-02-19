@@ -15,6 +15,7 @@ class AudioSettings {
         this.musicVolume = 0.8;
         this.sfxVolume = 1.0;
         this.ambientVolume = 0.5;
+        this.sfxEnabled = true;
         
         console.log('[AudioSettings] Initialized');
     }
@@ -47,6 +48,15 @@ class AudioSettings {
         this.sfxVolume = Math.max(0, Math.min(1, value));
         console.log('[AudioSettings] SFX volume set to:', this.sfxVolume);
         // LUNARIS_TODO: integrate with actual audio engine later
+    }
+
+    /**
+    * Toggle SFX ON/OFF
+     */
+    toggleSfx() {
+        this.sfxEnabled = !this.sfxEnabled;
+        this.setSfxVolume(this.sfxEnabled ? 1.0 : 0.0);
+        console.log('[AudioSettings] SFX toggled:', this.sfxEnabled ? 'ON' : 'OFF');
     }
 
     /**
