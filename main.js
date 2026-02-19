@@ -989,6 +989,316 @@ async function testWebsite() {
     };
 }
 
+// ===========================================
+// TAB Menu System - In-Game Quick Access Menu
+// ===========================================
+
+// Global state for TAB menu
+let tabMenuOpen = false;
+
+/**
+ * Gets translation using fallback values if translationManager is not available
+ * @param {string} key - Translation key path
+ * @returns {string} Translated text
+ */
+function getTranslation(key) {
+    // Try translationManager first if available globally
+    if (typeof translationManager !== 'undefined') {
+        return translationManager.t(key);
+    }
+    
+    // Fallback translations based on page language
+    const htmlLang = document.documentElement.lang || 'fr';
+    
+    const fallbacks = {
+        'game.gacha.title': htmlLang === 'en' ? 'Gacha' : 'Gacha',
+        'game.inventory.title': htmlLang === 'en' ? 'Inventory' : 'Inventaire',
+        'game.achievements.title': htmlLang === 'en' ? 'Achievements' : 'Succès',
+        'game.lunadex.title': htmlLang === 'en' ? 'Lunadex' : 'Lunadex',
+        'game.logout.title': htmlLang === 'en' ? 'Log Out' : 'Se déconnecter'
+    };
+    
+    return fallbacks[key] || key;
+}
+
+/**
+ * Shows the TAB menu overlay - appears when TAB is pressed
+ */
+function showTabMenu() {
+    const screenContainer = document.getElementById('screen-container');
+    if (!screenContainer) return;
+    
+    // Remove existing overlay if any
+    const existingOverlay = document.getElementById('tab-menu-overlay');
+    if (existingOverlay) {
+        existingOverlay.remove();
+    }
+    
+    // Create the TAB menu overlay HTML
+    const tabMenuHTML = `
+        <div id="tab-menu-overlay" class="tab-menu-overlay">
+            <div class="tab-menu">
+                <div class="tab-menu-header">
+                    <span class="tab-menu-title">☰</span>
+                </div>
+                <ul class="tab-menu-list">
+                    <li class="tab-menu-item" onclick="openGacha()">
+                        <span class="tab-menu-icon">🎰</span>
+                        <span class="tab-menu-text">${getTranslation('game.gacha.title')}</span>
+                    </li>
+                    <li class="tab-menu-item" onclick="openInventory()">
+                        <span class="tab-menu-icon">🎒</span>
+                        <span class="tab-menu-text">${getTranslation('game.inventory.title')}</span>
+                    </li>
+                    <li class="tab-menu-item" onclick="openAchievements()">
+                        <span class="tab-menu-icon">🏆</span>
+                        <span class="tab-menu-text">${getTranslation('game.achievements.title')}</span>
+                    </li>
+                    <li class="tab-menu-item" onclick="openLunadex()">
+                        <span class="tab-menu-icon">📖</span>
+                        <span class="tab-menu-text">${getTranslation('game.lunadex.title')}</span>
+                    </li>
+                    <li class="tab-menu-item tab-menu-logout" onclick="logout()">
+                        <span class="tab-menu-icon">🚪</span>
+                        <span class="tab-menu-text">${getTranslation('game.logout.title')}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    `;
+    
+    // Add the overlay to the screen container
+    screenContainer.insertAdjacentHTML('beforeend', tabMenuHTML);
+    
+    // Add CSS styles dynamically
+    addTabMenuStyles();
+    
+    tabMenuOpen = true;
+    console.log('[TAB Menu] Opened');
+}
+
+/**
+ * Hides the TAB menu overlay - called when TAB is released
+ */
+function hideTabMenu() {
+    const overlay = document.getElementById('tab-menu-overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+    tabMenuOpen = false;
+    console.log('[TAB Menu] Closed');
+}
+
+/**
+ * Adds CSS styles for the TAB menu dynamically
+ */
+function addTabMenuStyles() {
+    // Check if styles already exist
+    if (document.getElementById('tab-menu-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'tab-menu-styles';
+    style.textContent = `
+        .tab-menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.15s ease-out;
+        }
+        
+        .tab-menu {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00d9ff;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 280px;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+            animation: slideIn 0.2s ease-out;
+        }
+        
+        .tab-menu-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+        }
+        
+        .tab-menu-title {
+            font-size: 24px;
+            color: #00d9ff;
+        }
+        
+        .tab-menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .tab-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid transparent;
+        }
+        
+        .tab-menu-item:hover {
+            background: rgba(0, 217, 255, 0.25);
+            border-color: #00d9ff;
+            transform: translateX(5px);
+        }
+        
+        .tab-menu-item:active {
+            transform: scale(0.98);
+        }
+        
+        .tab-menu-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            width: 28px;
+            text-align: center;
+        }
+        
+        .tab-menu-text {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .tab-menu-logout {
+            margin-top: 15px;
+            background: rgba(255, 77, 77, 0.15);
+            border-color: rgba(255, 77, 77, 0.3);
+        }
+        
+        .tab-menu-logout:hover {
+            background: rgba(255, 77, 77, 0.3);
+            border-color: #ff4d4d;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// ===========================================
+// TAB Menu Action Handlers
+// ===========================================
+
+/**
+ * Opens the Gacha screen
+ */
+function openGacha() {
+    console.log('[TAB Menu] Opening Gacha...');
+    hideTabMenu();
+    alert('Gacha - Coming soon!');
+}
+
+/**
+ * Opens the Inventory screen
+ */
+function openInventory() {
+    console.log('[TAB Menu] Opening Inventory...');
+    hideTabMenu();
+    alert('Inventory - Coming soon!');
+}
+
+/**
+ * Opens the Achievements screen
+ */
+function openAchievements() {
+    console.log('[TAB Menu] Opening Achievements...');
+    hideTabMenu();
+    alert('Achievements - Coming soon!');
+}
+
+/**
+ * Opens the Lunadex screen
+ */
+function openLunadex() {
+    console.log('[TAB Menu] Opening Lunadex...');
+    hideTabMenu();
+    alert('Lunadex - Coming soon!');
+}
+
+/**
+ * Logs out the player
+ */
+function logout() {
+    console.log('[TAB Menu] Logging out...');
+    hideTabMenu();
+    const confirmMessage = document.documentElement.lang === 'en' 
+        ? 'Are you sure you want to log out?' 
+        : 'Êtes-vous sûr de vouloir vous déconnecter?';
+    if (confirm(confirmMessage)) {
+        window.location.href = 'index.html';
+    }
+}
+
+/**
+ * Initialize TAB key event listeners
+ */
+function initTabMenu() {
+    // Listen for TAB key press (keydown)
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            if (!tabMenuOpen) {
+                showTabMenu();
+            }
+        }
+    });
+    
+    // Listen for TAB key release (keyup)
+    document.addEventListener('keyup', function(event) {
+        if (event.key === 'Tab') {
+            if (tabMenuOpen) {
+                hideTabMenu();
+            }
+        }
+    });
+    
+    // Also close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const overlay = document.getElementById('tab-menu-overlay');
+        const menu = document.querySelector('.tab-menu');
+        if (tabMenuOpen && overlay && menu && !menu.contains(event.target)) {
+            hideTabMenu();
+        }
+    });
+    
+    console.log('[TAB Menu] TAB key listeners initialized');
+}
+
+// ===========================================
+// End of TAB Menu System
+// ===========================================
+
 // Initialize navigation when DOM is ready
 function initNavigation() {
     // Set up button event listeners
@@ -1007,6 +1317,9 @@ function initNavigation() {
     if (creditsBtn) {
         creditsBtn.addEventListener('click', showCreditsMenu);
     }
+    
+    // Initialize TAB menu
+    initTabMenu();
 }
 
 /**
