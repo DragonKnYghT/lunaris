@@ -743,17 +743,9 @@ function showPlayMenu() {
                     <h3>Roguelike</h3>
                     <p>Explore procedurally generated zones in this roguelike adventure.</p>
                 </div>
-                <div class="game-mode-card" onclick="startTestBattle(lunarisData)">
-                    <h3>Battle Test</h3>
-                    <p>Test your team in a simulated battle.</p>
-                </div>
                 <div class="game-mode-card" onclick="startTestVersus(lunarisData)">
                     <h3>Versus</h3>
                     <p>Battle against other players in versus matches.</p>
-                </div>
-                <div class="game-mode-card" onclick="startTestGacha(lunarisData)">
-                    <h3>Gacha</h3>
-                    <p>Try your luck with the gacha system.</p>
                 </div>
             </div>
             <div class="submenu-buttons">
@@ -1216,7 +1208,7 @@ function addTabMenuStyles() {
 function openGacha() {
     console.log('[TAB Menu] Opening Gacha...');
     hideTabMenu();
-    alert('Gacha - Coming soon!');
+    showComingSoonMessage();
 }
 
 /**
@@ -1225,7 +1217,7 @@ function openGacha() {
 function openInventory() {
     console.log('[TAB Menu] Opening Inventory...');
     hideTabMenu();
-    alert('Inventory - Coming soon!');
+    showComingSoonMessage();
 }
 
 /**
@@ -1234,7 +1226,7 @@ function openInventory() {
 function openAchievements() {
     console.log('[TAB Menu] Opening Achievements...');
     hideTabMenu();
-    alert('Achievements - Coming soon!');
+    showComingSoonMessage();
 }
 
 /**
@@ -1243,7 +1235,89 @@ function openAchievements() {
 function openLunadex() {
     console.log('[TAB Menu] Opening Lunadex...');
     hideTabMenu();
-    alert('Lunadex - Coming soon!');
+    showComingSoonMessage();
+}
+
+/**
+ * Shows the Coming Soon message
+ */
+function showComingSoonMessage() {
+    const screenContainer = document.getElementById('screen-container');
+    if (!screenContainer) return;
+    
+    // Remove existing message if any
+    const existingMessage = document.getElementById('coming-soon-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Create the Coming Soon message HTML
+    const messageHTML = `
+        <div id="coming-soon-message" class="coming-soon-overlay">
+            <div class="coming-soon-content">
+                <h2 class="coming-soon-text">Coming Sun</h2>
+            </div>
+        </div>
+    `;
+    
+    // Add the message to the screen container
+    screenContainer.insertAdjacentHTML('beforeend', messageHTML);
+    
+    // Add CSS styles dynamically
+    addComingSoonStyles();
+    
+    console.log('[Coming Soon] Message displayed');
+}
+
+/**
+ * Adds CSS styles for the Coming Soon message
+ */
+function addComingSoonStyles() {
+    // Check if styles already exist
+    if (document.getElementById('coming-soon-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'coming-soon-styles';
+    style.textContent = `
+        .coming-soon-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .coming-soon-content {
+            text-align: center;
+            padding: 40px 60px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid #00d9ff;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.4);
+        }
+        
+        .coming-soon-text {
+            font-size: 36px;
+            color: #00d9ff;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.6);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
 }
 
 /**
