@@ -153,6 +153,53 @@ function updateAudioSetting(type, value) {
     if (displayElement) {
         displayElement.textContent = `${value}%`;
     }
+    
+    // Apply master volume override to individual volumes
+    if (type === 'master') {
+        console.log('[AudioSettings] Effective volumes - Music:', audioSettings.getEffectiveMusicVolume(), 'SFX:', audioSettings.getEffectiveSfxVolume());
+    }
+}
+
+// Initialize audio settings event listeners after DOM is loaded
+function initAudioEventListeners() {
+    const masterVolumeSlider = document.getElementById('master-volume');
+    if (masterVolumeSlider) {
+        masterVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setMasterVolume(value);
+            // Update the display
+            const displayElement = document.getElementById('master-value');
+            if (displayElement) {
+                displayElement.textContent = `${e.target.value}%`;
+            }
+        };
+    }
+    
+    const musicVolumeSlider = document.getElementById('music-volume');
+    if (musicVolumeSlider) {
+        musicVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setMusicVolume(value);
+            // Update the display
+            const displayElement = document.getElementById('music-value');
+            if (displayElement) {
+                displayElement.textContent = `${e.target.value}%`;
+            }
+        };
+    }
+    
+    const sfxVolumeSlider = document.getElementById('sfx-volume');
+    if (sfxVolumeSlider) {
+        sfxVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setSfxVolume(value);
+            // Update the display
+            const displayElement = document.getElementById('sfx-value');
+            if (displayElement) {
+                displayElement.textContent = `${e.target.value}%`;
+            }
+        };
+    }
 }
 
 /**

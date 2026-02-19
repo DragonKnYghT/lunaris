@@ -20,14 +20,32 @@ class AudioSettings {
         console.log('[AudioSettings] Initialized');
     }
 
-    /**
+/**
      * Set master volume
      * @param {number} value - Volume level (0.0 to 1.0)
      */
     setMasterVolume(value) {
         this.masterVolume = Math.max(0, Math.min(1, value));
         console.log('[AudioSettings] Master volume set to:', this.masterVolume);
+        // Apply master volume override to individual volumes
+        this.applyAudioSettings();
         // LUNARIS_TODO: integrate with actual audio engine later
+    }
+
+    /**
+     * Get effective music volume (music * master)
+     * @returns {number} Effective music volume (0.0 to 1.0)
+     */
+    getEffectiveMusicVolume() {
+        return this.musicVolume * this.masterVolume;
+    }
+
+    /**
+     * Get effective SFX volume (SFX * master)
+     * @returns {number} Effective SFX volume (0.0 to 1.0)
+     */
+    getEffectiveSfxVolume() {
+        return this.sfxVolume * this.masterVolume;
     }
 
     /**
