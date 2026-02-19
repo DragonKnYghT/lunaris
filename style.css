@@ -357,6 +357,96 @@ body {
     font-weight: 600;
 }
 
+/* ===== Settings Slider (Music Volume) ===== */
+.settings-option input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: var(--radius-full);
+    outline: none;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Slider track - full width */
+.settings-option input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: var(--radius-full);
+    border: none;
+}
+
+.settings-option input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-radius: var(--radius-full);
+    border: none;
+}
+
+/* Slider thumb - centered on track */
+.settings-option input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-secondary);
+    border: 2px solid var(--text-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -6px;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+    transition: all var(--transition-fast);
+}
+
+.settings-option input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--color-secondary);
+    border: 2px solid var(--text-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+    transition: all var(--transition-fast);
+}
+
+.settings-option input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.8);
+}
+
+.settings-option input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.8);
+}
+
+/* ===== Settings Value Button (Sound Effects ON/OFF) ===== */
+.settings-option .value {
+    color: var(--color-secondary);
+    font-weight: 600;
+    background-color: transparent;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-width: 60px;
+    text-align: center;
+}
+
+.settings-option .value:hover {
+    background-color: rgba(0, 217, 255, 0.1);
+}
+
+.settings-option .value:active {
+    background-color: rgba(0, 217, 255, 0.2);
+}
+
 /* ===== Back Button ===== */
 .back-button {
     display: inline-block;
