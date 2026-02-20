@@ -788,11 +788,11 @@ function showPlayMenu() {
             <div class="decoration-line"></div>
             <p>Select a game mode to begin your journey!</p>
             <div class="game-mode-grid">
-                <div class="game-mode-card" onclick="startNewRun()">
+                <div class="game-mode-card" onclick="showSoloMultiplayerMenu('roguelike')">
                     <h3>Roguelike</h3>
                     <p>Explore procedurally generated zones in this roguelike adventure.</p>
                 </div>
-                <div class="game-mode-card" onclick="startTestVersus(lunarisData)">
+                <div class="game-mode-card" onclick="showSoloMultiplayerMenu('versus')">
                     <h3>Versus</h3>
                     <p>Battle against other players in versus matches.</p>
                 </div>
@@ -803,6 +803,100 @@ function showPlayMenu() {
         </div>
     `;
     console.log('Play menu displayed');
+}
+
+/**
+ * Shows the Solo/Multiplayer selection menu
+ * @param {string} mode - The selected game mode ('roguelike' or 'versus')
+ */
+function showSoloMultiplayerMenu(mode) {
+    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
+    const container = document.getElementById('screen-container');
+    container.innerHTML = `
+        <div class="screen" id="solo-multiplayer-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${modeName}</h2>
+            <div class="decoration-line"></div>
+            <p>Choose your game type:</p>
+            <div class="game-mode-grid">
+                <div class="game-mode-card" onclick="startGame(1)">
+                    <h3>Solo</h3>
+                    <p>Play alone against AI opponents.</p>
+                </div>
+                <div class="game-mode-card" onclick="showPlayerCountMenu('${mode}')">
+                    <h3>Multiplayer</h3>
+                    <p>Play with friends online.</p>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showPlayMenu()">Back</button>
+            </div>
+        </div>
+    `;
+    console.log('Solo/Multiplayer menu displayed for mode:', mode);
+}
+
+/**
+ * Shows the player count selection menu for multiplayer
+ * @param {string} mode - The selected game mode ('roguelike' or 'versus')
+ */
+function showPlayerCountMenu(mode) {
+    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
+    const container = document.getElementById('screen-container');
+    container.innerHTML = `
+        <div class="screen" id="player-count-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${modeName} - Multiplayer</h2>
+            <div class="decoration-line"></div>
+            <p>Select number of players:</p>
+            <div class="game-mode-grid">
+                <div class="game-mode-card" onclick="startGame(2)">
+                    <h3>2 Players</h3>
+                    <p>Battle with a friend.</p>
+                </div>
+                <div class="game-mode-card" onclick="startGame(3)">
+                    <h3>3 Players</h3>
+                    <p>Three-way battle!</p>
+                </div>
+                <div class="game-mode-card" onclick="startGame(4)">
+                    <h3>4 Players</h3>
+                    <p>Four-player chaos!</p>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showSoloMultiplayerMenu('${mode}')">Back</button>
+            </div>
+        </div>
+    `;
+    console.log('Player count menu displayed for mode:', mode);
+}
+
+/**
+ * Starts the game with the specified number of players
+ * @param {number} playerCount - Number of players (1-4)
+ */
+function startGame(playerCount) {
+    console.log('Starting game with', playerCount, 'player(s)');
+    
+    if (playerCount === 1) {
+        // Solo mode - start the game
+        console.log('Starting Solo game...');
+        alert(`Starting Solo Game!\n\nPlayer count: ${playerCount}\n\nCheck console for game details.`);
+        // TODO: Implement actual game start logic here
+    } else {
+        // Multiplayer mode
+        console.log('Starting Multiplayer game with', playerCount, 'players...');
+        alert(`Starting Multiplayer Game!\n\nPlayer count: ${playerCount}\n\nCheck console for game details.`);
+        // TODO: Implement actual multiplayer logic here
+    }
 }
 
 /**
