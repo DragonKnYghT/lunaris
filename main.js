@@ -949,15 +949,26 @@ function toggleSound() {
 }
 
 /**
- * Toggles fullscreen mode
- * LUNARIS_TODO: implement fullscreen toggle
+ * Toggles fullscreen mode for the game container
+ * Only fullscreens the #game-container element, not the entire document
  */
 function toggleFullscreen() {
     console.log('Fullscreen toggle clicked');
-    // LUNARIS_TODO: implement fullscreen toggle
+    
+    const gameContainer = document.getElementById('game-container');
+    
+    if (!gameContainer) {
+        console.error('Game container (#game-container) not found!');
+        return;
+    }
+    
     if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
+        // Enter fullscreen for the game container only
+        gameContainer.requestFullscreen().catch(err => {
+            console.error('Error attempting to enable fullscreen:', err);
+        });
     } else {
+        // Exit fullscreen
         document.exitFullscreen();
     }
 }
