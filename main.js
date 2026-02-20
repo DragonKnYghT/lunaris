@@ -824,6 +824,12 @@ function showSettingsMenu() {
 
             <div class="settings-options">
 
+                <!-- Master Volume Slider -->
+                <div class="settings-option">
+                    <label>Master Volume</label>
+                    <input type="range" id="master-volume" min="0" max="100" value="${audioSettings.masterVolume * 100}">
+                </div>
+
                 <!-- SFX Toggle -->
                 <div class="settings-option">
                     <label>Sound Effects</label>
@@ -858,19 +864,32 @@ function showSettingsMenu() {
         </div>
     `;
 
-    
-        // SFX Toggle
-    document.getElementById("toggle-sfx-btn").onclick = () => {
-        audioSettings.toggleSfx();
-        document.getElementById("toggle-sfx-btn").innerText =
-            audioSettings.sfxEnabled ? "ON" : "OFF";
-    };
+    // Master Volume Slider
+    const masterVolumeSlider = document.getElementById("master-volume");
+    if (masterVolumeSlider) {
+        masterVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setMasterVolume(value);
+        };
+    }
+
+    // SFX Toggle
+    const sfxBtn = document.getElementById("toggle-sfx-btn");
+    if (sfxBtn) {
+        sfxBtn.onclick = () => {
+            audioSettings.toggleSfx();
+            sfxBtn.innerText = audioSettings.sfxEnabled ? "ON" : "OFF";
+        };
+    }
 
     // Music Volume Slider
-    document.getElementById("music-volume").oninput = (e) => {
-        const value = e.target.value / 100;
-        audioSettings.setMusicVolume(value);
-    };
+    const musicVolumeSlider = document.getElementById("music-volume");
+    if (musicVolumeSlider) {
+        musicVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setMusicVolume(value);
+        };
+    }
 
     console.log('Settings menu displayed');
 }
