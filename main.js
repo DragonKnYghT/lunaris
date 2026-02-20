@@ -735,26 +735,40 @@ function showMainMenu() {
  * This is called after the menu HTML is inserted into the DOM
  */
 function setupMenuButtonHandlers() {
-    const menuButtons = document.querySelectorAll('.menu-button');
+    console.log('Setting up menu button handlers...');
     
-    menuButtons.forEach(button => {
-        const action = button.getAttribute('data-action');
-        
-        if (action && typeof window[action] === 'function') {
-            button.onclick = function() {
-                console.log('Menu button clicked:', action);
-                window[action]();
-            };
-            
-            // Also add event listener for redundancy
-            button.addEventListener('click', function(e) {
-                console.log('Menu button click event:', action);
-                if (typeof window[action] === 'function') {
-                    window[action]();
-                }
-            });
-        }
-    });
+    // Find each menu button by its ID and add click handler
+    const playBtn = document.getElementById('btn-play');
+    const settingsBtn = document.getElementById('btn-settings');
+    const creditsBtn = document.getElementById('btn-credits');
+    
+    console.log('Button elements found:', { playBtn, settingsBtn, creditsBtn });
+    
+    if (playBtn) {
+        playBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Play button clicked!');
+            showPlayMenu();
+        };
+    }
+    
+    if (settingsBtn) {
+        settingsBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Settings button clicked!');
+            showSettingsMenu();
+        };
+    }
+    
+    if (creditsBtn) {
+        creditsBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Credits button clicked!');
+            showCreditsMenu();
+        };
+    }
+    
+    console.log('Menu button handlers set up successfully');
 }
 
 /**
