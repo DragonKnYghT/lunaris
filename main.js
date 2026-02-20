@@ -716,14 +716,45 @@ function showMainMenu() {
             <h2>Main Menu</h2>
             <div class="decoration-line"></div>
             <div class="submenu-buttons">
-                <button class="menu-button" onclick="showPlayMenu()">Play</button>
-                <button class="menu-button" onclick="showSettingsMenu()">Settings</button>
-                <button class="menu-button" onclick="showCreditsMenu()">Credits</button>
+                <button class="menu-button" id="btn-play" data-action="showPlayMenu">Play</button>
+                <button class="menu-button" id="btn-settings" data-action="showSettingsMenu">Settings</button>
+                <button class="menu-button" id="btn-credits" data-action="showCreditsMenu">Credits</button>
             </div>
             <div class="version-info">v1.2.16</div>
         </div>
     `;
+    
+    // Set up click handlers for the dynamically created buttons
+    setupMenuButtonHandlers();
+    
     console.log('Main menu displayed');
+}
+
+/**
+ * Sets up click event handlers for menu buttons
+ * This is called after the menu HTML is inserted into the DOM
+ */
+function setupMenuButtonHandlers() {
+    const menuButtons = document.querySelectorAll('.menu-button');
+    
+    menuButtons.forEach(button => {
+        const action = button.getAttribute('data-action');
+        
+        if (action && typeof window[action] === 'function') {
+            button.onclick = function() {
+                console.log('Menu button clicked:', action);
+                window[action]();
+            };
+            
+            // Also add event listener for redundancy
+            button.addEventListener('click', function(e) {
+                console.log('Menu button click event:', action);
+                if (typeof window[action] === 'function') {
+                    window[action]();
+                }
+            });
+        }
+    });
 }
 
 /**
