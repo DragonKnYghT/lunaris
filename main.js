@@ -853,12 +853,11 @@ function showSettingsMenu() {
                 <!-- Fullscreen -->
                 <div class="settings-option">
                     <label>Fullscreen</label>
-                    <span class="value" id="fullscreen-value">OFF</span>
+                    <button id="fullscreen-btn" class="value">OFF</button>
                 </div>
             </div>
 
             <div class="submenu-buttons">
-                <button class="menu-button" onclick="toggleFullscreen()">Toggle Fullscreen</button>
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
         </div>
@@ -890,6 +889,40 @@ function showSettingsMenu() {
             audioSettings.setMusicVolume(value);
         };
     }
+
+    // Fullscreen Toggle
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    if (fullscreenBtn) {
+        // Update initial state based on actual fullscreen status
+        fullscreenBtn.innerText = document.fullscreenElement ? "ON" : "OFF";
+        
+        fullscreenBtn.onclick = () => {
+            const gameContainer = document.getElementById('game-container');
+            
+            if (!gameContainer) {
+                console.error('Game container (#game-container) not found!');
+                return;
+            }
+            
+            if (!document.fullscreenElement) {
+                // Enter fullscreen for the game container only
+                gameContainer.requestFullscreen().catch(err => {
+                    console.error('Error attempting to enable fullscreen:', err);
+                });
+            } else {
+                // Exit fullscreen
+                document.exitFullscreen();
+            }
+        };
+    }
+
+    // Listen for fullscreen changes to update the UI
+    document.addEventListener('fullscreenchange', () => {
+        const fsBtn = document.getElementById('fullscreen-btn');
+        if (fsBtn) {
+            fsBtn.innerText = document.fullscreenElement ? "ON" : "OFF";
+        }
+    });
 
     console.log('Settings menu displayed');
 }
