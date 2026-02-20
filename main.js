@@ -717,7 +717,7 @@ function showMainMenu() {
             <div class="decoration-line"></div>
             <div class="submenu-buttons">
                 <button class="menu-button" onclick="showPlayMenu()">Play</button>
-                <button class="menu-button" onclick="showAudioSettings()">Settings</button>
+                <button class="menu-button" onclick="showSettingsMenu()">Settings</button>
                 <button class="menu-button" onclick="showCreditsMenu()">Credits</button>
             </div>
             <div class="version-info">v1.2.16</div>
