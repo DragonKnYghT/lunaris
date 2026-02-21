@@ -949,6 +949,11 @@ function showSettingsMenu() {
                     <label>Fullscreen</label>
                     <button id="fullscreen-btn" class="value">OFF</button>
                 </div>
+
+                <div class="settings-option">
+                    <label>Theme</label>
+                    <button id="theme-btn" class="value" onclick="showThemeSelector()">Select Theme</button>
+                </div>
             </div>
 
             <div class="submenu-buttons">
@@ -1662,6 +1667,79 @@ function init() {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', init);
+
+// Theme Selector System
+let themeManager = null;
+
+function initTheme() {
+    if (typeof ThemeManager !== 'undefined') {
+        themeManager = new ThemeManager();
+        themeManager.applyTheme();
+    }
+}
+
+function getThemeIcon(themeId) {
+    const icons = {
+        'sakura': '🌸', 'sakura-nocturne': '🌸🌙', 'ocean-mystique': '🌊',
+        'brasier-royal': '🔥', 'void-eternel': '🌌', 'foudre-divine': '⚡',
+        'hiver-glacial': '❄️', 'foret-spirituelle': '🌿', 'lune-ecarlate': '🩸',
+        'empire-celeste': '👑', 'brume-fantome': '🌫️', 'cyber-city': '🌆',
+        'lotus-imperial': '🌺', 'dragon-ancestral': '🐉', 'eclipse': '🌑',
+        'cristal-polaire': '🧊', 'hanami-dore': '🌸', 'abyssal': '🌑',
+        'neon-pulse': '🌈', 'mclaren': '🏎️'
+    };
+    return icons[themeId] || '🎨';
+}
+
+function showThemeSelector() {
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+    if (!themeManager) initTheme();
+    
+    const themes = themeManager.getAllThemes();
+    const currentIndex = themeManager.getCurrentThemeIndex();
+    const currentTheme = themes[currentIndex];
+    const isEnglish = document.documentElement.lang === 'en';
+    
+    container.innerHTML = `
+        <div class="screen" id="theme-selector-screen">
+            <div class="decoration-stars"><span>✦</span><span>✦</span><span>✦</span></div>
+            <h2>${isEnglish ? 'Select Theme' : 'Sélectionner le Thème'}</h2>
+            <div class="decoration-line"></div>
+            <div class="theme-selector-container">
+                <div class="theme-carousel">
+                    <button class="theme-carousel-nav prev" onclick="navigateTheme(-1)">❮</button>
+                    <div class="theme-card-container">
+                        <div class="theme-card selected">
+                            <div class="theme-card-header">
+                                <span class="theme-card-icon">${getThemeIcon(currentTheme.id)}</span>
+                                <h3 class="theme-card-name">${currentTheme.name}</h3>
+                            </div>
+                            <p class="theme-card-subtitle">${currentTheme.subtitle}</p>
+                            <div class="theme-card-preview">
+                                <div class="theme-color-block primary" style="background-color: ${currentTheme.primaryColor}"></div>
+                                <div class="theme-color-block secondary" style="background-color: ${currentTheme.secondaryColor}"></div>
+                            </div>
+                            <div class="theme-card-gradient" style="background: linear-gradient(135deg, ${currentTheme.primaryColor} 0%, ${currentTheme.secondaryColor} 100%)"></div>
+                            <div class="theme-card-indicator"><span>${currentIndex + 1} / ${themes.length}</span></div>
+                        </div>
+                    </div>
+                    <button class="theme-carousel-nav next" onclick="navigateTheme(1)">❯</button>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showSettingsMenu()">${isEnglish ? 'Back' : 'Retour'}</button>
+            </div>
+        </div>
+    `;
+}
+
+function navigateTheme(direction) {
+    if (!themeManager) initTheme();
+    if (direction === -1) themeManager.previousTheme();
+    else themeManager.nextTheme();
+    showThemeSelector();
+}
 
 // Export for potential module usage
 if (typeof module !== 'undefined' && module.exports) {
