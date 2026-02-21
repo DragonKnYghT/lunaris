@@ -139,14 +139,16 @@ const siteManager = {
         if (themeToggle) {
             const icon = themeToggle.querySelector('.theme-icon');
             if (icon) {
-                icon.textContent = this.currentThemeMode === 'dark' ? '☀️' : '🌙';
+                // Day (light) = Sun, Night (dark) = Moon
+                icon.textContent = this.currentThemeMode === 'dark' ? '🌙' : '☀️';
             }
         }
         
         if (themeSwitch) {
             const icon = themeSwitch.querySelector('.theme-icon');
             if (icon) {
-                icon.textContent = this.currentThemeMode === 'dark' ? '☀️' : '🌙';
+                // Day (light) = Sun, Night (dark) = Moon
+                icon.textContent = this.currentThemeMode === 'dark' ? '🌙' : '☀️';
             }
         }
     },

@@ -1027,15 +1027,31 @@ function showSettingsMenu() {
     // Day/Night Theme Toggle
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     if (themeToggleBtn) {
-        // Load current theme state
-        const isLightMode = localStorage.getItem('lunaris_light_mode') === 'true';
-        themeToggleBtn.innerText = isLightMode ? 'Night' : 'Day';
+        // Load current theme state from the same storage key as siteManager
+        const themeMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
+        // Fix: When theme is 'light' (Day), show 'Day'. When 'dark' (Night), show 'Night'
+        themeToggleBtn.innerText = themeMode === 'light' ? 'Day' : 'Night';
         
         themeToggleBtn.onclick = () => {
-            const isNowLightMode = document.body.classList.toggle('light-mode');
-            localStorage.setItem('lunaris_light_mode', isNowLightMode);
-            themeToggleBtn.innerText = isNowLightMode ? 'Night' : 'Day';
-            console.log('[Theme] Toggled to:', isNowLightMode ? 'Night' : 'Day');
+            // Toggle between light and dark
+            const currentMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
+            const newMode = currentMode === 'dark' ? 'light' : 'dark';
+            
+            // Update body class
+            document.body.classList.remove('light-mode', 'dark-mode');
+            document.body.classList.add(newMode + '-mode');
+            
+            // Save to localStorage
+            localStorage.setItem('lunaris_theme_mode', newMode);
+            
+            // Fix: When newMode is 'light' (Day), show 'Day'. When 'dark' (Night), show 'Night'
+            themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
+            console.log('[Theme] Toggled to:', newMode === 'light' ? 'Day' : 'Night');
+            
+            // Also update game theme manager if available
+            if (typeof themeManager !== 'undefined' && themeManager) {
+                themeManager.setThemeMode(newMode);
+            }
         };
     }
 
