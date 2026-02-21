@@ -1,19 +1,14 @@
-# TODO: Fix FR/EN Language Switch, Theme Switch, and Navbar Behavior
+# TODO - Theme System Restoration
 
-## Phase 1: CSS Updates
-- [ ] Update theme.css - Add theme toggle button styles and light mode variables
-- [ ] Update layout.css - Add .game-active class to hide navbar on play page
+## Task: Restore Day/Night Theme System (Remove Broken Theme Selector)
 
-## Phase 2: HTML Pages Update
-- [ ] Update index.html - Unified navbar with language and theme switches, use siteManager.js
-- [ ] Update play.html - Unified navbar with language and theme switches, ensure navbar hides when game starts
-- [ ] Update howto.html - Unified navbar with language and theme switches
-- [ ] Update about.html - Add language/theme switches, add translations, use siteManager.js
-- [ ] Update patchnotes.html - Add language/theme switches, add translations, use siteManager.js
-- [ ] Update credits.html - Add language/theme switches, add translations, use siteManager.js
+### Steps:
+1. [ ] Create backup of new theme selector code (src/ui/themeManager.js.new)
+2. [ ] Simplify src/ui/themeManager.js to Day/Night system only
+3. [ ] Update main.js - Replace theme button with Day/Night toggle
+4. [ ] Update assets/js/siteManager.js - Simplify to Day/Night toggle
+5. [ ] Update index.html - Replace dropdown with Day/Night button
+6. [ ] Update assets/css/theme.css - Remove selector styles, keep Day/Night
+7. [ ] Test the changes
 
-## Phase 3: Testing
-- [ ] Verify language switch works on all pages
-- [ ] Verify theme switch works on all pages
-- [ ] Verify theme persists in localStorage
-- [ ] Verify navbar hides on play page when game starts
+### Status: In Progress
