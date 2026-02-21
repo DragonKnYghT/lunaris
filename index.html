@@ -30,9 +30,16 @@
                             <button class="language-switch" id="languageSwitch" aria-label="Switch language">
                                 <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
                             </button>
-                            <button class="theme-switch" id="themeSwitch" aria-label="Switch theme">
-                                <span class="theme-icon">🌙</span>
-                            </button>
+                            <div class="theme-dropdown" id="themeDropdown">
+                                <div class="theme-dropdown-display">
+                                    <span class="theme-icon">🌸</span>
+                                    <span class="theme-name">Sakura</span>
+                                    <span class="theme-arrow">▼</span>
+                                </div>
+                                <div class="theme-dropdown-list" id="themeDropdownList">
+                                    <!-- Theme items will be populated by JavaScript -->
+                                </div>
+                            </div>
                         </li>
                     </ul>
                 </nav>
