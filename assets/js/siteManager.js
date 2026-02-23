@@ -1,6 +1,6 @@
 /**
  * Lunaris Site Manager
- * Handles language switching, Day/Night theme toggle, and navbar behavior across all pages
+ * Handles language switching and site-wide initialization
  */
 
 // Simple Day/Night theme system
@@ -17,6 +17,11 @@ const siteManager = {
         
         // Load saved preferences
         this.loadPreferences();
+        
+        // Initialize theme manager
+        if (typeof initThemeManager === 'function') {
+            initThemeManager();
+        }
         
         // Apply theme
         this.applyTheme();
@@ -58,9 +63,6 @@ const siteManager = {
         
         // Update language switch UI
         this.updateLanguageSwitchUI();
-        
-        // Update theme switch UI
-        this.updateThemeSwitchUI();
     },
     
     // Setup event listeners
@@ -71,48 +73,48 @@ const siteManager = {
             langSwitch.addEventListener('click', () => this.toggleLanguage());
         }
         
-        // Theme toggle button (handles both 'themeToggle' and 'themeSwitch' ids)
-        const themeToggle = document.getElementById('themeToggle') || document.getElementById('themeSwitch');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => this.toggleTheme());
+        // Theme toggle button
+        const themeSwitch = document.getElementById('themeSwitch');
+        if (themeSwitch) {
+            themeSwitch.addEventListener('click', () => this.toggleTheme());
         }
     },
     
-    // Toggle language
+    // Toggle language between EN and FR
     toggleLanguage() {
         this.currentLanguage = this.currentLanguage === 'en' ? 'fr' : 'en';
+        
+        // Save preference
         localStorage.setItem('lunaris_language', this.currentLanguage);
         
+        // Update translations
         if (typeof translationManager !== 'undefined') {
             translationManager.setLanguage(this.currentLanguage);
         }
         
+        // Update UI
         this.updateLanguageSwitchUI();
+        
+        console.log('SiteManager: Language changed to', this.currentLanguage);
     },
     
-    // Update language switch UI
-    updateLanguageSwitchUI() {
-        // Update button in navbar
-        const langSwitch = document.getElementById('languageSwitch');
-        if (langSwitch) {
-            const enSpan = langSwitch.querySelector('.lang-en');
-            const frSpan = langSwitch.querySelector('.lang-fr');
-            if (enSpan && frSpan) {
-                enSpan.style.fontWeight = this.currentLanguage === 'en' ? 'bold' : 'normal';
-                frSpan.style.fontWeight = this.currentLanguage === 'fr' ? 'bold' : 'normal';
-            }
-        }
-    },
-    
-    // Toggle theme (Day/Night)
+    // Toggle theme between Day and Night
     toggleTheme() {
         this.currentThemeMode = this.currentThemeMode === 'dark' ? 'light' : 'dark';
+        
+        // Save preference
         localStorage.setItem('lunaris_theme_mode', this.currentThemeMode);
+        
+        // Apply theme
         this.applyTheme();
+        
+        // Update UI
         this.updateThemeSwitchUI();
+        
+        console.log('SiteManager: Theme toggled to', this.currentThemeMode);
     },
     
-    // Apply theme to body
+    // Apply theme to document
     applyTheme() {
         // Remove both classes first
         document.body.classList.remove('light-mode', 'dark-mode');
@@ -123,27 +125,27 @@ const siteManager = {
         } else {
             document.body.classList.add('dark-mode');
         }
-        
-        // Update game theme if ThemeManager exists
-        if (typeof themeManager !== 'undefined' && themeManager) {
-            themeManager.setThemeMode(this.currentThemeMode);
+    },
+    
+    // Update language switch UI
+    updateLanguageSwitchUI() {
+        const langSwitch = document.getElementById('languageSwitch');
+        if (langSwitch) {
+            const langEn = langSwitch.querySelector('.lang-en');
+            const langFr = langSwitch.querySelector('.lang-fr');
+            
+            if (langEn) {
+                langEn.classList.toggle('active', this.currentLanguage === 'en');
+            }
+            if (langFr) {
+                langFr.classList.toggle('active', this.currentLanguage === 'fr');
+            }
         }
     },
     
     // Update theme switch UI
     updateThemeSwitchUI() {
-        // Handle both 'themeToggle' and 'themeSwitch' ids
-        const themeToggle = document.getElementById('themeToggle');
         const themeSwitch = document.getElementById('themeSwitch');
-        
-        if (themeToggle) {
-            const icon = themeToggle.querySelector('.theme-icon');
-            if (icon) {
-                // Day (light) = Sun, Night (dark) = Moon
-                icon.textContent = this.currentThemeMode === 'dark' ? '🌙' : '☀️';
-            }
-        }
-        
         if (themeSwitch) {
             const icon = themeSwitch.querySelector('.theme-icon');
             if (icon) {
@@ -153,7 +155,37 @@ const siteManager = {
         }
     },
     
-    // Hide navbar and footer (for game page)
+    // Setup navbar behavior for play page
+    setupNavbarBehavior() {
+        // Check if we're on the play page
+        const isPlayPage = window.location.href.includes('play.html') || document.querySelector('#game-container');
+        
+        if (isPlayPage) {
+            // Listen for game start
+            this.setupGameStartDetection();
+        }
+    },
+    
+    // Setup detection for when game starts
+    setupGameStartDetection() {
+        // Check periodically if game has started
+        const checkGameStart = setInterval(() => {
+            const screenContainer = document.getElementById('screen-container');
+            
+            // If game is rendering content, hide navbar
+            if (screenContainer && screenContainer.children.length > 0) {
+                this.hideNavbar();
+                clearInterval(checkGameStart);
+            }
+        }, 500);
+        
+        // Also listen for custom event when game starts
+        window.addEventListener('gameStart', () => {
+            this.hideNavbar();
+        });
+    },
+    
+    // Hide navbar and footer
     hideNavbar() {
         document.body.classList.add('game-active');
         console.log('SiteManager: Navbar hidden (game started)');
