@@ -456,3 +456,18 @@
         padding: var(--spacing-sm) var(--spacing-md);
     }
 }
+
+.theme-label {
+  font-size: 0.9rem;
+  margin-left: 10px;
+  margin-right: 4px;
+}
+
+.theme-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
