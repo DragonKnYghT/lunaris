@@ -1,13 +1,18 @@
 /**
  * Lunaris - A modular creature-battling roguelike game
- * Main entry point
+ * Main entry point - MODIFIED
  */
 
 // Initialize audio settings globally
 const audioSettings = new AudioSettings();
 
-// Global game data store
-let lunarisData = null;
+
+// LUNARIS_TODO: Game initialization logic will go here
+// LUNARIS_TODO: Add game state management
+// LUNARIS_TODO: Add game loop
+// LUNARIS_TODO: Add scene management
+
+// Data Loader Functions
 
 /**
  * Loads all Lunaris game data from JSON files
@@ -37,6 +42,9 @@ async function loadLunarisData() {
     return { creatures, moves, items, zones, modes, gacha, tickets };
 }
 
+// Global game data store
+let lunarisData = null;
+
 /**
  * Initialize game data
  * @returns {Promise<void>}
@@ -48,6 +56,7 @@ async function initGameData() {
         return lunarisData;
     } catch (error) {
         console.error('Failed to load game data:', error);
+        // Return empty data structure if loading fails
         return {
             creatures: {},
             moves: {},
@@ -59,6 +68,14 @@ async function initGameData() {
         };
     }
 }
+
+// LUNARIS_TODO: integrate data into the engine later
+
+
+// Combat Engine Integration
+
+// Global combat state
+let combatState = null;
 
 // ===========================================
 // Screen Management Functions
@@ -255,12 +272,6 @@ function startGame(playerCount) {
  * Shows the settings menu screen
  */
 function showSettingsMenu() {
-    // Get current theme from siteManager or localStorage
-    const themeMode = (typeof siteManager !== 'undefined') 
-        ? siteManager.getThemeMode() 
-        : (localStorage.getItem('lunaris_theme_mode') || 'dark');
-    const themeLabel = themeMode === 'light' ? 'Day' : 'Night';
-    
     const container = document.getElementById('screen-container');
     container.innerHTML = `
         <div class="screen" id="settings-menu-screen">
@@ -304,7 +315,7 @@ function showSettingsMenu() {
                 <!-- Day/Night Theme Toggle -->
                 <div class="settings-option">
                     <label>Theme</label>
-                    <button id="theme-toggle-btn" class="value">${themeLabel}</button>
+                    <button id="theme-toggle-btn" class="value">Night</button>
                 </div>
             </div>
 
@@ -425,114 +436,89 @@ function showCreditsMenu() {
 }
 
 // ===========================================
-// Quick Access Menu (I key)
+// TAB Menu System (Quick Access)
 // ===========================================
 
-// Global state for quick access menu
-let quickMenuOpen = false;
+let tabMenuOpen = false;
 
 /**
- * Gets translation using fallback values if translationManager is not available
- * @param {string} key - Translation key path
- * @returns {string} Translated text
+ * Shows the TAB menu overlay
  */
-function getTranslation(key) {
-    if (typeof translationManager !== 'undefined') {
-        return translationManager.t(key);
-    }
-    
-    const htmlLang = document.documentElement.lang || 'fr';
-    
-    const fallbacks = {
-        'game.gacha.title': 'Gacha',
-        'game.inventory.title': htmlLang === 'en' ? 'Inventory' : 'Inventaire',
-        'game.achievements.title': htmlLang === 'en' ? 'Achievements' : 'Succès',
-        'game.lunadex.title': 'Lunadex',
-        'game.logout.title': htmlLang === 'en' ? 'Log Out' : 'Se déconnecter'
-    };
-    
-    return fallbacks[key] || key;
-}
-
-/**
- * Shows the quick access menu overlay
- */
-function showQuickMenu() {
+function showTabMenu() {
     const screenContainer = document.getElementById('screen-container');
     if (!screenContainer) return;
     
-    const existingOverlay = document.getElementById('quick-menu-overlay');
-    if (existingOverlay) {
-        existingOverlay.remove();
+    // Check if menu already exists
+    const existingMenu = document.getElementById('tab-menu-overlay');
+    if (existingMenu) {
+        hideTabMenu();
+        return;
     }
     
-    const quickMenuHTML = `
-        <div id="quick-menu-overlay" class="quick-menu-overlay">
-            <div class="quick-menu">
-                <div class="quick-menu-header">
-                    <span class="quick-menu-title">☰</span>
+    const tabMenuHTML = `
+        <div id="tab-menu-overlay" class="tab-menu-overlay">
+            <div class="tab-menu">
+                <div class="tab-menu-header">
+                    <span class="tab-menu-title">Quick Menu</span>
+                    <button class="tab-menu-close" onclick="hideTabMenu()">✕</button>
                 </div>
-                <ul class="quick-menu-list">
-                    <li class="quick-menu-item" onclick="openGacha()">
-                        <span class="quick-menu-icon">🎰</span>
-                        <span class="quick-menu-text">${getTranslation('game.gacha.title')}</span>
-                    </li>
-                    <li class="quick-menu-item" onclick="openInventory()">
-                        <span class="quick-menu-icon">🎒</span>
-                        <span class="quick-menu-text">${getTranslation('game.inventory.title')}</span>
-                    </li>
-                    <li class="quick-menu-item" onclick="openAchievements()">
-                        <span class="quick-menu-icon">🏆</span>
-                        <span class="quick-menu-text">${getTranslation('game.achievements.title')}</span>
-                    </li>
-                    <li class="quick-menu-item" onclick="openLunadex()">
-                        <span class="quick-menu-icon">📖</span>
-                        <span class="quick-menu-text">${getTranslation('game.lunadex.title')}</span>
-                    </li>
-                    <li class="quick-menu-item quick-menu-logout" onclick="logout()">
-                        <span class="quick-menu-icon">🚪</span>
-                        <span class="quick-menu-text">${getTranslation('game.logout.title')}</span>
-                    </li>
-                </ul>
+                <div class="tab-menu-content">
+                    <button class="tab-menu-item" onclick="showGachaMenu()">
+                        <span class="tab-menu-icon">🎰</span>
+                        <span class="tab-menu-text">Gacha</span>
+                    </button>
+                    <button class="tab-menu-item" onclick="showInventoryMenu()">
+                        <span class="tab-menu-icon">🎒</span>
+                        <span class="tab-menu-text">Inventory</span>
+                    </button>
+                    <button class="tab-menu-item" onclick="showTeamMenu()">
+                        <span class="tab-menu-icon">⚔️</span>
+                        <span class="tab-menu-text">Team</span>
+                    </button>
+                    <button class="tab-menu-item" onclick="showProfileMenu()">
+                        <span class="tab-menu-icon">👤</span>
+                        <span class="tab-menu-text">Profile</span>
+                    </button>
+                </div>
             </div>
         </div>
     `;
     
-    screenContainer.insertAdjacentHTML('beforeend', quickMenuHTML);
-    addQuickMenuStyles();
+    screenContainer.insertAdjacentHTML('beforeend', tabMenuHTML);
+    addTabMenuStyles();
     
-    quickMenuOpen = true;
-    console.log('[Quick Menu] Opened');
+    tabMenuOpen = true;
+    console.log('[TAB Menu] Opened');
 }
 
 /**
- * Hides the quick access menu overlay
+ * Hides the TAB menu overlay
  */
-function hideQuickMenu() {
-    const overlay = document.getElementById('quick-menu-overlay');
+function hideTabMenu() {
+    const overlay = document.getElementById('tab-menu-overlay');
     if (overlay) {
         overlay.remove();
     }
-    quickMenuOpen = false;
-    console.log('[Quick Menu] Closed');
+    tabMenuOpen = false;
+    console.log('[TAB Menu] Closed');
 }
 
 /**
- * Adds CSS styles for the quick access menu dynamically
+ * Adds CSS styles for the TAB menu
  */
-function addQuickMenuStyles() {
-    if (document.getElementById('quick-menu-styles')) return;
+function addTabMenuStyles() {
+    if (document.getElementById('tab-menu-styles')) return;
     
     const style = document.createElement('style');
-    style.id = 'quick-menu-styles';
+    style.id = 'tab-menu-styles';
     style.textContent = `
-        .quick-menu-overlay {
+        .tab-menu-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -540,78 +526,85 @@ function addQuickMenuStyles() {
             animation: fadeIn 0.15s ease-out;
         }
         
-        .quick-menu {
+        .tab-menu {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             border: 2px solid #00d9ff;
-            border-radius: 12px;
-            padding: 20px;
-            min-width: 280px;
-            box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            min-width: 320px;
+            box-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
             animation: slideIn 0.2s ease-out;
         }
         
-        .quick-menu-header {
-            text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+        .tab-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 1px solid rgba(0, 217, 255, 0.3);
         }
         
-        .quick-menu-title {
-            font-size: 24px;
+        .tab-menu-title {
+            font-size: 20px;
+            font-weight: 600;
             color: #00d9ff;
         }
         
-        .quick-menu-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .tab-menu-close {
+            background: none;
+            border: none;
+            color: #b8b8d1;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
         
-        .quick-menu-item {
+        .tab-menu-close:hover {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+        }
+        
+        .tab-menu-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .tab-menu-item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
-            margin: 5px 0;
-            border-radius: 8px;
+            gap: 12px;
+            padding: 14px 18px;
+            background: rgba(0, 217, 255, 0.08);
+            border: 1px solid rgba(0, 217, 255, 0.15);
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
-            background: rgba(0, 217, 255, 0.1);
-            border: 1px solid transparent;
+            width: 100%;
+            text-align: left;
         }
         
-        .quick-menu-item:hover {
-            background: rgba(0, 217, 255, 0.25);
+        .tab-menu-item:hover {
+            background: rgba(0, 217, 255, 0.2);
             border-color: #00d9ff;
-            transform: translateX(5px);
+            transform: translateX(6px);
         }
         
-        .quick-menu-item:active {
-            transform: scale(0.98);
+        .tab-menu-item:active {
+            transform: scale(0.98) translateX(6px);
         }
         
-        .quick-menu-icon {
-            font-size: 20px;
-            margin-right: 12px;
-            width: 28px;
-            text-align: center;
+        .tab-menu-icon {
+            font-size: 22px;
         }
         
-        .quick-menu-text {
+        .tab-menu-text {
             font-size: 16px;
-            color: #ffffff;
             font-weight: 500;
-        }
-        
-        .quick-menu-logout {
-            margin-top: 15px;
-            background: rgba(255, 77, 77, 0.15);
-            border-color: rgba(255, 77, 77, 0.3);
-        }
-        
-        .quick-menu-logout:hover {
-            background: rgba(255, 77, 77, 0.3);
-            border-color: #ff4d4d;
+            color: #ffffff;
         }
         
         @keyframes fadeIn {
@@ -633,158 +626,71 @@ function addQuickMenuStyles() {
     document.head.appendChild(style);
 }
 
-// Quick Access Menu Action Handlers
-
-function openGacha() {
-    console.log('[Quick Menu] Opening Gacha...');
-    hideQuickMenu();
-    showComingSoonMessage();
+// Placeholder functions for TAB menu items
+function showGachaMenu() {
+    console.log('[TAB Menu] Opening Gacha...');
+    hideTabMenu();
+    alert('Gacha menu coming soon!');
 }
 
-function openInventory() {
-    console.log('[Quick Menu] Opening Inventory...');
-    hideQuickMenu();
-    showComingSoonMessage();
+function showInventoryMenu() {
+    console.log('[TAB Menu] Opening Inventory...');
+    hideTabMenu();
+    alert('Inventory menu coming soon!');
 }
 
-function openAchievements() {
-    console.log('[Quick Menu] Opening Achievements...');
-    hideQuickMenu();
-    showComingSoonMessage();
+function showTeamMenu() {
+    console.log('[TAB Menu] Opening Team...');
+    hideTabMenu();
+    alert('Team menu coming soon!');
 }
 
-function openLunadex() {
-    console.log('[Quick Menu] Opening Lunadex...');
-    hideQuickMenu();
-    showComingSoonMessage();
-}
-
-/**
- * Shows the Coming Soon message
- */
-function showComingSoonMessage() {
-    const screenContainer = document.getElementById('screen-container');
-    if (!screenContainer) return;
-    
-    const existingMessage = document.getElementById('coming-soon-message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-    
-    const messageHTML = `
-        <div id="coming-soon-message" class="coming-soon-overlay">
-            <div class="coming-soon-content">
-                <h2 class="coming-soon-text">Coming Soon</h2>
-            </div>
-        </div>
-    `;
-    
-    screenContainer.insertAdjacentHTML('beforeend', messageHTML);
-    addComingSoonStyles();
-    
-    console.log('[Coming Soon] Message displayed');
+function showProfileMenu() {
+    console.log('[TAB Menu] Opening Profile...');
+    hideTabMenu();
+    alert('Profile menu coming soon!');
 }
 
 /**
- * Adds CSS styles for the Coming Soon message
+ * Initialize TAB menu key listeners
  */
-function addComingSoonStyles() {
-    if (document.getElementById('coming-soon-styles')) return;
-    
-    const style = document.createElement('style');
-    style.id = 'coming-soon-styles';
-    style.textContent = `
-        .coming-soon-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        .coming-soon-content {
-            text-align: center;
-            padding: 40px 60px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border: 2px solid #00d9ff;
-            border-radius: 16px;
-            box-shadow: 0 0 40px rgba(0, 217, 255, 0.4);
-        }
-        
-        .coming-soon-text {
-            font-size: 36px;
-            color: #00d9ff;
-            font-weight: bold;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            text-shadow: 0 0 20px rgba(0, 217, 255, 0.6);
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-/**
- * Logs out the player
- */
-function logout() {
-    console.log('[Quick Menu] Logging out...');
-    hideQuickMenu();
-    const confirmMessage = document.documentElement.lang === 'en' 
-        ? 'Are you sure you want to log out?' 
-        : 'Êtes-vous sûr de vouloir vous déconnecter?';
-    if (confirm(confirmMessage)) {
-        window.location.href = 'index.html';
-    }
-}
-
-/**
- * Initialize quick access menu (I key)
- */
-function initQuickMenu() {
+function initTabMenu() {
+    // Listen for TAB key
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'i' || event.key === 'I') {
+        if (event.key === 'Tab') {
             event.preventDefault();
-            if (!quickMenuOpen) {
-                showQuickMenu();
+            if (!tabMenuOpen) {
+                showTabMenu();
+            } else {
+                hideTabMenu();
             }
+        }
+        
+        // Close menu with Escape
+        if (event.key === 'Escape' && tabMenuOpen) {
+            hideTabMenu();
         }
     });
     
-    document.addEventListener('keyup', function(event) {
-        if (event.key === 'i' || event.key === 'I') {
-            if (quickMenuOpen) {
-                hideQuickMenu();
-            }
-        }
-    });
-    
+    // Also close menu when clicking outside
     document.addEventListener('click', function(event) {
-        const overlay = document.getElementById('quick-menu-overlay');
-        const menu = document.querySelector('.quick-menu');
-        if (quickMenuOpen && overlay && menu && !menu.contains(event.target)) {
-            hideQuickMenu();
+        const overlay = document.getElementById('tab-menu-overlay');
+        const menu = document.querySelector('.tab-menu');
+        if (tabMenuOpen && overlay && menu && !menu.contains(event.target)) {
+            hideTabMenu();
         }
     });
     
-    console.log('[Quick Menu] I key listeners initialized');
+    console.log('[TAB Menu] TAB key listeners initialized');
 }
 
-/**
- * Initialize navigation and menu handlers
- */
+// ===========================================
+// End of TAB Menu System
+// ===========================================
+
+// Initialize navigation when DOM is ready
 function initNavigation() {
+    // Set up button event listeners
     const playBtn = document.getElementById('btn-play');
     const settingsBtn = document.getElementById('btn-settings');
     const creditsBtn = document.getElementById('btn-credits');
@@ -801,18 +707,28 @@ function initNavigation() {
         creditsBtn.addEventListener('click', showCreditsMenu);
     }
     
-    initQuickMenu();
+    // Initialize TAB menu
+    initTabMenu();
 }
 
 /**
  * Main initialization function for Lunaris
+ * This is called when the page loads
  */
 function init() {
     console.log('Lunaris is initializing...');
     
+    // Initialize navigation
     initNavigation();
+    
+    // Show main menu by default
     showMainMenu();
     
+    // LUNARIS_TODO: Initialize game state
+    // LUNARIS_TODO: Load game data (creatures, moves, items, etc.)
+    // LUNARIS_TODO: Initialize game systems (combat, inventory, etc.)
+    
+    // Update loading message
     const loadingMessage = document.getElementById('loading-message');
     if (loadingMessage) {
         loadingMessage.textContent = 'Lunaris is ready!';
@@ -821,20 +737,12 @@ function init() {
     console.log('Lunaris initialized successfully!');
 }
 
-/**
- * Start the Lunaris game
- */
-async function startLunaris() {
-    console.log("Starting Lunaris...");
-    await initGameData();
-    showMainMenu();
-    
-    window.dispatchEvent(new Event('gameStart'));
-    console.log('Game start event dispatched');
-}
-
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', init);
+
+// Simple Day/Night Theme System
+// The broken 20-theme selector has been removed
+// Use the Day/Night toggle in Settings instead
 
 // Export for potential module usage
 if (typeof module !== 'undefined' && module.exports) {

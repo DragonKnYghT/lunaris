@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <!-- LUNARIS_TODO: replace placeholder colors with final Lunaris theme -->
 </head>
 <body>
     <header class="site-header">
@@ -15,6 +16,7 @@
             <div class="header-content">
                 <a href="index.html" class="logo">
                     <img src="Lunaris_logo_fond.png" alt="Lunaris Logo" class="logo-img">
+                    <!-- LUNARIS_TODO: replace with Lunaris animated logo later -->
                 </a>
                 <nav class="main-nav">
                     <ul class="nav-list">
@@ -46,28 +48,22 @@
     <main class="site-main">
         <section class="hero">
             <div class="container">
-                <div class="hero-content">
-                    <h1 class="hero-title" data-i18n="website.hero.title">Welcome to Lunaris</h1>
-                    <p class="hero-subtitle" data-i18n="website.hero.subtitle">A Modular Creature-Battling Roguelike</p>
-                    <div class="hero-cta">
-                        <a href="play.html" class="btn btn-primary" data-i18n="website.hero.playNow">Play Now</a>
-                        <a href="howto.html" class="btn btn-secondary" data-i18n="website.hero.learnMore">Learn More</a>
-                    </div>
+                <h1 class="hero-title" data-i18n="website.hero.title">Welcome to Lunaris</h1>
+                <p class="hero-subtitle" data-i18n="website.hero.subtitle">A Modular Creature-Battling Roguelike</p>
+                <div class="hero-cta">
+                    <a href="play.html" class="btn btn-primary" data-i18n="website.hero.playButton">Play Now</a>
+                    <a href="howto.html" class="btn btn-secondary" data-i18n="website.hero.learnButton">Learn More</a>
                 </div>
             </div>
         </section>
 
         <section class="features">
             <div class="container">
-                <h2 class="section-title" data-i18n="website.features.title">Game Features</h2>
+                <h2 class="text-center" data-i18n="website.features.title">Game Features</h2>
                 <div class="features-grid">
                     <div class="feature-card">
                         <h3 data-i18n="website.features.roguelike.title">Roguelike Adventure</h3>
-                        <p data-i18n="website.features.roguelike.description">Explore procedurally generated zones in this roguelike adventure.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3 data-i18n="website.features.collection.title">Creature Collection</h3>
-                        <p data-i18n="website.features.collection.description">Collect and train unique creatures with diverse abilities.</p>
+                        <p data-i18n="website.features.roguelike.description">Explore procedurally generated zones with unique creatures and challenges.</p>
                     </div>
                     <div class="feature-card">
                         <h3 data-i18n="website.features.combat.title">Strategic Combat</h3>
@@ -108,15 +104,16 @@
         </div>
     </footer>
 
-    <!-- Scripts - Load in order: translationManager, themeManager, siteManager, navigation -->
+    <!-- Scripts - Load in order: translationManager, siteManager, navigation -->
     <script src="src/settings/translationManager.js"></script>
-    <script src="src/ui/themeManager.js"></script>
     <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
     <script>
+        // Initialize site manager on page load
         document.addEventListener('DOMContentLoaded', async function() {
             await siteManager.init();
         });
     </script>
+    <!-- LUNARIS_TODO: add analytics later -->
 </body>
 </html>

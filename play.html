@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Play - Lunaris</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="assets/css/theme.css">
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <!-- LUNARIS_TODO: replace placeholder colors with final Lunaris theme -->
     <style>
         #game-container {
             width: 100%;
@@ -56,6 +58,8 @@
             margin-top: 20px;
             font-size: 1.2rem;
         }
+        
+        /* LUNARIS_TODO: add animated transition into the game */
     </style>
 </head>
 <body>
@@ -108,6 +112,7 @@
                     </div>
                     <h1 class="game-title">Lunaris</h1>
                     <p class="game-subtitle" data-i18n="game.creditsMenu.description">A Modular Creature-Battling Roguelike</p>
+                    <div id="loading-message"></div>
                     <div id="screen-container"></div>
                 </div>
             </div>
@@ -132,12 +137,10 @@
         </div>
     </footer>
 
-    <!-- Scripts - Load in order: translationManager, themeManager, siteManager, navigation -->
+    <!-- Scripts - Load in order: translationManager, siteManager, navigation -->
     <script src="src/settings/translationManager.js"></script>
-    <script src="src/ui/themeManager.js"></script>
     <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
-    <script src="src/settings/audioSettings.js"></script>
     <script>
         // Initialize site manager on page load
         document.addEventListener('DOMContentLoaded', async function() {
@@ -146,12 +149,15 @@
         
         // Load game when page is ready
         window.addEventListener('load', function() {
+            // Load game script
             var script = document.createElement('script');
             script.src = 'main.js';
             script.onload = function() {
                 console.log('Game script loaded successfully');
+                // Initialize game after data loads
                 if (typeof startLunaris === 'function') {
                     startLunaris().then(function() {
+                        // Hide loading screen after game starts
                         setTimeout(function() {
                             var loading = document.getElementById('game-loading');
                             if (loading) {
@@ -161,6 +167,7 @@
                     });
                 } else if (typeof init === 'function') {
                     init();
+                    // Hide loading screen after init
                     setTimeout(function() {
                         var loading = document.getElementById('game-loading');
                         if (loading) {
@@ -171,6 +178,27 @@
             };
             script.onerror = function() {
                 console.error('Failed to load game script from main.js');
+                // Try alternative path
+                var altScript = document.createElement('script');
+                altScript.src = 'main.js';
+                altScript.onload = function() {
+                    console.log('Game loaded from alternative path');
+                    if (typeof startLunaris === 'function') {
+                        startLunaris();
+                    } else if (typeof init === 'function') {
+                        init();
+                    }
+                    setTimeout(function() {
+                        var loading = document.getElementById('game-loading');
+                        if (loading) {
+                            loading.classList.add('hidden');
+                        }
+                    }, 1000);
+                };
+                altScript.onerror = function() {
+                    console.error('Failed to load game script from main.js');
+                };
+                document.body.appendChild(altScript);
             };
             document.head.appendChild(script);
         });

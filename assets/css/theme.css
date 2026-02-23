@@ -1,6 +1,8 @@
 /**
  * theme.css
  * Lunaris Theme - Color palette, typography, and base styles
+ * 
+ * LUNARIS_TODO: replace placeholder colors with final Lunaris theme
  */
 
 /* ===== CSS Variables ===== */
@@ -58,8 +60,6 @@
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
-    --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.5);
-    --shadow-glow-secondary: 0 0 20px rgba(0, 217, 255, 0.5);
     
     /* Transitions */
     --transition-fast: 0.15s ease;
@@ -92,8 +92,6 @@ body.light-mode {
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
-    --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
-    --shadow-glow-secondary: 0 0 20px rgba(0, 217, 255, 0.3);
 }
 
 /* ===== Base Styles ===== */
@@ -313,5 +311,71 @@ input:focus, textarea:focus, select:focus {
     .nav-buttons {
         gap: var(--spacing-xs);
         margin-left: var(--spacing-sm);
+    }
+}
+
+/* ===== Theme Dropdown ===== */
+.theme-dropdown-container {
+    display: flex;
+    align-items: center;
+}
+
+.theme-dropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    font-family: var(--font-family);
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    min-width: 140px;
+    text-align: center;
+}
+
+.theme-dropdown:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.theme-dropdown:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+    box-shadow: var(--shadow-glow-secondary);
+}
+
+/* Custom arrow for dropdown */
+.theme-dropdown-container {
+    position: relative;
+}
+
+.theme-dropdown-container::after {
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 8px;
+    color: inherit;
+    opacity: 0.7;
+}
+
+/* Mobile responsive for dropdown */
+@media (max-width: 768px) {
+    .theme-dropdown {
+        min-width: 100px;
+        padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-xs);
+        font-size: var(--font-size-xs);
+    }
+    
+    .theme-dropdown-container::after {
+        right: 6px;
     }
 }

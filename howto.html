@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <!-- LUNARIS_TODO: replace placeholder colors with final Lunaris theme -->
 </head>
 <body>
     <header class="site-header">
@@ -56,25 +57,20 @@
                     <h2 data-i18n="howto.gettingStarted.title">Getting Started</h2>
                     <p data-i18n="howto.gettingStarted.description">Welcome to Lunaris! This guide will help you understand the basics of the game.</p>
                     
-                    <h2 data-i18n="howto.gameModes.title">Game Modes</h2>
+                    <h2 data-i18n="howto.battle.title">Battle System</h2>
+                    <p data-i18n="howto.battle.description">Battles in Lunaris are turn-based. Each creature has four moves and can use items during battle. Pay attention to type advantages to gain the upper hand!</p>
                     
-                    <h3 data-i18n="howto.gameModes.roguelike.title">Roguelike Mode</h3>
-                    <p data-i18n="howto.gameModes.roguelike.description">Embark on an adventure through procedurally generated zones. Each run is unique as you face random encounters, collect creatures, and try to reach the end.</p>
+                    <!-- LUNARIS_TODO: add battle guide -->
                     
-                    <h3 data-i18n="howto.gameModes.versus.title">Versus Mode</h3>
-                    <p data-i18n="howto.gameModes.versus.description">Battle against other players in real-time matches. Build your team, strategize, and climb the ranks!</p>
+                    <h2 data-i18n="howto.creatures.title">Creatures</h2>
+                    <p data-i18n="howto.creatures.description">Your team consists of creatures with unique types, abilities, and stats. Build a balanced team to face any challenge!</p>
                     
-                    <h2 data-i18n="howto.combat.title">Combat Basics</h2>
-                    <p data-i18n="howto.combat.description">Lunaris features turn-based combat where creatures take turns using moves, items, or switching to another creature.</p>
+                    <!-- LUNARIS_TODO: add creature guide -->
                     
-                    <h3 data-i18n="howto.combat.types.title">Type Advantages</h3>
-                    <p data-i18n="howto.combat.types.description">Each creature has one or two types. Certain types have advantages over others. Use type matchups to gain the upper hand!</p>
-                    
-                    <h3 data-i18n="howto.combat.abilities.title">Abilities</h3>
-                    <p data-i18n="howto.combat.abilities.description">Creatures can have unique abilities that provide passive bonuses or activate under certain conditions.</p>
-                    
-                    <h2 data-i18n="howto.collecting.title">Collecting Creatures</h2>
+                    <h2 data-i18n="howto.collecting.title">Collecting</h2>
                     <p data-i18n="howto.collecting.description">Throughout your adventure, you'll encounter wild creatures. Capture them using special items to add them to your team!</p>
+                    
+                    <!-- LUNARIS_TODO: add capturing guide -->
                     
                     <h2 data-i18n="howto.tips.title">Tips for Beginners</h2>
                     <ul>
@@ -84,6 +80,8 @@
                         <li data-i18n="howto.tips.list.3">Save your progress regularly</li>
                         <li data-i18n="howto.tips.list.4">Experiment with different strategies</li>
                     </ul>
+                    
+                    <!-- LUNARIS_TODO: add more tips -->
                 </article>
             </div>
         </section>
@@ -107,11 +105,12 @@
         </div>
     </footer>
 
+    <!-- Scripts - Load in order: translationManager, siteManager, navigation -->
     <script src="src/settings/translationManager.js"></script>
-    <script src="src/ui/themeManager.js"></script>
     <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
     <script>
+        // Initialize site manager on page load
         document.addEventListener('DOMContentLoaded', async function() {
             await siteManager.init();
         });
