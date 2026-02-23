@@ -33,7 +33,9 @@
             "title": "Welcome to Lunaris",
             "subtitle": "A Modular Creature-Battling Roguelike",
             "playNow": "Play Now",
-            "learnMore": "Learn More"
+            "learnMore": "Learn More",
+            "website.hero.playButton": "Play Now",
+            "website.hero.learnButton": "Learn More"
         },
         "features": {
             "title": "Game Features",
