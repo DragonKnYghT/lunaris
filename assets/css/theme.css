@@ -1,8 +1,6 @@
 /**
  * theme.css
  * Lunaris Theme - Color palette, typography, and base styles
- * 
- * LUNARIS_TODO: replace placeholder colors with final Lunaris theme
  */
 
 /* ===== CSS Variables ===== */
@@ -60,6 +58,8 @@
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.5);
+    --shadow-glow-secondary: 0 0 20px rgba(0, 217, 255, 0.5);
     
     /* Transitions */
     --transition-fast: 0.15s ease;
@@ -92,6 +92,8 @@ body.light-mode {
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.15);
+    --shadow-glow: 0 0 20px rgba(108, 92, 231, 0.3);
+    --shadow-glow-secondary: 0 0 20px rgba(0, 217, 255, 0.3);
 }
 
 /* ===== Base Styles ===== */

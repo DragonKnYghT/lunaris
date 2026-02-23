@@ -9,58 +9,6 @@
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <!-- LUNARIS_TODO: replace placeholder colors with final Lunaris theme -->
-    <style>
-        #game-container {
-            width: 100%;
-            min-height: 600px;
-            background-color: #1a1a2e;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        #game-loading {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            z-index: 10;
-            transition: opacity 0.5s ease;
-        }
-        
-        #game-loading.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .game-loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #00d9ff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .game-loading-text {
-            color: #ffffff;
-            margin-top: 20px;
-            font-size: 1.2rem;
-        }
-        
-        /* LUNARIS_TODO: add animated transition into the game */
-    </style>
 </head>
 <body>
     <header class="site-header">

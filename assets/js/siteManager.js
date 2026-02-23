@@ -153,48 +153,7 @@ const siteManager = {
         }
     },
     
-    // Setup navbar behavior for play page
-    setupNavbarBehavior() {
-        // Check if we're on the play page
-        const isPlayPage = window.location.href.includes('play.html') || document.querySelector('#game-container');
-        
-        if (isPlayPage) {
-            // Listen for game start
-            this.setupGameStartDetection();
-        }
-    },
-    
-    // Setup detection for when game starts
-    setupGameStartDetection() {
-        // Check periodically if game has started
-        const checkGameStart = setInterval(() => {
-            const gameContainer = document.getElementById('game-container');
-            const screenContainer = document.getElementById('screen-container');
-            
-            // If game is rendering content, hide navbar
-            if (screenContainer && screenContainer.children.length > 0) {
-                this.hideNavbar();
-                clearInterval(checkGameStart);
-            }
-        }, 500);
-        
-        // Also listen for custom event when game starts
-        window.addEventListener('gameStart', () => {
-            this.hideNavbar();
-        });
-        
-        // Alternative: check when loading is hidden
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loading = document.getElementById('game-loading');
-                if (loading && loading.classList.contains('hidden')) {
-                    this.hideNavbar();
-                }
-            }, 2000);
-        });
-    },
-    
-    // Hide navbar and footer
+    // Hide navbar and footer (for game page)
     hideNavbar() {
         document.body.classList.add('game-active');
         console.log('SiteManager: Navbar hidden (game started)');

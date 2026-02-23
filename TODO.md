@@ -1,32 +1,25 @@
-# TODO - Restore Theme System to Previous Working State - COMPLETED
+# Lunaris Codebase Cleanup - TODO List
 
-## Task: Remove new theme dropdown and restore old Day/Night toggle button
+## Phase 1: Delete Old Backup Files
+- [ ] Delete src/ui/themeManager.new.js (old 20-theme carousel backup)
 
-### Files Edited:
+## Phase 2: Clean CSS Files
+- [ ] Clean style.css - Remove duplicate variables, old toggle styles, carousel styles
+- [ ] Clean theme.css - Remove LUNARIS_TODO comments
 
-1. **index.html** ✅
-   - [x] Remove the new theme dropdown (`<div class="theme-selector">` with `<select id="theme-select">`)
-   - [x] Add back the old theme button (`<button class="theme-switch" id="themeSwitch">`)
+## Phase 3: Clean JavaScript Files
+- [ ] Clean main.js - Remove test functions, fix typo, remove duplicate theme code
+- [ ] Clean siteManager.js - Remove unused navbar behavior functions
 
-2. **assets/js/siteManager.js** ✅
-   - [x] Remove the 20 themes array (themes list)
-   - [x] Remove the themeColors object
-   - [x] Remove the `populateThemeDropdown()` function reference
-   - [x] Remove the theme selector dropdown event listener code
-   - [x] Keep the Day/Night toggle functionality (`toggleTheme`, `applyTheme` with dark/light mode)
-   - [x] Initialize `currentThemeMode` to 'dark' for default
+## Phase 4: Clean HTML Files
+- [ ] Clean index.html - Remove LUNARIS_TODO comments
+- [ ] Clean play.html - Remove inline styles, LUNARIS_TODO comments
+- [ ] Clean howto.html - Remove LUNARIS_TODO comments
+- [ ] Clean about.html - Remove LUNARIS_TODO comments
+- [ ] Clean patchnotes.html - Remove LUNARIS_TODO comments
+- [ ] Clean credits.html - Remove LUNARIS_TODO comments
 
-### Summary:
-- ✅ Removed the buggy theme dropdown from index.html
-- ✅ Restored the theme switch button (Day/Night toggle) in index.html
-- ✅ Simplified siteManager.js to only handle Day/Night toggle (no dropdown)
-- ✅ Kept the simple dark/light mode system that was working before
-- ✅ Other HTML pages (play.html, howto.html, about.html, etc.) already use the old theme button - no changes needed
-
-### Files Kept As Backup:
-- **src/ui/themeManager.new.js** - The 20-theme backup code is kept for future use but not active
-
-### Codebase Status:
-- Clean and stable - only active features remain
-- No old/unused code fragments causing conflicts
-- Day/Night toggle works in both website header and in-game settings
+## Phase 5: Verification
+- [ ] Verify Day/Night theme toggle still works
+- [ ] Verify all pages load correctly
+- [ ] Verify game starts correctly
