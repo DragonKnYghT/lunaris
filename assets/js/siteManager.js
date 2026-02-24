@@ -356,9 +356,9 @@ const siteManager = {
 
         };
         
-        const baseTheme = theme.baseTheme || 'default';
-        const mode = this.currentThemeMode || 'dark';
-        const colors = themeColors[baseTheme]?.[mode] || themeColors.default.dark;
+        const baseTheme = theme.baseTheme;
+        const mode = theme.mode;
+        const colors = themeColors[baseTheme][mode];
         
         root.style.setProperty('--color-primary', colors.primary);
         root.style.setProperty('--color-secondary', colors.secondary);
