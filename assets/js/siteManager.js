@@ -7,14 +7,14 @@
 const siteManager = {
     // Current language
     currentLanguage: 'fr',
-
+    
     // Current theme mode: 'dark' or 'light'
     currentThemeMode: 'dark',
-
+    
     // Current theme index (for dropdown)
     currentThemeIndex: 0,
-
-    // Theme color presets
+    
+    // Theme color presets (defined once as object property)
     themeColors: {
         default: {
             dark: { primary: '#6c5ce7', secondary: '#00d9ff', accent: '#fd79a8', bgDark: '#1a1a2e', bgLight: '#16213e', bgCard: '#1f1f3a', textPrimary: '#ffffff', textSecondary: '#b8b8d1' },
@@ -101,9 +101,10 @@ const siteManager = {
             light: { primary: '#ffffff', secondary: '#f5f5f5', accent: '#e0e0e0', bgDark: '#ffffff', bgLight: '#ffffff', bgCard: '#ffffff', textPrimary: '#000000', textSecondary: '#555555' }
         }
     },
-
+    
     // Available themes - each theme has both light and dark variants
     themes: [
+        
         // Default
         { id: 'default_dark', name: 'Default Dark', mode: 'dark', baseTheme: 'default' },
         { id: 'default_light', name: 'Default Light', mode: 'light', baseTheme: 'default' },
@@ -186,140 +187,174 @@ const siteManager = {
 
         // Nat (tout blanc)
         { id: 'nat_dark', name: 'Nat Dark', mode: 'dark', baseTheme: 'nat' },
-        { id: 'nat_light', name: 'Nat Light', mode: 'light', baseTheme: 'nat' }
-    ],
+        { id: 'nat_light', name: 'Nat Light', mode: 'light', baseTheme: 'nat' },
 
+    ],
+    
     // Initialize the site manager
     async init() {
         console.log('SiteManager: Initializing...');
-
+        
+        // Load saved preferences
         this.loadPreferences();
+        
+        // Apply theme
         this.applyTheme();
+        
+        // Initialize language
         await this.initLanguage();
+        
+        // Setup event listeners
         this.setupEventListeners();
+        
+        // Sync dropdown value with saved theme
         this.updateThemeSwitchUI();
-
+        
         console.log('SiteManager: Initialization complete');
     },
-
+    
     // Load preferences from localStorage
     loadPreferences() {
+        // Load language preference
         const savedLang = localStorage.getItem('lunaris_language');
         if (savedLang) {
             this.currentLanguage = savedLang;
         } else {
+            // Check browser language
             const browserLang = navigator.language || navigator.userLanguage;
             this.currentLanguage = browserLang.startsWith('fr') ? 'fr' : 'en';
         }
-
+        
+        // Load theme preference (Day/Night mode)
         const savedMode = localStorage.getItem('lunaris_theme_mode');
         if (savedMode) {
             this.currentThemeMode = savedMode;
         }
-
+        
+        // Load theme index
         const savedIndex = localStorage.getItem('lunaris_theme_index');
         if (savedIndex !== null) {
             this.currentThemeIndex = parseInt(savedIndex, 10);
         }
     },
-
+    
     // Initialize language/translation
     async initLanguage() {
         if (typeof translationManager !== 'undefined') {
             await translationManager.init();
             translationManager.setLanguage(this.currentLanguage);
         }
-
+        
+        // Update language switch UI
         this.updateLanguageSwitchUI();
+        
+        // Update theme switch UI
         this.updateThemeSwitchUI();
     },
-
+    
     // Setup event listeners
     setupEventListeners() {
+        // Language switch button
         const langSwitch = document.getElementById('languageSwitch');
         if (langSwitch) {
             langSwitch.addEventListener('click', () => this.toggleLanguage());
         }
-
+        
+        // Theme toggle button (handles both 'themeToggle' and 'themeSwitch' ids)
         const themeToggle = document.getElementById('themeToggle') || document.getElementById('themeSwitch');
         if (themeToggle) {
             themeToggle.addEventListener('click', () => this.toggleTheme());
         }
-
+        
+        // Theme select (alternative id)
         const themeSelect = document.getElementById('theme-select');
         if (themeSelect) {
             themeSelect.addEventListener('change', (e) => this.selectTheme(e.target.value));
         }
     },
-
+    
     // Toggle language between EN and FR
     toggleLanguage() {
         this.currentLanguage = this.currentLanguage === 'en' ? 'fr' : 'en';
+        
+        // Save preference
         localStorage.setItem('lunaris_language', this.currentLanguage);
-
+        
+        // Update translations
         if (typeof translationManager !== 'undefined') {
             translationManager.setLanguage(this.currentLanguage);
         }
-
+        
+        // Update UI
         this.updateLanguageSwitchUI();
+        
         console.log('SiteManager: Language changed to', this.currentLanguage);
     },
-
+    
     // Toggle theme between Day and Night
     toggleTheme() {
         this.currentThemeMode = this.currentThemeMode === 'dark' ? 'light' : 'dark';
+        
+        // Save preference
         localStorage.setItem('lunaris_theme_mode', this.currentThemeMode);
-
+        
+        // Apply theme
         this.applyTheme();
+        
+        // Update UI
         this.updateThemeSwitchUI();
-
+        
         console.log('SiteManager: Theme toggled to', this.currentThemeMode);
     },
-
+    
     // Select theme from dropdown
     selectTheme(themeIndex) {
         this.currentThemeIndex = parseInt(themeIndex, 10);
-
+        
+        // Get theme info
         const theme = this.themes[this.currentThemeIndex];
         if (theme) {
+            
+            // Save preferences
             localStorage.setItem('lunaris_theme_index', this.currentThemeIndex);
             localStorage.setItem('lunaris_theme_mode', this.currentThemeMode);
-
+            
+            // Apply theme
             this.applyTheme();
+            
+            // Update UI
             this.updateThemeSwitchUI();
-
+            
             console.log('SiteManager: Theme selected:', theme.name);
         }
     },
-
-    // Apply theme to document
+    
+    // Apply theme to document - FIX: use document.documentElement for CSS :root.dark
     applyTheme() {
-        document.body.classList.remove('light-mode', 'dark-mode');
-
+        // Remove both classes first from html element (not body)
+        document.documentElement.classList.remove('light-mode', 'dark-mode');
+        
+        // Add the appropriate class to html element (matches CSS :root.dark)
         if (this.currentThemeMode === 'light') {
-            document.body.classList.add('light-mode');
+            document.documentElement.classList.add('light-mode');
         } else {
-            document.body.classList.add('dark-mode');
+            document.documentElement.classList.add('dark-mode');
         }
-
+        
+        // Apply theme-specific colors
         this.applyThemeColors();
     },
-
+    
     // Apply theme-specific colors
     applyThemeColors() {
         const theme = this.themes[this.currentThemeIndex];
         if (!theme) return;
-
+        
         const root = document.documentElement;
         const baseTheme = theme.baseTheme;
         const mode = this.currentThemeMode;
-
-        const themeSet = this.themeColors[baseTheme];
-        if (!themeSet) return;
-
-        const colors = themeSet[mode];
-        if (!colors) return;
-
+        const colors = this.themeColors[baseTheme][mode];
+        
         root.style.setProperty('--color-primary', colors.primary);
         root.style.setProperty('--color-secondary', colors.secondary);
         root.style.setProperty('--color-accent', colors.accent);
@@ -329,14 +364,14 @@ const siteManager = {
         root.style.setProperty('--text-primary', colors.textPrimary);
         root.style.setProperty('--text-secondary', colors.textSecondary);
     },
-
+    
     // Update language switch UI
     updateLanguageSwitchUI() {
         const langSwitch = document.getElementById('languageSwitch');
         if (langSwitch) {
             const langEn = langSwitch.querySelector('.lang-en');
             const langFr = langSwitch.querySelector('.lang-fr');
-
+            
             if (langEn) {
                 langEn.classList.toggle('active', this.currentLanguage === 'en');
             }
@@ -345,47 +380,57 @@ const siteManager = {
             }
         }
     },
-
+    
     // Update theme switch UI
     updateThemeSwitchUI() {
         const themeSwitch = document.getElementById('themeSwitch') || document.getElementById('themeToggle');
         if (themeSwitch) {
             const icon = themeSwitch.querySelector('.theme-icon');
             if (icon) {
+                // Day (light) = Sun, Night (dark) = Moon
                 icon.textContent = this.currentThemeMode === 'dark' ? '🌙' : '☀️';
             }
         }
 
+        
+        // Update select if exists
         const themeSelect = document.getElementById('theme-select');
         if (themeSelect) {
             themeSelect.value = this.currentThemeIndex;
         }
     },
-
+    
     // Setup navbar behavior for play page
     setupNavbarBehavior() {
+        // Check if we're on the play page
         const isPlayPage = window.location.href.includes('play.html') || document.querySelector('#game-container');
-
+        
         if (isPlayPage) {
+            // Listen for game start
             this.setupGameStartDetection();
         }
     },
-
+    
     // Setup detection for when game starts
     setupGameStartDetection() {
+        // Check periodically if game has started
         const checkGameStart = setInterval(() => {
+            const gameContainer = document.getElementById('game-container');
             const screenContainer = document.getElementById('screen-container');
-
+            
+            // If game is rendering content, hide navbar
             if (screenContainer && screenContainer.children.length > 0) {
                 this.hideNavbar();
                 clearInterval(checkGameStart);
             }
         }, 500);
-
+        
+        // Also listen for custom event when game starts
         window.addEventListener('gameStart', () => {
             this.hideNavbar();
         });
-
+        
+        // Alternative: check when loading is hidden
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loading = document.getElementById('game-loading');
@@ -395,34 +440,34 @@ const siteManager = {
             }, 2000);
         });
     },
-
+    
     // Hide navbar and footer
     hideNavbar() {
         document.body.classList.add('game-active');
         console.log('SiteManager: Navbar hidden (game started)');
     },
-
+    
     // Show navbar and footer
     showNavbar() {
         document.body.classList.remove('game-active');
         console.log('SiteManager: Navbar shown');
     },
-
+    
     // Get current language
     getLanguage() {
         return this.currentLanguage;
     },
-
+    
     // Get current theme mode
     getThemeMode() {
         return this.currentThemeMode;
     },
-
+    
     // Get current theme index
     getThemeIndex() {
         return this.currentThemeIndex;
     },
-
+    
     // Get all themes
     getThemes() {
         return this.themes;
