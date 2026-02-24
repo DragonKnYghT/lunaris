@@ -227,7 +227,6 @@ const siteManager = {
         // Get theme info
         const theme = this.themes[this.currentThemeIndex];
         if (theme) {
-            this.currentThemeMode = theme.mode;
             
             // Save preferences
             localStorage.setItem('lunaris_theme_index', this.currentThemeIndex);
