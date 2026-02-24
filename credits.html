@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <!-- LUNARIS_TODO: replace placeholder colors with final Lunaris theme -->
 </head>
 <body>
     <header class="site-header">
@@ -25,15 +24,38 @@
                         <li><a href="about.html" class="nav-link" data-i18n="common.about">About</a></li>
                         <li><a href="patchnotes.html" class="nav-link" data-i18n="common.patchNotes">Patch Notes</a></li>
                         <li><a href="credits.html" class="nav-link active" data-i18n="common.credits">Credits</a></li>
-                        <li class="nav-buttons">
-                            <button class="language-switch" id="languageSwitch" aria-label="Switch language">
-                                <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
-                            </button>
-                            <button class="theme-switch" id="themeSwitch" aria-label="Switch theme">
-                                <span class="theme-icon">🌙</span>
-                            </button>
-                        </li>
                     </ul>
+                    <div class="nav-buttons">
+                        <button class="language-switch" id="languageSwitch" aria-label="Switch language">
+                            <span class="lang-en">EN</span> / <span class="lang-fr">FR</span>
+                        </button>
+                        <select id="theme-select" class="theme-select">
+                            <option value="0">Default Dark</option>
+                            <option value="1">Default Light</option>
+                            <option value="2">Ocean Dark</option>
+                            <option value="3">Ocean Light</option>
+                            <option value="4">Forest Dark</option>
+                            <option value="5">Forest Light</option>
+                            <option value="6">Sunset Dark</option>
+                            <option value="7">Sunset Light</option>
+                            <option value="8">Lavender Dark</option>
+                            <option value="9">Lavender Light</option>
+                            <option value="10">Midnight Dark</option>
+                            <option value="11">Midnight Light</option>
+                            <option value="12">Candy Dark</option>
+                            <option value="13">Candy Light</option>
+                            <option value="14">Lemon Dark</option>
+                            <option value="15">Lemon Light</option>
+                            <option value="16">Mint Dark</option>
+                            <option value="17">Mint Light</option>
+                            <option value="18">Rose Dark</option>
+                            <option value="19">Rose Light</option>
+                            <option value="20">Sakura Dark</option>
+                            <option value="21">Sakura Light</option>
+                            <option value="22">Brasier Dark</option>
+                            <option value="23">Brasier Light</option>
+                        </select>
+                    </div>
                 </nav>
                 <button class="mobile-menu-toggle" aria-label="Toggle menu">
                     <span></span>
@@ -58,28 +80,20 @@
                     <p><strong>Lead Developer</strong></p>
                     <p>Lunaris Team</p>
                     
-                    <!-- LUNARIS_TODO: add development team -->
-                    
                     <h2 data-i18n="credits.art.title">Art & Design</h2>
                     <p><strong>Concept Art</strong></p>
                     <p>Lunaris Team</p>
-                    
-                    <!-- LUNARIS_TODO: add art team -->
                     
                     <h2 data-i18n="credits.music.title">Music & Sound</h2>
                     <p><strong>Sound Design</strong></p>
                     <p>Coming Soon</p>
                     
-                    <!-- LUNARIS_TODO: add music credits -->
-                    
                     <h2 data-i18n="credits.specialThanks.title">Special Thanks</h2>
                     <p data-i18n="credits.specialThanks.description">Thank you to all our players and supporters!</p>
                     
-                    <!-- LUNARIS_TODO: add special thanks -->
-                    
                     <div class="credits-footer">
                         <p>&copy; 2024 Lunaris. All rights reserved.</p>
-                        <p data-i18n="common.version">Version</span> 0.1.0</p>
+                        <p>Version 0.1.0</p>
                     </div>
                 </article>
             </div>
@@ -104,13 +118,10 @@
         </div>
     </footer>
 
-    <!-- Scripts - Load in order: translationManager, themeManager, siteManager, navigation -->
     <script src="src/settings/translationManager.js"></script>
-    <script src="src/ui/themeManager.js"></script>
     <script src="assets/js/siteManager.js"></script>
     <script src="assets/js/navigation.js"></script>
     <script>
-        // Initialize site manager on page load
         document.addEventListener('DOMContentLoaded', async function() {
             await siteManager.init();
         });

@@ -81,6 +81,9 @@ const siteManager = {
         // Setup event listeners
         this.setupEventListeners();
         
+        // Sync dropdown value with saved theme
+        this.updateThemeSwitchUI();
+        
         console.log('SiteManager: Initialization complete');
     },
     
