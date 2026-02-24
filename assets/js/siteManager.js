@@ -85,13 +85,10 @@ const siteManager = {
         { id: 'minuit_dark', name: 'Minuit Dark', mode: 'dark', baseTheme: 'minuit' },
         { id: 'minuit_light', name: 'Minuit Light', mode: 'light', baseTheme: 'minuit' },
 
-        // MinuitTest
-        { id: 'minuitTest_dark', name: 'MinuitTest Dark', mode: 'dark', baseTheme: 'minuitTest' },
-        { id: 'minuitTest_light', name: 'MinuitTest Light', mode: 'light', baseTheme: 'minuitTest' },
+        // Ranni
+        { id: 'ranni_dark', name: 'Ranni Dark', mode: 'dark', baseTheme: 'ranni' },
+        { id: 'ranni_light', name: 'Ranni Light', mode: 'light', baseTheme: 'ranni' },
 
-        // MinuitTTest
-        { id: 'minuitTTest_dark', name: 'MinuitTTest Dark', mode: 'dark', baseTheme: 'minuitTTest' },
-        { id: 'minuitTTest_light', name: 'MinuitTTest Light', mode: 'light', baseTheme: 'minuitTTest' },
 
         // Slave Killer Fang
         { id: 'slavekillerfang_dark', name: 'Slave Killer Fang Dark', mode: 'dark', baseTheme: 'slavekillerfang' },
@@ -179,12 +176,6 @@ const siteManager = {
         const themeToggle = document.getElementById('themeToggle') || document.getElementById('themeSwitch');
         if (themeToggle) {
             themeToggle.addEventListener('click', () => this.toggleTheme());
-        }
-        
-        // Theme dropdown
-        const themeDropdown = document.getElementById('themeDropdown');
-        if (themeDropdown) {
-            themeDropdown.addEventListener('change', (e) => this.selectTheme(e.target.value));
         }
         
         // Theme select (alternative id)
@@ -345,13 +336,9 @@ const siteManager = {
                 dark: { primary: '#1F2A44', secondary: '#FF4FA3', accent: '#A37BFF', bgDark: '#0a0a15', bgLight: '#121225', bgCard: '#1a1a35', textPrimary: '#ffffff', textSecondary: '#b8b8d1' },
                 light: { primary: '#FF4FA3', secondary: '#1F2A44', accent: '#A37BFF', bgDark: '#f5f0ff', bgLight: '#faf8ff', bgCard: '#ffffff', textPrimary: '#1F2A44', textSecondary: '#4a4a6d' }
             },
-            minuitTest: {
-                dark: { primary: '#1F2A44', secondary: '#FF4FA3', accent: '#C06CFF', bgDark: '#0a0a15', bgLight: '#15152a', bgCard: '#1f1f35', textPrimary: '#ffffff', textSecondary: '#c8c8e0' },
-                light: { primary: '#FF4FA3', secondary: '#1F2A44', accent: '#C06CFF', bgDark: '#fff0fa', bgLight: '#fff7fd', bgCard: '#ffffff', textPrimary: '#1F2A44', textSecondary: '#5a4a6d' }
-            },
-            minuitTTest: {
-                dark: { primary: '#6c5ce7', secondary: '#74b9ff', accent: '#a29bfe', bgDark: '#0a0a15', bgLight: '#121225', bgCard: '#1a1a35', textPrimary: '#ffffff', textSecondary: '#b8b8d1' },
-                light: { primary: '#5a4fcf', secondary: '#74b9ff', accent: '#a29bfe', bgDark: '#f0f0ff', bgLight: '#fafaff', bgCard: '#ffffff', textPrimary: '#1a1a35', textSecondary: '#4a4a6d' }
+            ranni: {
+                dark: { primary: '#6AA7FF', secondary: '#A8C8FF', accent: '#C6B8FF', bgDark: '#0A0A15', bgLight: '#121225', bgCard: '#1A1A35', textPrimary: '#FFFFFF', textSecondary: '#C8C8E8' },
+                light: { primary: '#6AA7FF', secondary: '#A8C8FF', accent: '#C6B8FF', bgDark: '#F0F4FF', bgLight: '#FAFBFF', bgCard: '#FFFFFF', textPrimary: '#1A1A35', textSecondary: '#4A4A6D' }
             },
             slavekillerfang: {
                 dark: { primary: '#b30000', secondary: '#ff0033', accent: '#ff6699', bgDark: '#0a0000', bgLight: '#1a0005', bgCard: '#2a0008', textPrimary: '#ffffff', textSecondary: '#e8b8c8' },
@@ -407,12 +394,7 @@ const siteManager = {
                 icon.textContent = this.currentThemeMode === 'dark' ? '🌙' : '☀️';
             }
         }
-        
-        // Update dropdown if exists
-        const themeDropdown = document.getElementById('themeDropdown');
-        if (themeDropdown) {
-            themeDropdown.value = this.currentThemeIndex;
-        }
+
         
         // Update select if exists
         const themeSelect = document.getElementById('theme-select');
