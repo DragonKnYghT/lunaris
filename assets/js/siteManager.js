@@ -102,9 +102,6 @@ const siteManager = {
         { id: 'nat_dark', name: 'Nat Dark', mode: 'dark', baseTheme: 'nat' },
         { id: 'nat_light', name: 'Nat Light', mode: 'light', baseTheme: 'nat' },
 
-        // Natou (tout blanc)
-        { id: 'natou_dark', name: 'Natou Dark', mode: 'dark', baseTheme: 'natou' },
-        { id: 'natou_light', name: 'Natou Light', mode: 'light', baseTheme: 'natou' },
     ],
     
     // Initialize the site manager
@@ -270,7 +267,8 @@ const siteManager = {
         // Apply CSS custom properties based on theme
         const root = document.documentElement;
 
-        // Theme color presets - Dark versions
+        // Theme color presets
+
         const themeColors = {
             default: {
                 dark: { primary: '#6c5ce7', secondary: '#00d9ff', accent: '#fd79a8', bgDark: '#1a1a2e', bgLight: '#16213e', bgCard: '#1f1f3a', textPrimary: '#ffffff', textSecondary: '#b8b8d1' },
@@ -357,9 +355,6 @@ const siteManager = {
                 light: { primary: '#ffffff', secondary: '#f5f5f5', accent: '#e0e0e0', bgDark: '#ffffff', bgLight: '#ffffff', bgCard: '#ffffff', textPrimary: '#000000', textSecondary: '#555555' }
             },
 
-            natou: {
-                light: { primary: '#ffffff', secondary: '#f5f5f5', accent: '#e0e0e0', bgDark: '#ffffff', bgLight: '#ffffff', bgCard: '#ffffff', textPrimary: '#000000', textSecondary: '#555555' }
-            },
         };
         
         const baseTheme = theme.baseTheme || 'default';
