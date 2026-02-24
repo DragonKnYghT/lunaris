@@ -101,6 +101,10 @@ const siteManager = {
         // Nat (tout blanc)
         { id: 'nat_dark', name: 'Nat Dark', mode: 'dark', baseTheme: 'nat' },
         { id: 'nat_light', name: 'Nat Light', mode: 'light', baseTheme: 'nat' },
+
+        // Natou (tout blanc)
+        { id: 'natou_dark', name: 'Natou Dark', mode: 'dark', baseTheme: 'natou' },
+        { id: 'natou_light', name: 'Natou Light', mode: 'light', baseTheme: 'natou' },
     ],
     
     // Initialize the site manager
@@ -350,6 +354,10 @@ const siteManager = {
             },
             nat: {
                 dark: { primary: '#ffffff', secondary: '#e0e0e0', accent: '#f5f5f5', bgDark: '#1a1a1a', bgLight: '#2a2a2a', bgCard: '#3a3a3a', textPrimary: '#ffffff', textSecondary: '#d0d0d0' },
+                light: { primary: '#ffffff', secondary: '#f5f5f5', accent: '#e0e0e0', bgDark: '#ffffff', bgLight: '#ffffff', bgCard: '#ffffff', textPrimary: '#000000', textSecondary: '#555555' }
+            },
+
+            natou: {
                 light: { primary: '#ffffff', secondary: '#f5f5f5', accent: '#e0e0e0', bgDark: '#ffffff', bgLight: '#ffffff', bgCard: '#ffffff', textPrimary: '#000000', textSecondary: '#555555' }
             },
         };
