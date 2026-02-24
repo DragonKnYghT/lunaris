@@ -265,7 +265,7 @@ const siteManager = {
         
         // Apply CSS custom properties based on theme
         const root = document.documentElement;
-        
+
         // Theme color presets - Dark versions
         const themeColors = {
             default: {
