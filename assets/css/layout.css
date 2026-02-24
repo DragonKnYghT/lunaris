@@ -42,12 +42,22 @@
 /* ===== Navigation ===== */
 .main-nav {
     display: flex;
+    flex: 1;
+    justify-content: center;
 }
 
 .nav-list {
     display: flex;
     list-style: none;
     gap: var(--spacing-lg);
+}
+
+/* ===== Nav Buttons (Theme & Language) ===== */
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-left: auto;
 }
 
 .nav-link {
