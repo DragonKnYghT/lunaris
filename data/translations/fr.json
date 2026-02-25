@@ -65,196 +65,58 @@
             "copyright": "© 2026 Lunaris. Tous droits réservés."
         }
     },
+    "game": {
+        "playMenu": {
+            "title": "Jouer",
+            "description": "Commencez votre aventure"
+        },
+        "loading": "Chargement de Lunaris..."
+    },
     "howto": {
         "title": "Comment Jouer",
         "gettingStarted": {
-            "title": "Commencer",
+            "title": "Pour Commencer",
             "description": "Bienvenue sur Lunaris ! Ce guide vous aidera à comprendre les bases du jeu."
         },
-        "gameModes": {
-            "title": "Modes de Jeu",
-            "roguelike": {
-                "title": "Mode Roguelike",
-                "description": "Participez à une aventure à travers des zones générées procéduralement. Chaque course est unique alors que vous affrontez des rencontres aléatoires, collectez des créatures, et essayez d'atteindre la fin."
-            },
-            "versus": {
-                "title": "Mode Versus",
-                "description": "Affrontez d'autres joueurs en temps réel. Construisez votre équipe,.stratégisez et grimpez dans les rangs !"
-            }
+        "battle": {
+            "title": "Combat",
+            "description": "Vous avez des faiblesses ou des bonus de dégâts selon le type de votre Lunaris. Votre Lunaris possède également des capacités spéciales. Vous pouvez consulter le tableau des types complet sur notre wiki."
         },
-        "combat": {
-            "title": "Bases du Combat",
-            "description": "Lunaris dispose d'un combat au tour par tour où les créatures utilisent des capacités, des objets, ou changent de créature.",
-            "types": {
-                "title": "Avantages de Types",
-                "description": "Chaque créature a un ou deux types. Certains types ont des avantages sur d'autres. Utilisez les correspondances de types pour prendre l'avantage !"
-            },
-            "abilities": {
-                "title": "Capacités",
-                "description": "Les créatures peuvent avoir des capacités uniques qui offrent des bonus passifs ou s'activent sous certaines conditions."
-            }
+        "creatures": {
+            "title": "Créatures",
+            "description": "Votre équipe est composée de créatures avec des types, des capacités et des statistiques uniques. Construisez une équipe équilibrée pour relever tous les défis !"
         },
         "collecting": {
-            "title": "Collecter des Créatures",
-            "description": "Au cours de votre aventure, vous rencontrerez des créatures sauvages. Capturez-les en utilisant des objets spéciaux pour les ajouter à votre équipe !"
+            "title": "Collecter",
+            "description": "Au cours de votre aventure, vous rencontrerez des créatures sauvages. Capturez-les avec des objets spéciaux pour les ajouter à votre équipe !"
         },
         "tips": {
             "title": "Conseils pour les Débutants",
             "list": [
-                "Faites attention aux avantages de types au combat",
-                "Construisez une équipe équilibrée avec différents types",
+                "Faites attention aux avantages de types dans les combats",
+                "Constituez une équipe équilibrée avec différents types",
                 "N'oubliez pas d'utiliser des objets pendant le combat",
                 "Sauvegardez régulièrement votre progression",
-                "Expérimentez avec différentes stratégies"
-            ]
-        }
-    },
-    "about": {
-        "title": "À Propos de Lunaris",
-        "whatIs": {
-            "title": "Qu'est-ce que Lunaris ?",
-            "description": "Lunaris est un jeu roguelike de combat de créatures modulaire où les joueurs explorent des zones générées procéduralement, capturent et entraînent des créatures uniques, et s'engagent dans des combats stratégiques au tour par tour."
-        },
-        "development": {
-            "title": "Développement",
-            "description": "Lunaris est développé comme un système de jeu modulaire et extensible. Les mécaniques de base sont conçues pour être flexibles, permettant l'ajout facile de nouvelles créatures, capacités, zones et modes de jeu."
-        },
-        "technology": {
-            "title": "Technologie",
-            "items": [
-                "Construit avec JavaScript pur",
-                "Multijoueur basé sur WebSocket",
-                "Design web réactif",
-                "Architecture modulaire"
+                "Expérimentez différentes stratégies"
             ]
         },
-        "roadmap": {
-            "title": "Feuille de Route",
-            "description": "Les futures mises à jour incluront :",
-            "items": [
-                "Plus de créatures et zones",
-                "Fonctionnalités multijoueur améliorées",
-                "Modes de jeu supplémentaires",
-                "Améliorations visuelles et animations"
-            ]
-        }
-    },
-    "patchnotes": {
-        "title": "Notes de Version",
-        "current": {
-            "title": "Version Actuelle",
-            "description": "Dernières mises à jour et améliorations"
-        }
-    },
-    "credits": {
-        "title": "Crédits",
-        "team": {
-            "title": "Équipe de Développement",
-            "description": "Lunaris est développé par une petite équipe de développeurs de jeux passionnés."
-        },
-        "acknowledgments": {
-            "title": "Remerciements",
-            "description": "Nous tenons à remercier :",
-            "items": [
-                "Nos testeurs et la communauté",
-                "Les projets open source qui ont rendu cela possible",
-                "L'inspiration des jeux classiques de combat de créatures"
-            ]
-        },
-        "technology": {
-            "title": "Technologie",
-            "description": "Ce jeu a été construit avec :",
-            "items": [
-                "JavaScript (Vanilla)",
-                "WebSocket pour le multijoueur",
-                "HTML5/CSS3",
-                "GitHub Pages pour l'hébergement"
-            ]
-        },
-        "contact": {
-            "title": "Contact",
-            "description": "Pour toute question, retour ou signalement de bug, n'hésitez pas à nous contacter."
-        },
-        "license": {
-            "title": "Licence",
-            "description": "Lunaris est open source et disponible sous licence MIT."
-        }
-    },
-    "themes": {
-        "title": "Thème",
-        "select": "Sélectionner le Thème",
-        "previous": "Thème Précédent",
-        "next": "Thème Suivant",
-        "preview": "Aperçu des Couleurs",
-        "sakura": "Sakura",
-        "sakuraSubtitle": "Rose pastel & Blanc",
-        "sakuraNocturne": "Sakura Nocturne",
-        "sakuraNocturneSubtitle": "Rose vif & Noir",
-        "oceanMystique": "Océan Mystique",
-        "oceanMystiqueSubtitle": "Bleu profond & Turquoise",
-        "brasierRoyal": "Brasier Royal",
-        "brasierRoyalSubtitle": "Rouge sombre & Or",
-        "voidEternel": "Void Éternel",
-        "voidEternelSubtitle": "Noir & Violet néon",
-        "foudreDivine": "Foudre Divine",
-        "foudreDivineSubtitle": "Jaune électrique & Bleu nuit",
-        "hiverGlacial": "Hiver Glacial",
-        "hiverGlacialSubtitle": "Bleu clair & Blanc givré",
-        "foretSpirituelle": "Forêt Spirituelle",
-        "foretSpirituelleSubtitle": "Vert émeraude & Brun foncé",
-        "luneEcarlate": "Lune Écarlate",
-        "luneEcarlateSubtitle": "Rouge sang & Noir",
-        "empireCeleste": "Empire Céleste",
-        "empireCelesteSubtitle": "Blanc & Or lumineux",
-        "brumeFantome": "Brume Fantôme",
-        "brumeFantomeSubtitle": "Gris clair & Bleu pâle",
-        "cyberCity": "Cyber City",
-        "cyberCitySubtitle": "Noir & Cyan néon",
-        "lotusImperial": "Lotus Impérial",
-        "lotusImperialSubtitle": "Violet & Rose doux",
-        "dragonAncestral": "Dragon Ancestral",
-        "dragonAncestralSubtitle": "Rouge sombre & Noir charbon",
-        "eclipse": "Éclipse",
-        "eclipseSubtitle": "Noir & Argent",
-        "cristalPolaire": "Cristal Polaire",
-        "cristalPolaireSubtitle": "Bleu glacier & Argent",
-        "hanamiDore": "Hanami Doré",
-        "hanamiDoreSubtitle": "Rose pâle & Or rosé",
-        "abyssal": "Abyssal",
-        "abyssalSubtitle": "Noir profond & Bleu pêche",
-        "neonPulse": "Néon Pulse",
-        "neonPulseSubtitle": "Violet néon & Rose néon",
-        "mclaren": "McLaren",
-        "mclarenSubtitle": "Black & Red"
-    },
-    "game": {
-        "loading": "Chargement de Lunaris...",
-        "mainMenu": {
-            "title": "Menu Principal",
-            "play": "Jouer",
-            "settings": "Paramètres",
-            "credits": "Crédits"
-        },
-        "playMenu": {
-            "title": "Choisissez Votre Aventure",
-            "description": "Sélectionnez un mode de jeu pour commencer votre voyage !",
-            "modes": {
-                "roguelike": {
-                    "title": "Roguelike",
-                    "description": "Explorez des zones générées procéduralement dans cette aventure roguelike."
-                },
-                "battleTest": {
-                    "title": "Test de Combat",
-                    "description": "Testez votre équipe dans un combat simulé."
-                },
-                "versus": {
-                    "title": "Versus",
-                    "description": "Affrontez d'autres joueurs dans des matchs versus."
-                },
-                "gacha": {
-                    "title": "Gacha",
-                    "description": "Essayez votre chance avec le système gacha."
-                }
+        "gameModes": {
+            "title": "Modes de Jeu",
+            "adventure": {
+                "title": "Aventure",
+                "description": "Embarquez pour un voyage roguelike à travers des zones générées procéduralement."
+            },
+            "battleTest": {
+                "title": "Test de Combat",
+                "description": "Testez votre équipe dans un combat simulé."
+            },
+            "versus": {
+                "title": "Versus",
+                "description": "Affrontez d'autres joueurs dans des matchs versus."
+            },
+            "gacha": {
+                "title": "Gacha",
+                "description": "Essayez votre chance avec le système gacha."
             }
         },
         "settingsMenu": {
