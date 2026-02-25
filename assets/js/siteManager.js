@@ -52,10 +52,11 @@ const siteManager = {
             dark: { primary: '#ff2e63', secondary: '#ff5c8a', accent: '#ff99b3', bgDark: '#1a0005', bgLight: '#2a0008', bgCard: '#3a000c', textPrimary: '#ffffff', textSecondary: '#e8b8c8' },
             light: { primary: '#ff2e63', secondary: '#ff5c8a', accent: '#ff99b3', bgDark: '#fff0f5', bgLight: '#fff5f7', bgCard: '#ffffff', textPrimary: '#3a0008', textSecondary: '#6d3a4a' }
         },
-        mclaren: {
-            dark: { primary: '#ff6f00', secondary: '#ffa040', accent: '#ffd180', bgDark: '#0d0d0d', bgLight: '#1a1a1a', bgCard: '#262626', textPrimary: '#ffffff', textSecondary: '#e8c8a8' },
-            light: { primary: '#ff6f00', secondary: '#ffa040', accent: '#ffd180', bgDark: '#fff5e6', bgLight: '#fffaf0', bgCard: '#ffffff', textPrimary: '#331a00', textSecondary: '#664d00' }
+        glacier: {
+            dark: { primary: '#C2E0E3', secondary: '#9DB5C0', accent: '#E0FCFC', bgDark: '#253337', bgLight: '#2F4146', bgCard: '#3A4D53', textPrimary: '#E0FCFC', textSecondary: '#9DB5C0' },
+            light: { primary: '#5C6C73', secondary: '#9DB5C0', accent: '#253337', bgDark: '#E0FCFC', bgLight: '#F7FFFF', bgCard: '#FFFFFF', textPrimary: '#253337', textSecondary: '#5C6C73' }
         },
+
         galaxie: {
             dark: { primary: '#8a4fff', secondary: '#ff79c6', accent: '#bd93f9', bgDark: '#0b0b1e', bgLight: '#15152e', bgCard: '#1f1f3d', textPrimary: '#ffffff', textSecondary: '#c8b8e8' },
             light: { primary: '#7a3fe0', secondary: '#ff79c6', accent: '#bd93f9', bgDark: '#f3f0ff', bgLight: '#faf8ff', bgCard: '#ffffff', textPrimary: '#1a1a2e', textSecondary: '#4a4a5a' }
@@ -141,9 +142,9 @@ const siteManager = {
         { id: 'lycoris_dark', name: 'Lycoris Rouge Dark', mode: 'dark', baseTheme: 'lycoris' },
         { id: 'lycoris_light', name: 'Lycoris Rouge Light', mode: 'light', baseTheme: 'lycoris' },
 
-        // McLaren
-        { id: 'mclaren_dark', name: 'McLaren Dark', mode: 'dark', baseTheme: 'mclaren' },
-        { id: 'mclaren_light', name: 'McLaren Light', mode: 'light', baseTheme: 'mclaren' },
+        // Glacier
+        { id: 'glacier_dark', name: 'Glacier Dark', mode: 'dark', baseTheme: 'glacier' },
+        { id: 'glacier_light', name: 'Glacier Light', mode: 'light', baseTheme: 'glacier' },
 
         // Galaxie
         { id: 'galaxie_dark', name: 'Galaxie Dark', mode: 'dark', baseTheme: 'galaxie' },
