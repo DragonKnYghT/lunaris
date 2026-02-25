@@ -332,14 +332,14 @@ const siteManager = {
     // Apply theme to document - FIX: use document.documentElement for CSS :root.dark
     applyTheme() {
         // Remove both classes first from html element (not body)
-        document.documentElement.classList.remove('light-mode', 'dark-mode');
+        document.documentElement.classList.remove('light-mode', 'dark-mode', 'dark');
         
         // Add the appropriate class to html element (matches CSS :root.dark)
-        if (this.currentThemeMode === 'light') {
-            document.documentElement.classList.add('light-mode');
-        } else {
-            document.documentElement.classList.add('dark-mode');
+        // Light mode = no class (default), Dark mode = 'dark' class
+        if (this.currentThemeMode === 'dark') {
+            document.documentElement.classList.add('dark');
         }
+        // For light mode, we don't add any class (default behavior)
         
         // Apply theme-specific colors
         this.applyThemeColors();
