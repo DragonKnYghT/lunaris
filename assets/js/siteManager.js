@@ -314,6 +314,8 @@ const siteManager = {
         // Get theme info
         const theme = this.themes[this.currentThemeIndex];
         if (theme) {
+            // Update the theme mode based on the selected theme's mode
+            this.currentThemeMode = theme.mode;
             
             // Save preferences
             localStorage.setItem('lunaris_theme_index', this.currentThemeIndex);
@@ -325,7 +327,7 @@ const siteManager = {
             // Update UI
             this.updateThemeSwitchUI();
             
-            console.log('SiteManager: Theme selected:', theme.name);
+            console.log('SiteManager: Theme selected:', theme.name, 'Mode:', this.currentThemeMode);
         }
     },
     
