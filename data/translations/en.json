@@ -198,5 +198,9 @@
             "title": "Special Thanks",
             "description": "Thanks to my friends who also contributed to the creation of several details, including the main characters and more."
         }
+    },
+    "patchnotes": {
+        "title": "Patch Notes",
+        "comingSoon": "Coming Soon"
     }
 }

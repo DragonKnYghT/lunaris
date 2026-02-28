@@ -198,5 +198,9 @@
             "title": "Remerciements",
             "description": "Merci à mes amis qui ont également contribué à la création de plusieurs détails, y compris les personnages principaux et plus encore."
         }
+    },
+    "patchnotes": {
+        "title": "Notes de Version",
+        "comingSoon": "Bientot disponible"
     }
 }
