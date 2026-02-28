@@ -182,5 +182,21 @@
             "defeat": "Defeat!",
             "draw": "Draw!"
         }
+    },
+    "credits": {
+        "title": "Credits",
+        "development": {
+            "title": "Development"
+        },
+        "art": {
+            "title": "Art"
+        },
+        "music": {
+            "title": "Music"
+        },
+        "specialThanks": {
+            "title": "Special Thanks",
+            "description": "Thanks to my friends who also contributed to the creation of several details, including the main characters and more."
+        }
     }
 }

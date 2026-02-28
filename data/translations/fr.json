@@ -182,5 +182,21 @@
             "defeat": "Défaite !",
             "draw": "Match Nul !"
         }
+    },
+    "credits": {
+        "title": "Crédits",
+        "development": {
+            "title": "Développement"
+        },
+        "art": {
+            "title": "Art"
+        },
+        "music": {
+            "title": "Musique"
+        },
+        "specialThanks": {
+            "title": "Remerciements",
+            "description": "Merci à mes amis qui ont également contribué à la création de plusieurs détails, y compris les personnages principaux et plus encore."
+        }
     }
 }
