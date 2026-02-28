@@ -201,6 +201,25 @@
     },
     "patchnotes": {
         "title": "Patch Notes",
-        "comingSoon": "Coming Soon"
+        "comingSoon": "Coming Soon",
+        "initialRelease": "Initial Release",
+        "futureUpdates": "Future Updates",
+        "coreMechanics": "Core game mechanics implemented",
+        "roguelikeMode": "Roguelike mode with procedural zones",
+        "creatureCollection": "Creature collection and combat system",
+        "turnBasedBattle": "Turn-based battle system",
+        "typeAdvantage": "Type advantage system",
+        "abilitiesStatus": "Abilities and status effects",
+        "saveLoad": "Save/Load system",
+        "gachaPull": "Gacha pull system",
+        "multiplayer": "Basic multiplayer networking (WebSocket)",
+        "websiteStructure": "Website structure and deployment setup",
+        "additionalCreatures": "Additional creatures and zones",
+        "enhancedMultiplayer": "Enhanced multiplayer features",
+        "rankedMatchmaking": "Ranked matchmaking",
+        "newGameModes": "New game modes",
+        "visualImprovements": "Visual improvements and animations",
+        "soundMusic": "Sound and music",
+        "mobileSupport": "Mobile support"
     }
 }

@@ -201,6 +201,25 @@
     },
     "patchnotes": {
         "title": "Notes de Version",
-        "comingSoon": "Bientot disponible"
+        "comingSoon": "Bientot disponible",
+        "initialRelease": "Sortie initiale",
+        "futureUpdates": "Mises a jour futures",
+        "coreMechanics": "Mecaniques de jeu principales implementees",
+        "roguelikeMode": "Mode Roguelike avec zones",
+        "creatureCollection": "Systeme de collection et de combat",
+        "turnBasedBattle": "Systeme de combat au tour par tour",
+        "typeAdvantage": "Systeme d'avantage de type",
+        "abilitiesStatus": "Capacites et effets de statut",
+        "saveLoad": "Systeme de sauvegarde",
+        "gachaPull": "Systeme de Gacha",
+        "multiplayer": "Reseautage multiplayer",
+        "websiteStructure": "Structure du site Web",
+        "additionalCreatures": "Creatures et zones supplementaires",
+        "enhancedMultiplayer": "Fonctionnalites multiplayer",
+        "rankedMatchmaking": "Matchmaking classe",
+        "newGameModes": "Nouveaux modes de jeu",
+        "visualImprovements": "Ameliorations visuelles",
+        "soundMusic": "Son et musique",
+        "mobileSupport": "Support mobile"
     }
 }
