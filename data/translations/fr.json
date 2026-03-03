@@ -169,7 +169,7 @@
         "logout": {
             "title": "Se déconnecter"
         },
-        "battle": {
+        "battle_game": {
             "yourTurn": "Votre Tour",
             "enemyTurn": "Tour de l'Adversaire",
             "chooseAction": "Choisissez une action",
@@ -181,6 +181,33 @@
             "victory": "Victoire !",
             "defeat": "Défaite !",
             "draw": "Match Nul !"
+        }
+    },
+    "about": {
+        "title": "À propos de Lunaris",
+        "story": {
+            "title": "Histoire",
+            "description": "Nous sommes un groupe d'amis qui apprécient le jeu Pokerogue..."
+        },
+        "technology": {
+            "title": "Technologie",
+            "description": "Construit avec des technologies web modernes :",
+            "items": [
+                "HTML5, CSS3, JavaScript (ES6+)",
+                "WebSocket pour le multijoueur",
+                "Design web responsive",
+                "Architecture modulaire"
+            ]
+        },
+        "roadmap": {
+            "title": "Feuille de route",
+            "description": "Les futures mises à jour incluront :",
+            "items": [
+                "Plus de créatures et zones",
+                "Fonctionnalités multijoueur améliorées",
+                "Modes de jeu supplémentaires",
+                "Améliorations visuelles et animations"
+            ]
         }
     },
     "credits": {

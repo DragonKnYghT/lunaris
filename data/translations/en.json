@@ -78,7 +78,7 @@
             "title": "Getting Started",
             "description": "Welcome to Lunaris! This guide will help you understand the basics of the game."
         },
-        "battle": {
+        "battle_game": {
             "title": "Battle",
             "description": "You have weaknesses or bonus damage depending on your creature type. Your creatures also have special abilities. You can view the full type chart on our wiki."
         },
@@ -181,6 +181,33 @@
             "victory": "Victory!",
             "defeat": "Defeat!",
             "draw": "Draw!"
+        }
+    },
+    "about": {
+        "title": "About Lunaris",
+        "story": {
+            "title": "Story",
+            "description": "We are a group of friends who enjoy the game Pokerogue..."
+        },
+        "technology": {
+            "title": "Technology",
+            "description": "Built with modern web technologies:",
+            "items": [
+                "HTML5, CSS3, JavaScript (ES6+)",
+                "WebSocket for multiplayer",
+                "Responsive web design",
+                "Modular architecture"
+            ]
+        },
+        "roadmap": {
+            "title": "Roadmap",
+            "description": "Future updates will include:",
+            "items": [
+                "More creatures and zones",
+                "Enhanced multiplayer features",
+                "Additional game modes",
+                "Visual improvements and animations"
+            ]
         }
     },
     "credits": {
