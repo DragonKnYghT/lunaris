@@ -53,7 +53,7 @@
             },
             "multiplayer": {
                 "title": "Online Multiplayer",
-                "description": "Battle against other players in versus matches."
+                "description": "Battle against other players in versus matches, Or together in Roguelike."
             }
         },
         "cta": {
@@ -80,7 +80,7 @@
         },
         "battle": {
             "title": "Battle",
-            "description": "You have weaknesses or bonus damage depending on your Lunaris type. Your Lunaris also has special abilities. You can view the full type chart on our wiki."
+            "description": "You have weaknesses or bonus damage depending on your creature type. Your creatures also have special abilities. You can view the full type chart on our wiki."
         },
         "creatures": {
             "title": "Creatures",

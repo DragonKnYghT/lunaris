@@ -53,7 +53,7 @@
             },
             "multiplayer": {
                 "title": "Multijoueur en Ligne",
-                "description": "Affrontez d'autres joueurs dans des matchs versus."
+                "description": "Affrontez d'autres joueurs dans des matchs versus, Ou jouer ensemble en Roguelike."
             }
         },
         "cta": {
