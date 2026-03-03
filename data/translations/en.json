@@ -78,7 +78,7 @@
             "title": "Getting Started",
             "description": "Welcome to Lunaris! This guide will help you understand the basics of the game."
         },
-        "battle_game": {
+        "battle": {
             "title": "Battle",
             "description": "You have weaknesses or bonus damage depending on your creature type. Your creatures also have special abilities. You can view the full type chart on our wiki."
         },
@@ -169,7 +169,7 @@
         "logout": {
             "title": "Log Out"
         },
-        "battle": {
+        "battle_game": {
             "yourTurn": "Your Turn",
             "enemyTurn": "Enemy Turn",
             "chooseAction": "Choose an action",
