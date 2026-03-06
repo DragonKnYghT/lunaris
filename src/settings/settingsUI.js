@@ -225,6 +225,7 @@ function showVideoSettings() {
     }
     
     const settings = videoSettings ? videoSettings.getSettings() : { resolution: '1920x1080', fullscreen: false, animations: true };
+    const currentThemeMode = typeof getThemeMode === 'function' ? getThemeMode() : 'dark';
     
     container.innerHTML = `
         <div class="screen" id="video-settings-screen">
@@ -253,6 +254,13 @@ function showVideoSettings() {
                         Enable Animations
                     </label>
                 </div>
+                <div class="setting-item">
+                    <label for="theme-mode">Theme Mode</label>
+                    <select id="theme-mode" onchange="updateVideoSetting('theme', this.value)">
+                        <option value="dark" ${currentThemeMode === 'dark' ? 'selected' : ''}>Night (Dark)</option>
+                        <option value="light" ${currentThemeMode === 'light' ? 'selected' : ''}>Light</option>
+                    </select>
+                </div>
             </div>
             <div class="settings-buttons">
                 <button class="menu-button" onclick="applyVideoSettings()">Apply</button>
@@ -270,7 +278,7 @@ function showVideoSettings() {
  * @param {*} value - Setting value
  */
 function updateVideoSetting(setting, value) {
-    if (!videoSettings) return;
+    if (!videoSettings && setting !== 'theme') return;
     
     if (setting === 'resolution') {
         videoSettings.setResolution(value);
@@ -278,6 +286,11 @@ function updateVideoSetting(setting, value) {
         videoSettings.setFullscreen(value);
     } else if (setting === 'animations') {
         videoSettings.setAnimations(value);
+    } else if (setting === 'theme') {
+        // Handle theme mode change (dark/light)
+        if (typeof themeManager !== 'undefined') {
+            themeManager.setThemeMode(value);
+        }
     }
 }
 

@@ -389,6 +389,9 @@ class ThemeManager {
             this.themeMode = mode;
             this.applyTheme();
             this.saveThemeToStorage();
+            
+            // Synchronize with site theme
+            this.syncThemeWithSite();
         }
     }
 
@@ -398,6 +401,83 @@ class ThemeManager {
      */
     getThemeMode() {
         return this.themeMode;
+    }
+
+    /**
+     * Synchronize game theme with website theme
+     * Converts game theme to site theme format and applies it
+     */
+    syncThemeWithSite() {
+        try {
+            // Check if siteManager is available
+            if (typeof window.siteManager === 'undefined') {
+                console.warn('[ThemeManager] siteManager not available for sync');
+                return;
+            }
+
+            const currentTheme = this.getCurrentTheme();
+            if (!currentTheme) return;
+
+            // Map game theme ID to site theme base name
+            // Game themes use format like 'sakura', 'void-eternel', etc.
+            // Site themes use format like 'sakura_dark', 'sakura_light', etc.
+            const themeNameMap = {
+                'sakura': 'sakura',
+                'sakura-nocturne': 'sakura',
+                'ocean-mystique': 'abyssal',
+                'brasier-royal': 'samurai',
+                'void-eternel': 'void',
+                'foudre-divine': 'zenith',
+                'hiver-glacial': 'hiver',
+                'foret-spirituelle': 'hori',
+                'lune-ecarlate': 'lycoris',
+                'empire-celeste': 'empire',
+                'brume-fantome': 'glacier',
+                'cyber-city': 'cyber',
+                'lotus-imperial': 'lotus',
+                'dragon-ancestral': 'samurai',
+                'eclipse': 'void',
+                'cristal-polaire': 'glacier',
+                'hanami-dore': 'sakura',
+                'abyssal': 'abyssal',
+                'neon-pulse': 'cyber',
+                'eclipse-eternelle': 'void',
+                'minuit': 'minuit',
+                'ranni': 'ranni',
+                'slavekillerfang': 'slavekillerfang',
+                'hinata': 'hinata',
+                'nat': 'nat',
+                'mclaren': 'samurai'
+            };
+
+            // Get the base theme name from the map
+            const baseName = themeNameMap[currentTheme.id] || currentTheme.id.split('-')[0];
+            
+            // Build the site theme ID with the current mode
+            const siteThemeId = `${baseName}_${this.themeMode}`;
+            
+            // Find the theme index in siteManager's themes array
+            const themeIndex = window.siteManager.themes.findIndex(t => t.id === siteThemeId);
+            
+            if (themeIndex !== -1) {
+                // Update site theme
+                window.siteManager.currentThemeIndex = themeIndex;
+                window.siteManager.currentThemeMode = this.themeMode;
+                window.siteManager.applyTheme();
+                
+                // Update the site's theme dropdown if it exists
+                const select = document.getElementById('theme-select');
+                if (select) {
+                    select.value = themeIndex;
+                }
+                
+                console.log('[ThemeManager] Synced with site theme:', siteThemeId);
+            } else {
+                console.warn('[ThemeManager] Site theme not found:', siteThemeId);
+            }
+        } catch (e) {
+            console.warn('[ThemeManager] Error syncing with site:', e);
+        }
     }
 }
 

@@ -305,6 +305,9 @@ const siteManager = {
         // Update UI
         this.updateThemeSwitchUI();
         
+        // Synchronize with game theme
+        this.syncThemeWithGame();
+        
         console.log('SiteManager: Theme toggled to', this.currentThemeMode);
     },
     
@@ -327,6 +330,9 @@ const siteManager = {
             
             // Update UI
             this.updateThemeSwitchUI();
+            
+            // Synchronize with game theme
+            this.syncThemeWithGame();
             
             console.log('SiteManager: Theme selected:', theme.name, 'Mode:', this.currentThemeMode);
         }
@@ -454,6 +460,27 @@ const siteManager = {
     showNavbar() {
         document.body.classList.remove('game-active');
         console.log('SiteManager: Navbar shown');
+    },
+    
+    // Synchronize site theme mode with game theme
+    syncThemeWithGame() {
+        try {
+            // Check if themeManager (game) is available
+            if (typeof themeManager === 'undefined') {
+                console.warn('[SiteManager] themeManager not available for sync');
+                return;
+            }
+
+            const currentTheme = this.themes[this.currentThemeIndex];
+            if (!currentTheme) return;
+
+            // Update the game's theme mode to match the site's theme mode
+            themeManager.setThemeMode(this.currentThemeMode);
+            
+            console.log('[SiteManager] Synced with game theme mode:', this.currentThemeMode);
+        } catch (e) {
+            console.warn('[SiteManager] Error syncing with game:', e);
+        }
     },
     
     // Get current language
