@@ -55,20 +55,20 @@
     "name": "Ultimate Draw",
     "description": "A premium banner with high chances for powerful creatures.",
     "rates": {
-      "common": 10,
-      "rare": 30,
-      "epic": 45,
-      "legendary": 10,
-      "ultimate": 5,
-      "limited": 0
+      "common": 0,
+      "rare": 20,
+      "epic": 30,
+      "legendary": 35,
+      "ultimate": 14,
+      "limited": 1
     },
     "pool": {
-      "common": ["starlight_wisp"],
+      "common": [],
       "rare": ["lunar_phantom", "star_fox"],
       "epic": ["nebula_dragon", "void_walker", "celestial_phoenix"],
       "legendary": ["galaxy_titan", "cosmic_guardian"],
       "ultimate": ["stellar_overlord", "universal_destroyer"],
-      "limited": []
+      "limited": ["abyss_lord"]
     },
     "prices": {
       "single": 500,

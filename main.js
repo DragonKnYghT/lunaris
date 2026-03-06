@@ -902,6 +902,119 @@ function showGachaMenu() {
     const container = document.getElementById('screen-container');
     if (!container) return;
 
+    // Banner data with rarities and rates
+    const bannerData = {
+        'common_draw': {
+            name: 'Tirage Commun',
+            description: 'Tirage standard avec des taux équilibrés',
+            rates: {
+                common: 70,
+                rare: 25,
+                epic: 4,
+                legendary: 1,
+                ultimate: 0,
+                limited: 0
+            }
+        },
+        'lucky_draw': {
+            name: 'Tirage Chanceux',
+            description: 'Tirage avec plus de chances d\'obtenir des créatures rares',
+            rates: {
+                common: 40,
+                rare: 35,
+                epic: 20,
+                legendary: 4.5,
+                ultimate: 0.5,
+                limited: 0
+            }
+        },
+        'ultimate_draw': {
+            name: 'Tirage Ultime',
+            description: 'Tirage premium avec chances élevées pour créatures puissantes',
+            rates: {
+                common: 0,
+                rare: 20,
+                epic: 30,
+                legendary: 35,
+                ultimate: 14,
+                limited: 1
+            }
+        },
+        'limited_draw': {
+            name: 'Tirage Limité',
+            description: 'Bannière exclusive avec créatures uniques',
+            rates: {
+                common: 0,
+                rare: 20,
+                epic: 25,
+                legendary: 35,
+                ultimate: 19.9,
+                limited: 0.1
+            }
+        }
+    };
+
+    // Colors for rarity display
+    const rarityColors = {
+        common: '#808080',      // Gray
+        rare: '#4169E1',        // Royal Blue
+        epic: '#9932CC',        // Dark Orchid
+        legendary: '#FFD700',   // Gold
+        ultimate: '#FF1493',    // Deep Pink
+        limited: '#00CED1'      // Dark Turquoise
+    };
+
+    // Create banner cards HTML
+    const bannerCards = Object.entries(bannerData).map(([bannerId, banner]) => {
+        const ratesList = Object.entries(banner.rates)
+            .filter(([_, rate]) => rate > 0)
+            .map(([rarity, rate]) => `
+                <div class="rate-item">
+                    <span class="rate-label" style="color: ${rarityColors[rarity]}">${rarity.charAt(0).toUpperCase() + rarity.slice(1)}</span>
+                    <span class="rate-bar-container">
+                        <span class="rate-bar" style="width: ${Math.min(rate, 100)}%; background-color: ${rarityColors[rarity]}"></span>
+                    </span>
+                    <span class="rate-value">${rate}%</span>
+                </div>
+            `).join('');
+        
+        const allRates = Object.entries(banner.rates)
+            .map(([rarity, rate]) => `
+                <div class="stat-item">
+                    <span class="stat-label" style="color: ${rarityColors[rarity]}">${rarity.charAt(0).toUpperCase() + rarity.slice(1)}</span>
+                    <span class="stat-value">${rate}%</span>
+                </div>
+            `).join('');
+        
+        return `
+            <div class="banner-card">
+                <div class="banner-header">
+                    <h3>${banner.name}</h3>
+                    <p class="banner-description">${banner.description}</p>
+                </div>
+                <div class="banner-rates">
+                    <div class="rates-visual">
+                        ${ratesList}
+                    </div>
+                    <div class="rates-stats">
+                        <h4>Pourcentages détaillés:</h4>
+                        <div class="stats-grid">
+                            ${allRates}
+                        </div>
+                    </div>
+                </div>
+                <div class="banner-actions">
+                    <button class="menu-button" onclick="executeGachaPull('${bannerId}', 1)">
+                        <span class="pull-single">Single Pull</span>
+                    </button>
+                    <button class="menu-button" onclick="executeGachaPull('${bannerId}', 10)">
+                        <span class="pull-multi">Multi Pull x10</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
     container.innerHTML = `
         <div class="screen" id="gacha-menu-screen">
             <div class="decoration-stars">
@@ -909,28 +1022,14 @@ function showGachaMenu() {
                 <span>✦</span>
                 <span>✦</span>
             </div>
-            <h2>Celestial Gacha</h2>
+            <h2>Système de Gacha</h2>
             <div class="decoration-line"></div>
-            <p>Invoque des disques Lunaris et découvre de nouveaux compagnons.</p>
-            <div class="gacha-banner-grid">
-                <div class="gacha-banner-card" onclick="showBannerDetails('standard_banner')">
-                    <div class="gacha-banner-title">Standard</div>
-                    <div class="gacha-banner-sub">Pool équilibré</div>
-                    <div class="gacha-banner-rates">70% C / 20% R / 8% E / 2% L</div>
-                </div>
-                <div class="gacha-banner-card" onclick="showBannerDetails('starter_banner')">
-                    <div class="gacha-banner-title">Starter</div>
-                    <div class="gacha-banner-sub">Pour débuter ton aventure</div>
-                    <div class="gacha-banner-rates">50% C / 30% R / 15% E / 5% L</div>
-                </div>
-                <div class="gacha-banner-card" onclick="showBannerDetails('limited_banner')">
-                    <div class="gacha-banner-title">Limited</div>
-                    <div class="gacha-banner-sub">Légendaires & Limités</div>
-                    <div class="gacha-banner-rates">50% C / 25% R / 15% E / 10% L</div>
-                </div>
+            <p class="gacha-intro">Sélectionnez une bannière pour faire un tirage</p>
+            <div class="banners-grid">
+                ${bannerCards}
             </div>
-            <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            <div class="submenu-buttons" style="margin-top: var(--spacing-lg)">
+                <button class="menu-button secondary" onclick="showMainMenu()">Retour</button>
             </div>
         </div>
     `;
@@ -1053,7 +1152,8 @@ function showPullResults(results, bannerId) {
             </div>
             <p class="gacha-note">Tous les disques obtenus ont été ajoutés à ton inventaire.</p>
             <div class="submenu-buttons">
-                <button class="menu-button" onclick="showBannerDetails('${bannerId}')">Re-tirer</button>
+                <button class="menu-button" onclick="executeGachaPull('${bannerId}', 1)">Re-tirer (Single)</button>
+                <button class="menu-button" onclick="executeGachaPull('${bannerId}', 10)">Re-tirer (Multi x10)</button>
                 <button class="menu-button" onclick="showInventoryMenu()">Voir l'inventaire</button>
                 <button class="menu-button secondary" onclick="showGachaMenu()">Retour aux bannières</button>
             </div>
