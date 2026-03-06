@@ -13,10 +13,13 @@
         #game-container {
             width: 100%;
             min-height: 600px;
+            max-height: calc(100vh - 150px);
             background-color: var(--bg-dark);
             border-radius: 8px;
-            overflow: hidden;
+            overflow-y: auto;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
         #game-loading {

@@ -90,10 +90,13 @@
 #screen-container {
     margin-top: var(--spacing-xl);
     min-height: 300px;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-bottom: var(--spacing-xl);
 }
 
 /* ===== Screen Styles ===== */
