@@ -6,6 +6,154 @@
 // Initialize audio settings globally
 const audioSettings = new AudioSettings();
 
+// Simple global game state
+const gameState = {
+    mode: null,            // 'roguelike' | 'versus' | etc.
+    playerCount: 1,
+    isMultiplayer: false,
+};
+
+// Simple disc inventory for gacha results (stored in localStorage)
+const DISC_INVENTORY_STORAGE_KEY = 'lunaris_disc_inventory';
+
+let discInventory = loadDiscInventoryFromStorage();
+
+function loadDiscInventoryFromStorage() {
+    try {
+        const raw = localStorage.getItem(DISC_INVENTORY_STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        console.warn('[DiscInventory] Failed to load from storage', e);
+        return [];
+    }
+}
+
+function saveDiscInventoryToStorage() {
+    try {
+        localStorage.setItem(DISC_INVENTORY_STORAGE_KEY, JSON.stringify(discInventory));
+    } catch (e) {
+        console.warn('[DiscInventory] Failed to save to storage', e);
+    }
+}
+
+function addDiscToInventory(entry) {
+    const now = Date.now();
+    discInventory.push({
+        id: `${entry.bannerId || 'banner'}_${entry.creatureId || 'unknown'}_${now}`,
+        rarity: entry.rarity,
+        visualRarity: entry.visualRarity || entry.rarity,
+        creatureId: entry.creatureId || 'unknown',
+        bannerId: entry.bannerId || null,
+        timestamp: now,
+    });
+    saveDiscInventoryToStorage();
+}
+
+// ===========================================
+// Profil local (pseudo / avatar)
+// ===========================================
+
+const PROFILE_STORAGE_KEY = 'lunaris_profile';
+let currentProfile = loadProfileFromStorage();
+
+function loadProfileFromStorage() {
+    try {
+        const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+        return parsed;
+    } catch (e) {
+        console.warn('[Profile] Failed to load profile from storage', e);
+        return null;
+    }
+}
+
+function saveProfileToStorage(profile) {
+    try {
+        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+        currentProfile = profile;
+    } catch (e) {
+        console.warn('[Profile] Failed to save profile to storage', e);
+    }
+}
+
+function clearProfileFromStorage() {
+    try {
+        localStorage.removeItem(PROFILE_STORAGE_KEY);
+    } catch (e) {
+        console.warn('[Profile] Failed to clear profile from storage', e);
+    }
+    currentProfile = null;
+}
+
+// Simple password hashing for local storage (not secure, but prevents plain text)
+function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return hash.toString(16);
+}
+
+// ===========================================
+// Gem Currency System
+// ===========================================
+
+const GEMS_STORAGE_KEY = 'lunaris_gems';
+let playerGems = loadGemsFromStorage();
+
+function loadGemsFromStorage() {
+    try {
+        const raw = localStorage.getItem(GEMS_STORAGE_KEY);
+        if (!raw) return 0;
+        const parsed = parseInt(raw, 10);
+        return isNaN(parsed) ? 0 : parsed;
+    } catch (e) {
+        console.warn('[Gems] Failed to load gems from storage', e);
+        return 0;
+    }
+}
+
+function saveGemsToStorage(gems) {
+    try {
+        localStorage.setItem(GEMS_STORAGE_KEY, gems.toString());
+        playerGems = gems;
+        updateGemCounter();
+    } catch (e) {
+        console.warn('[Gems] Failed to save gems to storage', e);
+    }
+}
+
+function addGems(amount) {
+    const newAmount = playerGems + amount;
+    saveGemsToStorage(newAmount);
+    return newAmount;
+}
+
+function spendGems(amount) {
+    if (playerGems < amount) {
+        return { success: false, message: 'Not enough gems!' };
+    }
+    const newAmount = playerGems - amount;
+    saveGemsToStorage(newAmount);
+    return { success: true, newAmount: newAmount };
+}
+
+function getGems() {
+    return playerGems;
+}
+
+function updateGemCounter() {
+    const counter = document.getElementById('gem-counter');
+    if (counter) {
+        counter.textContent = playerGems.toLocaleString();
+    }
+}
 
 // LUNARIS_TODO: Game initialization logic will go here
 // LUNARIS_TODO: Add game state management
@@ -183,6 +331,8 @@ function showPlayMenu() {
  * @param {string} mode - The selected game mode ('roguelike' or 'versus')
  */
 function showSoloMultiplayerMenu(mode) {
+    // Remember chosen base mode in game state
+    gameState.mode = mode;
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
     const container = document.getElementById('screen-container');
     container.innerHTML = `
@@ -196,7 +346,7 @@ function showSoloMultiplayerMenu(mode) {
             <div class="decoration-line"></div>
             <p>Choose your game type:</p>
             <div class="game-mode-grid">
-                <div class="game-mode-card" onclick="startGame(1)">
+                <div class="game-mode-card" onclick="startGame('${mode}', 1, false)">
                     <h3>Solo</h3>
                     <p>Play alone against AI opponents.</p>
                 </div>
@@ -218,6 +368,8 @@ function showSoloMultiplayerMenu(mode) {
  * @param {string} mode - The selected game mode ('roguelike' or 'versus')
  */
 function showPlayerCountMenu(mode) {
+    // Multiplayer variant of current mode
+    gameState.mode = mode;
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
     const container = document.getElementById('screen-container');
     container.innerHTML = `
@@ -231,15 +383,15 @@ function showPlayerCountMenu(mode) {
             <div class="decoration-line"></div>
             <p>Select number of players:</p>
             <div class="game-mode-grid">
-                <div class="game-mode-card" onclick="startGame(2)">
+                <div class="game-mode-card" onclick="startGame('${mode}', 2, true)">
                     <h3>2 Players</h3>
                     <p>Battle with a friend.</p>
                 </div>
-                <div class="game-mode-card" onclick="startGame(3)">
+                <div class="game-mode-card" onclick="startGame('${mode}', 3, true)">
                     <h3>3 Players</h3>
                     <p>Three-way battle!</p>
                 </div>
-                <div class="game-mode-card" onclick="startGame(4)">
+                <div class="game-mode-card" onclick="startGame('${mode}', 4, true)">
                     <h3>4 Players</h3>
                     <p>Four-player chaos!</p>
                 </div>
@@ -254,17 +406,48 @@ function showPlayerCountMenu(mode) {
 
 /**
  * Starts the game with the specified number of players
+ * @param {string} mode - Selected game mode
  * @param {number} playerCount - Number of players (1-4)
+ * @param {boolean} isMultiplayer - Whether this is a multiplayer game
  */
-function startGame(playerCount) {
-    console.log('Starting game with', playerCount, 'player(s)');
-    
-    if (playerCount === 1) {
-        console.log('Starting Solo game...');
-        alert(`Starting Solo Game!\n\nPlayer count: ${playerCount}\n\nCheck console for game details.`);
-    } else {
-        console.log('Starting Multiplayer game with', playerCount, 'players...');
-        alert(`Starting Multiplayer Game!\n\nPlayer count: ${playerCount}\n\nCheck console for game details.`);
+function startGame(mode, playerCount, isMultiplayer) {
+    gameState.mode = mode;
+    gameState.playerCount = playerCount;
+    gameState.isMultiplayer = !!isMultiplayer;
+    gameState.inRun = true;
+
+    console.log('Starting game with state:', gameState);
+
+    // Notify the rest of the site (navbar hiding, etc.)
+    try {
+        window.dispatchEvent(new Event('gameStart'));
+    } catch (e) {
+        console.warn('Unable to dispatch gameStart event', e);
+    }
+
+    // Show a basic "game starting" screen instead of alerts
+    const container = document.getElementById('screen-container');
+    if (container) {
+        const modeLabel = mode === 'roguelike' ? 'Roguelike' : (mode === 'versus' ? 'Versus' : mode);
+        const typeLabel = isMultiplayer ? 'Multiplayer' : 'Solo';
+
+        container.innerHTML = `
+            <div class="screen" id="game-start-screen">
+                <div class="decoration-stars">
+                    <span>✦</span>
+                    <span>✦</span>
+                    <span>✦</span>
+                </div>
+                <h2>${modeLabel} - ${typeLabel}</h2>
+                <div class="decoration-line"></div>
+                <p>Your adventure is about to begin.</p>
+                <p><strong>Players:</strong> ${playerCount}</p>
+                <p class="text-muted">Game engine coming next: creatures, zones, combat...</p>
+                <div class="submenu-buttons">
+                    <button class="menu-button secondary" onclick="showPlayMenu()">Back to Mode Selection</button>
+                </div>
+            </div>
+        `;
     }
 }
 
@@ -386,16 +569,26 @@ function showSettingsMenu() {
     // Day/Night Theme Toggle
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     if (themeToggleBtn) {
+        // Initial label en fonction du mode actuel du site si dispo
+        let currentMode = 'dark';
+        if (typeof siteManager !== 'undefined' && siteManager && typeof siteManager.getThemeMode === 'function') {
+            currentMode = siteManager.getThemeMode();
+        } else {
+            currentMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
+        }
+        themeToggleBtn.innerText = currentMode === 'light' ? 'Day' : 'Night';
+
         themeToggleBtn.onclick = () => {
-            // Use siteManager for theme toggle if available
-            if (typeof siteManager !== 'undefined') {
+            // Toujours passer par le systeme global du site
+            if (typeof siteManager !== 'undefined' && siteManager && typeof siteManager.toggleTheme === 'function') {
                 siteManager.toggleTheme();
-                // Update button text
-                const newMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
+                const newMode = siteManager.getThemeMode();
                 themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
             } else if (typeof themeManager !== 'undefined' && themeManager) {
-                themeManager.toggleTheme();
-                themeToggleBtn.innerText = themeManager.getCurrentThemeName();
+                // Fallback sur l'ancien ThemeManager si jamais
+                toggleTheme();
+                const newMode = (typeof getThemeMode === 'function') ? getThemeMode() : (localStorage.getItem('lunaris_theme_mode') || 'dark');
+                themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
             }
         };
     }
@@ -455,6 +648,15 @@ function showTabMenu() {
         return;
     }
     
+    // Bouton Team uniquement si une partie est en cours
+    const isInRun = typeof gameState !== 'undefined' && gameState && gameState.inRun;
+    const teamButtonHtml = isInRun ? `
+                    <button class="tab-menu-item" onclick="showTeamMenu()">
+                        <span class="tab-menu-icon">⚔️</span>
+                        <span class="tab-menu-text">Team</span>
+                    </button>
+    ` : '';
+
     const tabMenuHTML = `
         <div id="tab-menu-overlay" class="tab-menu-overlay">
             <div class="tab-menu">
@@ -471,9 +673,18 @@ function showTabMenu() {
                         <span class="tab-menu-icon">🎒</span>
                         <span class="tab-menu-text">Inventory</span>
                     </button>
-                    <button class="tab-menu-item" onclick="showTeamMenu()">
-                        <span class="tab-menu-icon">⚔️</span>
-                        <span class="tab-menu-text">Team</span>
+                    <button class="tab-menu-item" onclick="showQuestsMenu()">
+                        <span class="tab-menu-icon">📜</span>
+                        <span class="tab-menu-text">Quests</span>
+                    </button>
+                    <button class="tab-menu-item" onclick="showAchievementsMenu()">
+                        <span class="tab-menu-icon">🏆</span>
+                        <span class="tab-menu-text">Achievements</span>
+                    </button>
+                    ${teamButtonHtml}
+                    <button class="tab-menu-item" onclick="showLobbyMenu()">
+                        <span class="tab-menu-icon">🌐</span>
+                        <span class="tab-menu-text">Lobby</span>
                     </button>
                     <button class="tab-menu-item" onclick="showProfileMenu()">
                         <span class="tab-menu-icon">👤</span>
@@ -513,15 +724,15 @@ function addTabMenuStyles() {
     style.id = 'tab-menu-styles';
     style.textContent = `
         .tab-menu-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             background: rgba(0, 0, 0, 0.6);
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             z-index: 1000;
             animation: fadeIn 0.15s ease-out;
         }
@@ -534,6 +745,7 @@ function addTabMenuStyles() {
             min-width: 320px;
             box-shadow: 0 0 40px rgba(0, 217, 255, 0.3);
             animation: slideIn 0.2s ease-out;
+            margin-right: 32px;
         }
         
         .tab-menu-header {
@@ -615,28 +827,472 @@ function addTabMenuStyles() {
         @keyframes slideIn {
             from { 
                 opacity: 0;
-                transform: translateY(-20px) scale(0.95);
+                transform: translateX(40px);
             }
             to { 
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateX(0);
             }
         }
     `;
     document.head.appendChild(style);
 }
 
-// Placeholder functions for TAB menu items
+// ===== Gacha & Inventory UI =====
+
+function getBannerConfig(bannerId) {
+    if (!lunarisData || !lunarisData.gacha) return null;
+    return lunarisData.gacha[bannerId] || null;
+}
+
+function rollRarityFromRates(rates) {
+    if (!rates) return 'common';
+    let total = 0;
+    for (const key in rates) total += rates[key];
+    const roll = Math.random() * total;
+    let acc = 0;
+    for (const rarity in rates) {
+        acc += rates[rarity];
+        if (roll < acc) return rarity;
+    }
+    return 'common';
+}
+
+function computeVisualRarity(baseRarity, bannerId) {
+    // Legendaires sur bannière limitée -> Limited
+    if (bannerId === 'limited_banner' && baseRarity === 'legendary') {
+        return 'limited';
+    }
+    // Petite chance qu'un légendaire devienne Ultime
+    if (baseRarity === 'legendary' && Math.random() < 0.05) {
+        return 'ultimate';
+    }
+    return baseRarity;
+}
+
+function pullOnceFromBanner(bannerId) {
+    const banner = getBannerConfig(bannerId);
+    if (!banner) {
+        console.warn('[Gacha] Unknown banner:', bannerId);
+        return null;
+    }
+    const rarity = rollRarityFromRates(banner.rates);
+    const pool = banner.pool[rarity] || [];
+    const creatureId = pool.length ? pool[Math.floor(Math.random() * pool.length)] : 'unknown_creature';
+    const visualRarity = computeVisualRarity(rarity, bannerId);
+
+    const result = { rarity, visualRarity, creatureId, bannerId };
+    addDiscToInventory(result);
+    return result;
+}
+
+function performGachaPull(bannerId, count) {
+    const results = [];
+    for (let i = 0; i < count; i++) {
+        const res = pullOnceFromBanner(bannerId);
+        if (res) results.push(res);
+    }
+    return results;
+}
+
 function showGachaMenu() {
     console.log('[TAB Menu] Opening Gacha...');
     hideTabMenu();
-    alert('Gacha menu coming soon!');
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="screen" id="gacha-menu-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Celestial Gacha</h2>
+            <div class="decoration-line"></div>
+            <p>Invoque des disques Lunaris et découvre de nouveaux compagnons.</p>
+            <div class="gacha-banner-grid">
+                <div class="gacha-banner-card" onclick="showBannerDetails('standard_banner')">
+                    <div class="gacha-banner-title">Standard</div>
+                    <div class="gacha-banner-sub">Pool équilibré</div>
+                    <div class="gacha-banner-rates">70% C / 20% R / 8% E / 2% L</div>
+                </div>
+                <div class="gacha-banner-card" onclick="showBannerDetails('starter_banner')">
+                    <div class="gacha-banner-title">Starter</div>
+                    <div class="gacha-banner-sub">Pour débuter ton aventure</div>
+                    <div class="gacha-banner-rates">50% C / 30% R / 15% E / 5% L</div>
+                </div>
+                <div class="gacha-banner-card" onclick="showBannerDetails('limited_banner')">
+                    <div class="gacha-banner-title">Limited</div>
+                    <div class="gacha-banner-sub">Légendaires & Limités</div>
+                    <div class="gacha-banner-rates">50% C / 25% R / 15% E / 10% L</div>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div>
+    `;
+}
+
+function showBannerDetails(bannerId) {
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+    const banner = getBannerConfig(bannerId);
+    const name = banner?.name || bannerId;
+    const desc = banner?.description || 'Special Lunaris banner';
+
+    // Tableau d’exemple avec les 6 raretés visuelles
+    const ratesExample = `
+        <tr><td>Commun</td><td>50%</td></tr>
+        <tr><td>Rare</td><td>30%</td></tr>
+        <tr><td>Épique</td><td>15%</td></tr>
+        <tr><td>Légendaire</td><td>4%</td></tr>
+        <tr><td>Ultime</td><td>0.5%</td></tr>
+        <tr><td>Limited</td><td>0.5%</td></tr>
+    `;
+
+    container.innerHTML = `
+        <div class="screen" id="banner-details-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${name}</h2>
+            <div class="decoration-line"></div>
+            <p>${desc}</p>
+
+            <div class="gacha-discs-preview">
+                <div class="gacha-disc disc-common">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">Commun</span>
+                </div>
+                <div class="gacha-disc disc-rare">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">Rare</span>
+                </div>
+                <div class="gacha-disc disc-epic">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">Épique</span>
+                </div>
+                <div class="gacha-disc disc-legendary">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">Légendaire</span>
+                </div>
+                <div class="gacha-disc disc-ultimate">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">Ultime</span>
+                </div>
+                <div class="gacha-disc disc-limited">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">Limited</span>
+                </div>
+            </div>
+
+            <table class="gacha-rates-table">
+                <thead>
+                    <tr><th>Rareté</th><th>Chance</th></tr>
+                </thead>
+                <tbody>
+                    ${ratesExample}
+                </tbody>
+            </table>
+
+            <div class="submenu-buttons">
+                <button class="menu-button" onclick="executeGachaPull('${bannerId}', 1)">Single Pull</button>
+                <button class="menu-button" onclick="executeGachaPull('${bannerId}', 10)">Multi Pull x10</button>
+                <button class="menu-button secondary" onclick="showGachaMenu()">Back</button>
+            </div>
+        </div>
+    `;
+}
+
+function executeGachaPull(bannerId, count) {
+    if (!lunarisData || !lunarisData.gacha) {
+        alert('Les données de gacha ne sont pas encore chargées.');
+        return;
+    }
+    const results = performGachaPull(bannerId, count);
+    showPullResults(results, bannerId);
+}
+
+function showPullResults(results, bannerId) {
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    const discsHtml = results.map((res, index) => {
+        const label = res.visualRarity.toUpperCase();
+        const rarityClass = `disc-${res.visualRarity}`;
+        return `
+            <div class="gacha-result-card">
+                <div class="gacha-disc ${rarityClass} gacha-disc-animated">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">${label}</span>
+                </div>
+                <div class="gacha-result-info">
+                    <div>#${index + 1}</div>
+                    <div>Creature: ${res.creatureId}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="screen" id="pull-results-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Résultats du tirage</h2>
+            <div class="decoration-line"></div>
+            <div class="gacha-results-grid">
+                ${discsHtml}
+            </div>
+            <p class="gacha-note">Tous les disques obtenus ont été ajoutés à ton inventaire.</p>
+            <div class="submenu-buttons">
+                <button class="menu-button" onclick="showBannerDetails('${bannerId}')">Re-tirer</button>
+                <button class="menu-button" onclick="showInventoryMenu()">Voir l'inventaire</button>
+                <button class="menu-button secondary" onclick="showGachaMenu()">Retour aux bannières</button>
+            </div>
+        </div>
+    `;
 }
 
 function showInventoryMenu() {
     console.log('[TAB Menu] Opening Inventory...');
     hideTabMenu();
-    alert('Inventory menu coming soon!');
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    const byRarity = {};
+    discInventory.forEach(d => {
+        const key = d.visualRarity || d.rarity;
+        if (!byRarity[key]) byRarity[key] = [];
+        byRarity[key].push(d);
+    });
+
+    const rarityOrder = ['common', 'rare', 'epic', 'legendary', 'ultimate', 'limited'];
+    const sectionsHtml = rarityOrder.map(r => {
+        const list = byRarity[r] || [];
+        if (!list.length) return '';
+        const cards = list.map(d => `
+            <div class="inventory-disc-card">
+                <div class="gacha-disc disc-${d.visualRarity || d.rarity}">
+                    <div class="gacha-disc-moon"></div>
+                    <span class="gacha-disc-label">${(d.visualRarity || d.rarity).toUpperCase()}</span>
+                </div>
+                <div class="inventory-disc-info">
+                    <div>${d.creatureId}</div>
+                    <div class="inventory-disc-meta">${d.bannerId || 'Banner inconnue'}</div>
+                </div>
+            </div>
+        `).join('');
+        const title = r.charAt(0).toUpperCase() + r.slice(1);
+        return `
+            <h3 class="inventory-section-title">${title}</h3>
+            <div class="inventory-grid">
+                ${cards}
+            </div>
+        `;
+    }).join('');
+
+    const emptyState = discInventory.length === 0
+        ? `<p class="inventory-empty">Aucun disque pour l'instant. Va dans le Gacha pour en obtenir !</p>`
+        : '';
+
+    container.innerHTML = `
+        <div class="screen" id="inventory-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Inventaire des Disques</h2>
+            <div class="decoration-line"></div>
+            ${emptyState}
+            ${sectionsHtml}
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div>
+    `;
+}
+
+// ===== Simple Lobby UI (multijoueur) =====
+
+let wsClient = null;
+let currentLobby = null;
+
+function ensureWebSocketConnected(onReady) {
+    if (wsClient && wsClient.getIsConnected()) {
+        onReady && onReady();
+        return;
+    }
+    if (!window.ClientSocket) {
+        alert('ClientSocket non disponible. Vérifie que src/multiplayer/clientSocket.js est chargé.');
+        return;
+    }
+    wsClient = new ClientSocket('ws://localhost:8080');
+
+    wsClient.onConnect(() => {
+        console.log('[Lobby] WebSocket connected');
+        // Envoyer HELLO avec le pseudo du profil si dispo
+        const name = currentProfile?.name || 'Player';
+        wsClient.send({
+            type: 'HELLO',
+            payload: { clientId: null, playerName: name },
+            timestamp: Date.now()
+        });
+        onReady && onReady();
+    });
+
+    wsClient.onMessage('LOBBY_STATE', (payload) => {
+        currentLobby = payload;
+        renderLobbyScreen();
+    });
+
+    wsClient.onMessage('LOBBY_ERROR', (payload) => {
+        alert(`Lobby error: ${payload.code}\n${payload.message}`);
+    });
+
+    wsClient.connect();
+}
+
+function generateLocalRoomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+}
+
+function showLobbyMenu() {
+    console.log('[TAB Menu] Opening Lobby...');
+    hideTabMenu();
+
+    // Forcer création de profil avant le multi
+    if (!currentProfile) {
+        alert('Crée d\'abord un profil joueur.');
+        showProfileMenu();
+        return;
+    }
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="screen" id="lobby-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Salons multijoueur</h2>
+            <div class="decoration-line"></div>
+            <p>Crée un code de salon et partage-le à tes amis, ou rejoins un code existant.</p>
+
+            <div class="lobby-actions">
+                <button class="menu-button" id="lobby-create-btn">Créer un salon</button>
+                <div class="settings-option">
+                    <label for="lobby-code-input">Code salon</label>
+                    <input id="lobby-code-input" type="text" maxlength="6" placeholder="ABC123" style="text-transform:uppercase;">
+                </div>
+                <button class="menu-button" id="lobby-join-btn">Rejoindre</button>
+            </div>
+
+            <div id="lobby-state-container"></div>
+
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div>
+    `;
+
+    const createBtn = document.getElementById('lobby-create-btn');
+    const joinBtn = document.getElementById('lobby-join-btn');
+    const codeInput = document.getElementById('lobby-code-input');
+
+    if (createBtn) {
+        createBtn.onclick = () => {
+            ensureWebSocketConnected(() => {
+                const code = generateLocalRoomCode();
+                wsClient.send({
+                    type: 'LOBBY_CREATE',
+                    payload: { roomCode: code },
+                    timestamp: Date.now()
+                });
+                if (codeInput) codeInput.value = code;
+            });
+        };
+    }
+
+    if (joinBtn && codeInput) {
+        joinBtn.onclick = () => {
+            const raw = codeInput.value.trim().toUpperCase();
+            if (!raw || raw.length < 3) {
+                alert('Entre un code de salon valide.');
+                return;
+            }
+            ensureWebSocketConnected(() => {
+                wsClient.send({
+                    type: 'LOBBY_JOIN',
+                    payload: { roomCode: raw },
+                    timestamp: Date.now()
+                });
+            });
+        };
+    }
+
+    renderLobbyScreen();
+}
+
+function renderLobbyScreen() {
+    const container = document.getElementById('lobby-state-container');
+    if (!container) return;
+
+    if (!currentLobby) {
+        container.innerHTML = `<p class="inventory-empty">Pas encore dans un salon. Crée-en un ou rejoins un code.</p>`;
+        return;
+    }
+
+    const players = currentLobby.players || [];
+    const listHtml = players.map(p => {
+        const isHost = p.id === currentLobby.hostId;
+        return `
+            <li>
+                ${isHost ? '👑 ' : ''}${p.name || p.id}
+            </li>
+        `;
+    }).join('');
+
+    container.innerHTML = `
+        <div class="lobby-state-card">
+            <p><strong>Code salon :</strong> ${currentLobby.roomCode}</p>
+            <p><strong>Joueurs (${players.length}):</strong></p>
+            <ul class="lobby-player-list">
+                ${listHtml}
+            </ul>
+            <button class="menu-button secondary" id="lobby-leave-btn">Quitter le salon</button>
+        </div>
+    `;
+
+    const leaveBtn = document.getElementById('lobby-leave-btn');
+    if (leaveBtn && wsClient && wsClient.getIsConnected()) {
+        leaveBtn.onclick = () => {
+            wsClient.send({
+                type: 'LOBBY_LEAVE',
+                payload: { roomCode: currentLobby.roomCode },
+                timestamp: Date.now()
+            });
+            currentLobby = null;
+            renderLobbyScreen();
+        };
+    }
 }
 
 function showTeamMenu() {
@@ -645,10 +1301,206 @@ function showTeamMenu() {
     alert('Team menu coming soon!');
 }
 
+// ===== Quests Menu =====
+function showQuestsMenu() {
+    console.log('[TAB Menu] Opening Quests...');
+    hideTabMenu();
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="screen" id="quests-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Quests</h2>
+            <div class="decoration-line"></div>
+            
+            <div class="quest-category">
+                <h3 class="category-title">Normal</h3>
+                <p class="category-empty">No normal quests available yet.</p>
+            </div>
+            
+            <div class="quest-category">
+                <h3 class="category-title">Special</h3>
+                <p class="category-empty">No special quests available yet.</p>
+            </div>
+            
+            <div class="quest-category">
+                <h3 class="category-title">Daily</h3>
+                <p class="category-empty">No daily quests available yet.</p>
+            </div>
+            
+            <div class="quest-category">
+                <h3 class="category-title">Event</h3>
+                <p class="category-empty">No event quests available yet.</p>
+            </div>
+            
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div>
+    `;
+}
+
+// ===== Achievements Menu =====
+function showAchievementsMenu() {
+    console.log('[TAB Menu] Opening Achievements...');
+    hideTabMenu();
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="screen" id="achievements-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Achievements</h2>
+            <div class="decoration-line"></div>
+            
+            <div class="achievement-category">
+                <h3 class="category-title">Versus</h3>
+                <p class="category-empty">No versus achievements unlocked yet.</p>
+            </div>
+            
+            <div class="achievement-category">
+                <h3 class="category-title">Roguelike</h3>
+                <p class="category-empty">No roguelike achievements unlocked yet.</p>
+            </div>
+            
+            <div class="achievement-category">
+                <h3 class="category-title">General</h3>
+                <p class="category-empty">No general achievements unlocked yet.</p>
+            </div>
+            
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div>
+    `;
+}
+
 function showProfileMenu() {
     console.log('[TAB Menu] Opening Profile...');
     hideTabMenu();
-    alert('Profile menu coming soon!');
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    // Si aucun profil, on affiche le formulaire de création
+    if (!currentProfile) {
+        container.innerHTML = `
+            <div class="screen" id="profile-screen">
+                <div class="decoration-stars">
+                    <span>✦</span>
+                    <span>✦</span>
+                    <span>✦</span>
+                </div>
+                <h2>Create Your Profile</h2>
+                <div class="decoration-line"></div>
+                <p>This profile stores all your progression (gacha unlocks, etc.).</p>
+                <div class="profile-form">
+                    <div class="settings-option">
+                        <label for="profile-name">Username</label>
+                        <input id="profile-name" type="text" maxlength="16" placeholder="Your username">
+                    </div>
+                    <div class="settings-option">
+                        <label for="profile-password">Password (required)</label>
+                        <input id="profile-password" type="password" maxlength="32" placeholder="Set a password">
+                    </div>
+                    <div class="settings-option">
+                        <label for="profile-avatar">Choose Avatar</label>
+                        <select id="profile-avatar">
+                            <option value="🌙">🌙 Moon</option>
+                            <option value="⭐">⭐ Star</option>
+                            <option value="🔥">🔥 Fire</option>
+                            <option value="❄️">❄️ Ice</option>
+                            <option value="⚡">⚡ Lightning</option>
+                            <option value="🌊">🌊 Water</option>
+                            <option value="🌿">🌿 Nature</option>
+                            <option value="👻">👻 Ghost</option>
+                            <option value="🐉">🐉 Dragon</option>
+                            <option value="🦁">🦁 Lion</option>
+                            <option value="🐺">🐺 Wolf</option>
+                            <option value="🦅">🦅 Eagle</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="submenu-buttons">
+                    <button class="menu-button" id="profile-save-btn">Create Profile</button>
+                    <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+                </div>
+            </div>
+        `;
+
+        const nameInput = document.getElementById('profile-name');
+        const passwordInput = document.getElementById('profile-password');
+        const avatarSelect = document.getElementById('profile-avatar');
+        const saveBtn = document.getElementById('profile-save-btn');
+
+        if (saveBtn && nameInput && passwordInput && avatarSelect) {
+            saveBtn.onclick = () => {
+                const name = nameInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                if (!name || name.length < 3) {
+                    alert('Please choose a username with at least 3 characters.');
+                    return;
+                }
+                if (!password || password.length < 4) {
+                    alert('Please set a password with at least 4 characters.');
+                    return;
+                }
+                
+                const avatar = avatarSelect.value || '🌙';
+                const profile = {
+                    id: 'profile_' + Date.now(),
+                    name,
+                    passwordHash: simpleHash(password),
+                    avatar,
+                    createdAt: Date.now()
+                };
+                saveProfileToStorage(profile);
+                showProfileMenu();
+            };
+        }
+        return;
+    }
+
+    // Affichage d'un profil existant
+    container.innerHTML = `
+        <div class="screen" id="profile-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>Player Profile</h2>
+            <div class="decoration-line"></div>
+            <div class="profile-card">
+                <div class="profile-avatar">${currentProfile.avatar || '🌙'}</div>
+                <div class="profile-info">
+                    <div class="profile-name">${currentProfile.name}</div>
+                    <div class="profile-meta">Created: ${new Date(currentProfile.createdAt).toLocaleDateString()}</div>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <p><strong>Gems:</strong> 💎 ${playerGems.toLocaleString()}</p>
+                <p><strong>Discs:</strong> ${discInventory.length}</p>
+            </div>
+            <p class="profile-note">This profile is local to this browser. Your progression is saved here.</p>
+            <div class="submenu-buttons">
+                <button class="menu-button" onclick="clearProfileFromStorage(); showProfileMenu();">Change Profile</button>
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div>
+    `;
 }
 
 /**
@@ -673,13 +1525,7 @@ function initTabMenu() {
     });
     
     // Also close menu when clicking outside
-    document.addEventListener('click', function(event) {
-        const overlay = document.getElementById('tab-menu-overlay');
-        const menu = document.querySelector('.tab-menu');
-        if (tabMenuOpen && overlay && menu && !menu.contains(event.target)) {
-            hideTabMenu();
-        }
-    });
+    // On ne ferme plus au clic en dehors, uniquement via la croix ou la touche
     
     console.log('[TAB Menu] TAB key listeners initialized');
 }
@@ -737,6 +1583,17 @@ function init() {
     console.log('Lunaris initialized successfully!');
 }
 
+/**
+ * Preferred async entry point used by play.html
+ * Loads game data, then initializes UI/navigation.
+ * @returns {Promise<void>}
+ */
+async function startLunaris() {
+    console.log('startLunaris: booting Lunaris...');
+    await initGameData();
+    init();
+}
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', init);
 
@@ -751,6 +1608,7 @@ if (typeof module !== 'undefined' && module.exports) {
         showMainMenu, 
         showPlayMenu, 
         showSettingsMenu, 
-        showCreditsMenu 
+        showCreditsMenu,
+        startLunaris
     };
 }

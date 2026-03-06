@@ -168,7 +168,11 @@ class ClientSocket {
     }
 }
 
-// Export for use in other modules
+// Export for use in other modules / browser
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { ClientSocket };
+}
+
+if (typeof window !== 'undefined') {
+    window.ClientSocket = ClientSocket;
 }

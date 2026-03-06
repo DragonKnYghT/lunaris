@@ -30,6 +30,13 @@ const MessageType = {
     PING: 'PING',
     PONG: 'PONG',
     
+    // Lobbies
+    LOBBY_CREATE: 'LOBBY_CREATE',
+    LOBBY_JOIN: 'LOBBY_JOIN',
+    LOBBY_LEAVE: 'LOBBY_LEAVE',
+    LOBBY_STATE: 'LOBBY_STATE',
+    LOBBY_ERROR: 'LOBBY_ERROR',
+    
     // Error/Disconnect
     ERROR: 'ERROR',
     DISCONNECT: 'DISCONNECT'
@@ -184,7 +191,7 @@ const Messages = {
         });
     },
     
-    // Error message
+    // Error message (général)
     error: (code, message) => {
         return createMessage(MessageType.ERROR, {
             code: code,
@@ -196,6 +203,23 @@ const Messages = {
     disconnect: (reason) => {
         return createMessage(MessageType.DISCONNECT, {
             reason: reason
+        });
+    },
+    
+    // Lobby: état complet
+    lobbyState: (roomCode, hostId, players) => {
+        return createMessage(MessageType.LOBBY_STATE, {
+            roomCode,
+            hostId,
+            players
+        });
+    },
+    
+    // Lobby: erreur
+    lobbyError: (code, message) => {
+        return createMessage(MessageType.LOBBY_ERROR, {
+            code,
+            message
         });
     }
 };

@@ -16,8 +16,10 @@ class AudioSettings {
         this.sfxVolume = 1.0;
         this.ambientVolume = 0.5;
         this.sfxEnabled = true;
-        
-        console.log('[AudioSettings] Initialized');
+
+        // Load any previously saved settings
+        this.loadFromStorage();
+        console.log('[AudioSettings] Initialized', this.getSettings());
     }
 
 /**
@@ -29,6 +31,7 @@ class AudioSettings {
         console.log('[AudioSettings] Master volume set to:', this.masterVolume);
         // Apply master volume override to individual volumes
         this.applyAudioSettings();
+        this.saveToStorage();
         // LUNARIS_TODO: integrate with actual audio engine later
     }
 
@@ -55,6 +58,7 @@ class AudioSettings {
     setMusicVolume(value) {
         this.musicVolume = Math.max(0, Math.min(1, value));
         console.log('[AudioSettings] Music volume set to:', this.musicVolume);
+        this.saveToStorage();
         // LUNARIS_TODO: integrate with actual audio engine later
     }
 
@@ -65,6 +69,7 @@ class AudioSettings {
     setSfxVolume(value) {
         this.sfxVolume = Math.max(0, Math.min(1, value));
         console.log('[AudioSettings] SFX volume set to:', this.sfxVolume);
+        this.saveToStorage();
         // LUNARIS_TODO: integrate with actual audio engine later
     }
 
@@ -75,6 +80,7 @@ class AudioSettings {
         this.sfxEnabled = !this.sfxEnabled;
         this.setSfxVolume(this.sfxEnabled ? 1.0 : 0.0);
         console.log('[AudioSettings] SFX toggled:', this.sfxEnabled ? 'ON' : 'OFF');
+        this.saveToStorage();
     }
 
     /**
@@ -84,6 +90,7 @@ class AudioSettings {
     setAmbientVolume(value) {
         this.ambientVolume = Math.max(0, Math.min(1, value));
         console.log('[AudioSettings] Ambient volume set to:', this.ambientVolume);
+        this.saveToStorage();
         // LUNARIS_TODO: integrate with actual audio engine later
     }
 
@@ -122,6 +129,7 @@ class AudioSettings {
         if (settings.sfxVolume !== undefined) this.sfxVolume = settings.sfxVolume;
         if (settings.ambientVolume !== undefined) this.ambientVolume = settings.ambientVolume;
         console.log('[AudioSettings] Settings loaded');
+        this.applyAudioSettings();
     }
 
     /**
@@ -132,7 +140,47 @@ class AudioSettings {
         this.musicVolume = 0.8;
         this.sfxVolume = 1.0;
         this.ambientVolume = 0.5;
+        this.sfxEnabled = true;
         console.log('[AudioSettings] Reset to defaults');
+        this.applyAudioSettings();
+        this.saveToStorage();
+    }
+
+    /**
+     * Persist current settings into localStorage
+     */
+    saveToStorage() {
+        try {
+            const payload = {
+                masterVolume: this.masterVolume,
+                musicVolume: this.musicVolume,
+                sfxVolume: this.sfxVolume,
+                ambientVolume: this.ambientVolume,
+                sfxEnabled: this.sfxEnabled
+            };
+            localStorage.setItem('lunaris_audio_settings', JSON.stringify(payload));
+        } catch (e) {
+            console.warn('[AudioSettings] Failed to save settings to storage', e);
+        }
+    }
+
+    /**
+     * Load settings from localStorage if available
+     */
+    loadFromStorage() {
+        try {
+            const raw = localStorage.getItem('lunaris_audio_settings');
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+                this.loadSettings(parsed);
+                if (typeof parsed.sfxEnabled === 'boolean') {
+                    this.sfxEnabled = parsed.sfxEnabled;
+                }
+            }
+        } catch (e) {
+            console.warn('[AudioSettings] Failed to load settings from storage', e);
+        }
     }
 }
 

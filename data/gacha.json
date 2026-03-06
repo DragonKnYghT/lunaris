@@ -1,4 +1,108 @@
 {
+  "common_draw": {
+    "name": "Common Draw",
+    "description": "A standard banner with balanced rates. Perfect for building your collection.",
+    "rates": {
+      "common": 70,
+      "rare": 25,
+      "epic": 4,
+      "legendary": 1,
+      "ultimate": 0,
+      "limited": 0
+    },
+    "pool": {
+      "common": ["example_creature", "starlight_wisp", "moon_rabbit"],
+      "rare": ["lunar_phantom", "star_fox", "cosmic_turtle"],
+      "epic": ["nebula_dragon", "void_walker"],
+      "legendary": ["celestial_phoenix"],
+      "ultimate": [],
+      "limited": []
+    },
+    "prices": {
+      "single": 100,
+      "multi": 1000
+    },
+    "featured": null,
+    "expiration": null
+  },
+  "lucky_draw": {
+    "name": "Lucky Draw",
+    "description": "A luck-based banner with higher chances for rare creatures.",
+    "rates": {
+      "common": 40,
+      "rare": 35,
+      "epic": 20,
+      "legendary": 4.5,
+      "ultimate": 0.5,
+      "limited": 0
+    },
+    "pool": {
+      "common": ["example_creature", "starlight_wisp"],
+      "rare": ["lunar_phantom", "star_fox", "cosmic_turtle", "nebula_dragon"],
+      "epic": ["void_walker", "celestial_phoenix"],
+      "legendary": ["galaxy_titan", "cosmic_guardian"],
+      "ultimate": ["stellar_overlord"],
+      "limited": []
+    },
+    "prices": {
+      "single": 250,
+      "multi": 2500
+    },
+    "featured": ["galaxy_titan", "cosmic_guardian"],
+    "expiration": null
+  },
+  "ultimate_draw": {
+    "name": "Ultimate Draw",
+    "description": "A premium banner with high chances for powerful creatures.",
+    "rates": {
+      "common": 10,
+      "rare": 30,
+      "epic": 45,
+      "legendary": 10,
+      "ultimate": 5,
+      "limited": 0
+    },
+    "pool": {
+      "common": ["starlight_wisp"],
+      "rare": ["lunar_phantom", "star_fox"],
+      "epic": ["nebula_dragon", "void_walker", "celestial_phoenix"],
+      "legendary": ["galaxy_titan", "cosmic_guardian"],
+      "ultimate": ["stellar_overlord", "universal_destroyer"],
+      "limited": []
+    },
+    "prices": {
+      "single": 500,
+      "multi": 5000
+    },
+    "featured": ["stellar_overlord", "universal_destroyer"],
+    "expiration": null
+  },
+  "limited_draw": {
+    "name": "Limited Draw",
+    "description": "Exclusive limited-time banner with unique rare creatures.",
+    "rates": {
+      "common": 0,
+      "rare": 20,
+      "epic": 25,
+      "legendary": 35,
+      "ultimate": 19.9,
+      "limited": 0.1
+    },
+    "pool": {
+      "common": [],
+      "rare": ["moon_rabbit", "star_fox"],
+      "epic": ["nebula_dragon", "void_walker"],
+      "legendary": ["galaxy_titan", "cosmic_guardian", "celestial_phoenix"],
+      "ultimate": ["stellar_overlord", "universal_destroyer"],
+      "limited": ["abyss_lord", "time_keeper"]
+    },
+    "prices": {
+      "single": 1000,
+      "multi": 10000
+    },
+    "featured": ["abyss_lord", "time_keeper"],
+    "expiration": "2025-12-31"
+  },
   "standard_banner": {
     "name": "Standard Banner",
     "description": "The standard creature banner with balanced rates.",
@@ -6,13 +110,21 @@
       "common": 70,
       "rare": 20,
       "epic": 8,
-      "legendary": 2
+      "legendary": 2,
+      "ultimate": 0,
+      "limited": 0
     },
     "pool": {
       "common": ["example_creature", "starlight_wisp"],
       "rare": ["example_creature_stage2", "lunar_phantom"],
       "epic": ["example_creature_stage2"],
-      "legendary": ["example_creature_stage3"]
+      "legendary": ["example_creature_stage3"],
+      "ultimate": [],
+      "limited": []
+    },
+    "prices": {
+      "single": 100,
+      "multi": 1000
     },
     "featured": null,
     "expiration": null
@@ -24,13 +136,21 @@
       "common": 50,
       "rare": 30,
       "epic": 15,
-      "legendary": 5
+      "legendary": 5,
+      "ultimate": 0,
+      "limited": 0
     },
     "pool": {
       "common": ["example_creature"],
       "rare": ["starlight_wisp", "lunar_phantom"],
       "epic": ["example_creature_stage2"],
-      "legendary": ["example_creature_stage3"]
+      "legendary": ["example_creature_stage3"],
+      "ultimate": [],
+      "limited": []
+    },
+    "prices": {
+      "single": 100,
+      "multi": 1000
     },
     "featured": ["example_creature"],
     "expiration": null
@@ -42,16 +162,25 @@
       "common": 50,
       "rare": 25,
       "epic": 15,
-      "legendary": 10
+      "legendary": 10,
+      "ultimate": 0,
+      "limited": 0
     },
     "pool": {
       "common": ["example_creature", "starlight_wisp"],
       "rare": ["example_creature_stage2", "lunar_phantom"],
       "epic": ["example_creature_stage3"],
-      "legendary": ["example_creature_stage3"]
+      "legendary": ["example_creature_stage3"],
+      "ultimate": [],
+      "limited": []
+    },
+    "prices": {
+      "single": 500,
+      "multi": 5000
     },
     "featured": ["example_creature_stage3"],
     "expiration": "2024-12-31"
   },
-  "_comment": "LUNARIS_TODO: Add more banners and pools. Each banner should have: id, name, description, rates, pool, featured, expiration"
+  "_comment": "LUNARIS_TODO: Add more banners and pools. Each banner should have: id, name, description, rates, pool, featured, expiration, prices"
 }
+

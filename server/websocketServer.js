@@ -23,6 +23,7 @@ class LunarisWebSocketServer {
         this.wss = null;
         this.sessions = new Map(); // clientId -> PlayerSession
         this.matchManager = new MatchManager();
+        this.lobbies = new Map(); // roomCode -> { hostId, members: Set<clientId> }
         this.serverInfo = {
             name: 'Lunaris Server',
             version: '0.1.0',
@@ -131,6 +132,18 @@ class LunarisWebSocketServer {
             case MessageType.PING:
                 // Pong is handled in PlayerSession
                 break;
+            
+            case MessageType.LOBBY_CREATE:
+                this.handleLobbyCreate(session, message);
+                break;
+            
+            case MessageType.LOBBY_JOIN:
+                this.handleLobbyJoin(session, message);
+                break;
+            
+            case MessageType.LOBBY_LEAVE:
+                this.handleLobbyLeave(session, message);
+                break;
                 
             case MessageType.HELLO:
                 // Already handled in receive
@@ -213,6 +226,133 @@ class LunarisWebSocketServer {
         
         // Update player count
         this.serverInfo.currentPlayers = this.sessions.size;
+        
+        // Remove from any lobby
+        this.removeFromLobbies(session);
+    }
+
+    /**
+     * Handle lobby creation
+     * @param {PlayerSession} session
+     * @param {Object} message
+     */
+    handleLobbyCreate(session, message) {
+        const desiredCode = (message.payload && message.payload.roomCode) || null;
+        const roomCode = desiredCode || this.generateRoomCode();
+        
+        if (this.lobbies.has(roomCode)) {
+            session.send(Messages.lobbyError('ROOM_EXISTS', 'Lobby code already in use'));
+            return;
+        }
+        
+        const lobby = {
+            roomCode,
+            hostId: session.getClientId(),
+            members: new Set([session.getClientId()])
+        };
+        this.lobbies.set(roomCode, lobby);
+        
+        this.broadcastLobbyState(lobby);
+        console.log(`[WebSocketServer] Lobby created: ${roomCode} by ${session.getClientId()}`);
+    }
+
+    /**
+     * Handle lobby join
+     * @param {PlayerSession} session
+     * @param {Object} message
+     */
+    handleLobbyJoin(session, message) {
+        const roomCode = message.payload && message.payload.roomCode;
+        if (!roomCode) {
+            session.send(Messages.lobbyError('NO_ROOM', 'Missing room code'));
+            return;
+        }
+        
+        const lobby = this.lobbies.get(roomCode);
+        if (!lobby) {
+            session.send(Messages.lobbyError('NOT_FOUND', 'Lobby not found'));
+            return;
+        }
+        
+        lobby.members.add(session.getClientId());
+        this.broadcastLobbyState(lobby);
+        console.log(`[WebSocketServer] ${session.getClientId()} joined lobby ${roomCode}`);
+    }
+
+    /**
+     * Handle lobby leave
+     * @param {PlayerSession} session
+     * @param {Object} message
+     */
+    handleLobbyLeave(session, message) {
+        this.removeFromLobbies(session);
+    }
+
+    /**
+     * Remove session from all lobbies
+     * @param {PlayerSession} session
+     */
+    removeFromLobbies(session) {
+        const clientId = session.getClientId();
+        
+        for (const [code, lobby] of this.lobbies.entries()) {
+            if (!lobby.members.has(clientId)) continue;
+            
+            lobby.members.delete(clientId);
+            console.log(`[WebSocketServer] ${clientId} left lobby ${code}`);
+            
+            // If lobby empty, delete
+            if (lobby.members.size === 0) {
+                this.lobbies.delete(code);
+                continue;
+            }
+            
+            // If host left, assign new host
+            if (lobby.hostId === clientId) {
+                const [newHostId] = lobby.members.values();
+                lobby.hostId = newHostId;
+            }
+            
+            this.broadcastLobbyState(lobby);
+        }
+    }
+
+    /**
+     * Broadcast lobby state to all its members
+     * @param {Object} lobby
+     */
+    broadcastLobbyState(lobby) {
+        const payload = Messages.lobbyState(
+            lobby.roomCode,
+            lobby.hostId,
+            Array.from(lobby.members.values()).map(id => {
+                const s = this.sessions.get(id);
+                return {
+                    id,
+                    name: s ? (s.getPlayerName() || id) : id
+                };
+            })
+        );
+        
+        lobby.members.forEach(id => {
+            const s = this.sessions.get(id);
+            if (s && s.isPlayerConnected()) {
+                s.send(payload);
+            }
+        });
+    }
+
+    /**
+     * Generate a simple 6-char room code
+     * @returns {string}
+     */
+    generateRoomCode() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
     }
     
     /**

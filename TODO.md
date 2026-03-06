@@ -1,25 +1,40 @@
-# Lunaris Codebase Cleanup - TODO List
+# Implementation TODO - Feature Updates
 
-## Phase 1: Delete Old Backup Files
-- [ ] Delete src/ui/themeManager.new.js (old 20-theme carousel backup)
+## Feature 9 – Multiplayer Lobby ✅
+- [x] Create/Join options available in Lobby
+- [x] Create: Shows room code with 6 characters
+- [x] Join: Simple room code input
 
-## Phase 2: Clean CSS Files
-- [ ] Clean style.css - Remove duplicate variables, old toggle styles, carousel styles
-- [ ] Clean theme.css - Remove LUNARIS_TODO comments
+## Feature 10 – Profile System ✅
+- [x] Added password field to profile creation form (required)
+- [x] Added password hashing with simpleHash function
+- [x] Added 12 avatar options (emoji-based)
 
-## Phase 3: Clean JavaScript Files
-- [ ] Clean main.js - Remove test functions, fix typo, remove duplicate theme code
-- [ ] Clean siteManager.js - Remove unused navbar behavior functions
+## Feature 11 – Team Button in TAB Menu ✅
+- [x] Team button only shows when gameState.inRun === true
+- [x] Team button hidden in main menu
+- [x] Team button appears when game starts
 
-## Phase 4: Clean HTML Files
-- [ ] Clean index.html - Remove LUNARIS_TODO comments
-- [ ] Clean play.html - Remove inline styles, LUNARIS_TODO comments
-- [ ] Clean howto.html - Remove LUNARIS_TODO comments
-- [ ] Clean about.html - Remove LUNARIS_TODO comments
-- [ ] Clean patchnotes.html - Remove LUNARIS_TODO comments
-- [ ] Clean credits.html - Remove LUNARIS_TODO comments
+## Feature 12 – Gacha System ✅
+- [x] Updated data/gacha.json with new banner types:
+  - Common Draw (100 gems / 1000 gems)
+  - Lucky Draw (250 gems / 2500 gems)
+  - Ultimate Draw (500 gems / 5000 gems)
+  - Limited Draw (1000 gems / 10000 gems)
+- [x] Updated rates for each banner type with 6 rarity tiers
+- [x] Added gem currency system with gem counter functions
+- [x] Added gem counter display in Profile screen
 
-## Phase 5: Verification
-- [ ] Verify Day/Night theme toggle still works
-- [ ] Verify all pages load correctly
-- [ ] Verify game starts correctly
+## Feature 13 – Quests & Achievements ✅
+- [x] Added Quests button to TAB menu
+- [x] Added Achievements button to TAB menu
+- [x] Created Quests menu with sections:
+  - Normal
+  - Special
+  - Daily
+  - Event
+- [x] Created Achievements menu with sections:
+  - Versus
+  - Roguelike
+  - General
+
