@@ -1244,12 +1244,11 @@ function renderInventoryContent(filterRarity = 'all') {
     }
 
     // Generate navbar buttons
-    const rarityOrder = ['common', 'rare', 'epic', 'legendary', 'ultimate', 'limited'];
     const navbarHtml = `
         <div class="inventory-navbar">
             <button class="inventory-filter-btn ${currentInventoryFilter === 'all' ? 'active' : ''}" 
                     onclick="filterInventoryByRarity('all')">Tous</button>
-            ${rarityOrder.map(r => {
+            ${['common', 'rare', 'epic', 'legendary', 'ultimate', 'limited'].map(r => {
                 const count = (byRarity[r] || []).length;
                 const isActive = currentInventoryFilter === r ? 'active' : '';
                 return `<button class="inventory-filter-btn ${isActive}" 
