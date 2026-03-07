@@ -1179,10 +1179,10 @@ function showPullResults(results, bannerId) {
     `;
 }
 
-function showInventoryMenu() {
-    console.log('[TAB Menu] Opening Inventory...');
-    hideTabMenu();
+// Track current inventory filter
+let currentInventoryFilter = 'all';
 
+function renderInventoryContent(filterRarity = 'all') {
     const container = document.getElementById('screen-container');
     if (!container) return;
 
@@ -1194,33 +1194,69 @@ function showInventoryMenu() {
     });
 
     const rarityOrder = ['common', 'rare', 'epic', 'legendary', 'ultimate', 'limited'];
-    const sectionsHtml = rarityOrder.map(r => {
-        const list = byRarity[r] || [];
-        if (!list.length) return '';
-        const cards = list.map(d => `
-            <div class="inventory-disc-card">
-                <div class="gacha-disc disc-${d.visualRarity || d.rarity}">
-                    <div class="gacha-disc-moon"></div>
-                    <span class="gacha-disc-label">${(d.visualRarity || d.rarity).toUpperCase()}</span>
+    
+    let contentHtml = '';
+    if (discInventory.length === 0) {
+        contentHtml = `<p class="inventory-empty">Aucun disque pour l'instant. Va dans le Gacha pour en obtenir !</p>`;
+    } else if (filterRarity === 'all') {
+        contentHtml = rarityOrder.map(r => {
+            const list = byRarity[r] || [];
+            if (!list.length) return '';
+            const cards = list.map(d => `
+                <div class="inventory-disc-card">
+                    <div class="gacha-disc disc-${d.visualRarity || d.rarity}">
+                        <div class="gacha-disc-moon"></div>
+                        <span class="gacha-disc-label">${(d.visualRarity || d.rarity).toUpperCase()}</span>
+                    </div>
+                    <div class="inventory-disc-info">
+                        <div>${d.creatureId}</div>
+                        <div class="inventory-disc-meta">${d.bannerId || 'Banner inconnue'}</div>
+                    </div>
                 </div>
-                <div class="inventory-disc-info">
-                    <div>${d.creatureId}</div>
-                    <div class="inventory-disc-meta">${d.bannerId || 'Banner inconnue'}</div>
+            `).join('');
+            const title = r.charAt(0).toUpperCase() + r.slice(1);
+            return `
+                <h3 class="inventory-section-title">${title}</h3>
+                <div class="inventory-grid">
+                    ${cards}
                 </div>
-            </div>
-        `).join('');
-        const title = r.charAt(0).toUpperCase() + r.slice(1);
-        return `
-            <h3 class="inventory-section-title">${title}</h3>
-            <div class="inventory-grid">
-                ${cards}
-            </div>
-        `;
-    }).join('');
+            `;
+        }).join('');
+    } else {
+        const list = byRarity[filterRarity] || [];
+        if (list.length === 0) {
+            contentHtml = `<p class="inventory-empty">Aucun disque de cette rareté.</p>`;
+        } else {
+            const cards = list.map(d => `
+                <div class="inventory-disc-card">
+                    <div class="gacha-disc disc-${d.visualRarity || d.rarity}">
+                        <div class="gacha-disc-moon"></div>
+                        <span class="gacha-disc-label">${(d.visualRarity || d.rarity).toUpperCase()}</span>
+                    </div>
+                    <div class="inventory-disc-info">
+                        <div>${d.creatureId}</div>
+                        <div class="inventory-disc-meta">${d.bannerId || 'Banner inconnue'}</div>
+                    </div>
+                </div>
+            `).join('');
+            contentHtml = `<div class="inventory-grid">${cards}</div>`;
+        }
+    }
 
-    const emptyState = discInventory.length === 0
-        ? `<p class="inventory-empty">Aucun disque pour l'instant. Va dans le Gacha pour en obtenir !</p>`
-        : '';
+    // Generate navbar buttons
+    const rarityOrder = ['common', 'rare', 'epic', 'legendary', 'ultimate', 'limited'];
+    const navbarHtml = `
+        <div class="inventory-navbar">
+            <button class="inventory-filter-btn ${currentInventoryFilter === 'all' ? 'active' : ''}" 
+                    onclick="filterInventoryByRarity('all')">Tous</button>
+            ${rarityOrder.map(r => {
+                const count = (byRarity[r] || []).length;
+                const isActive = currentInventoryFilter === r ? 'active' : '';
+                return `<button class="inventory-filter-btn ${isActive}" 
+                                onclick="filterInventoryByRarity('${r}')">${r.toUpperCase()} (${count})</button>`;
+            }).join('')}
+        </div>
+    `;
 
     container.innerHTML = `
         <div class="screen" id="inventory-screen">
@@ -1231,13 +1267,31 @@ function showInventoryMenu() {
             </div>
             <h2>Inventaire des Disques</h2>
             <div class="decoration-line"></div>
-            ${emptyState}
-            ${sectionsHtml}
+            ${navbarHtml}
+            <div class="inventory-content">
+                ${contentHtml}
+            </div>
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
         </div>
     `;
+}
+
+function filterInventoryByRarity(rarity) {
+    currentInventoryFilter = rarity;
+    renderInventoryContent(rarity);
+}
+
+function showInventoryMenu() {
+    console.log('[TAB Menu] Opening Inventory...');
+    hideTabMenu();
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    currentInventoryFilter = 'all';
+    renderInventoryContent('all');
 }
 
 // ===== Simple Lobby UI (multijoueur) =====
