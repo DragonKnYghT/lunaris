@@ -1623,12 +1623,134 @@ function showQuestsMenu() {
 }
 
 // ===== Achievements Menu =====
-function showAchievementsMenu() {
-    console.log('[TAB Menu] Opening Achievements...');
-    hideTabMenu();
+let currentAchievementFilter = 'all';
 
+const achievementsData = {
+    versus: [
+        { id: 'versus_1', title: 'Novice du Combat', description: 'Gagner 10 combats multijoueur', icon: '⚔️', progress: 3, target: 10, reward: '100 Gold', unlocked: false },
+        { id: 'versus_2', title: 'Guerrier Éprouvé', description: 'Gagner 50 combats multijoueur', icon: '🛡️', progress: 15, target: 50, reward: '500 Gold', unlocked: false },
+        { id: 'versus_3', title: 'Champion de l\'Arène', description: 'Gagner 100 combats multijoueur', icon: '👑', progress: 0, target: 100, reward: '1000 Gold', unlocked: false },
+        { id: 'versus_4', title: 'Série de Victoires', description: 'Remporter 10 combats d\'affilée', icon: '🔥', progress: 2, target: 10, reward: '250 Gold', unlocked: false },
+        { id: 'versus_5', title: 'Maître de la Tactique', description: 'Gagner 5 combats avec tous les types différents', icon: '🧠', progress: 1, target: 5, reward: '300 Gold', unlocked: false },
+        { id: 'versus_6', title: 'Destructeur de Records', description: 'Inflige 500 dégâts dans un seul combat', icon: '💥', progress: 145, target: 500, reward: '400 Gold', unlocked: false }
+    ],
+    roguelike: [
+        { id: 'roguelike_1', title: 'Premier Pas', description: 'Atteindre l\'étage 5', icon: '🐾', progress: 3, target: 5, reward: '100 Gold', unlocked: false },
+        { id: 'roguelike_2', title: 'Explorateur Chevronné', description: 'Atteindre l\'étage 20', icon: '🗻', progress: 8, target: 20, reward: '500 Gold', unlocked: false },
+        { id: 'roguelike_3', title: 'Légendaire', description: 'Atteindre l\'étage 50', icon: '⚡', progress: 0, target: 50, reward: '2000 Gold', unlocked: false },
+        { id: 'roguelike_4', title: 'Collecteur de Trésors', description: 'Trouver 30 objets rares', icon: '💎', progress: 12, target: 30, reward: '300 Gold', unlocked: false },
+        { id: 'roguelike_5', title: 'Survivant', description: 'Survivre 3 runs sans utiliser de soins', icon: '🛡️', progress: 0, target: 3, reward: '400 Gold', unlocked: false },
+        { id: 'roguelike_6', title: 'Vainqueur du Boss Final', description: 'Battre le boss final 5 fois', icon: '👹', progress: 1, target: 5, reward: '1000 Gold', unlocked: false }
+    ],
+    general: [
+        { id: 'general_1', title: 'Collectionneur Novice', description: 'Obtenir 25 monstres différents', icon: '🧬', progress: 18, target: 25, reward: '100 Gold', unlocked: false },
+        { id: 'general_2', title: 'Grand Collectionneur', description: 'Obtenir 50 monstres différents', icon: '📚', progress: 42, target: 50, reward: '500 Gold', unlocked: false },
+        { id: 'general_3', title: 'Maître Collectionneur', description: 'Obtenir 100 monstres différents', icon: '🏛️', progress: 65, target: 100, reward: '1500 Gold', unlocked: false },
+        { id: 'general_4', title: 'Accumulateur de Richesses', description: 'Accumuler 100 000 Gold', icon: '💰', progress: 45600, target: 100000, reward: '1000 Gold', unlocked: false },
+        { id: 'general_5', title: 'Premier Tirage', description: 'Effectuer 1 tirage Gacha', icon: '🎰', progress: 1, target: 1, reward: '50 Gold', unlocked: true },
+        { id: 'general_6', title: 'Dénicheur de Rarités', description: 'Obtenir 3 créatures Légendaires', icon: '🌟', progress: 1, target: 3, reward: '500 Gold', unlocked: false }
+    ]
+};
+
+function renderAchievementsContent(filterCategory = 'all') {
     const container = document.getElementById('screen-container');
     if (!container) return;
+
+    let contentHtml = '';
+    const categories = ['versus', 'roguelike', 'general'];
+    
+    if (filterCategory === 'all') {
+        contentHtml = categories.map(category => {
+            const achievements = achievementsData[category] || [];
+            if (achievements.length === 0) return '';
+            
+            const achievementsHtml = achievements.map(achievement => `
+                <div class="achievement-card ${achievement.unlocked ? 'achievement-unlocked' : 'achievement-locked'}">
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-content">
+                        <div class="achievement-header">
+                            <h4 class="achievement-title">${achievement.title}</h4>
+                            <span class="achievement-reward">${achievement.reward}</span>
+                        </div>
+                        <p class="achievement-description">${achievement.description}</p>
+                        <div class="achievement-progress">
+                            <div class="achievement-progress-bar">
+                                <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
+                            </div>
+                            <span class="achievement-progress-text">${achievement.progress}/${achievement.target}</span>
+                        </div>
+                    </div>
+                    ${achievement.unlocked ? '<span class="achievement-badge">✓</span>' : ''}
+                </div>
+            `).join('');
+
+            const categoryTitle = category === 'versus' ? 'Versus' : 
+                                 category === 'roguelike' ? 'Roguelike' : 'Général';
+            
+            return `
+                <h3 class="achievement-category-title">${categoryTitle}</h3>
+                <div class="achievements-grid">
+                    ${achievementsHtml}
+                </div>
+            `;
+        }).join('');
+    } else {
+        const achievements = achievementsData[filterCategory] || [];
+        if (achievements.length === 0) {
+            contentHtml = `<p class="achievements-empty">Aucun achievement dans cette catégorie.</p>`;
+        } else {
+            contentHtml = `
+                <div class="achievements-grid">
+                    ${achievements.map(achievement => `
+                        <div class="achievement-card ${achievement.unlocked ? 'achievement-unlocked' : 'achievement-locked'}">
+                            <div class="achievement-icon">${achievement.icon}</div>
+                            <div class="achievement-content">
+                                <div class="achievement-header">
+                                    <h4 class="achievement-title">${achievement.title}</h4>
+                                    <span class="achievement-reward">${achievement.reward}</span>
+                                </div>
+                                <p class="achievement-description">${achievement.description}</p>
+                                <div class="achievement-progress">
+                                    <div class="achievement-progress-bar">
+                                        <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
+                                    </div>
+                                    <span class="achievement-progress-text">${achievement.progress}/${achievement.target}</span>
+                                </div>
+                            </div>
+                            ${achievement.unlocked ? '<span class="achievement-badge">✓</span>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    }
+
+    // Générer la navbar
+    const categoryNames = { versus: 'Versus', roguelike: 'Roguelike', general: 'Général' };
+    const totalAchievements = {
+        versus: achievementsData.versus.length,
+        roguelike: achievementsData.roguelike.length,
+        general: achievementsData.general.length
+    };
+    const unlockedAchievements = {
+        versus: achievementsData.versus.filter(a => a.unlocked).length,
+        roguelike: achievementsData.roguelike.filter(a => a.unlocked).length,
+        general: achievementsData.general.filter(a => a.unlocked).length
+    };
+
+    const navbarHtml = `
+        <div class="achievements-navbar">
+            <button class="achievements-filter-btn ${currentAchievementFilter === 'all' ? 'active' : ''}" 
+                    onclick="filterAchievementsByCategory('all')">Tous</button>
+            ${['versus', 'roguelike', 'general'].map(cat => {
+                const isActive = currentAchievementFilter === cat ? 'active' : '';
+                const unlockedCnt = unlockedAchievements[cat];
+                const totalCnt = totalAchievements[cat];
+                return `<button class="achievements-filter-btn ${isActive}" 
+                                onclick="filterAchievementsByCategory('${cat}')">${categoryNames[cat]} (${unlockedCnt}/${totalCnt})</button>`;
+            }).join('')}
+        </div>
+    `;
 
     container.innerHTML = `
         <div class="screen" id="achievements-screen">
@@ -1639,27 +1761,31 @@ function showAchievementsMenu() {
             </div>
             <h2>Achievements</h2>
             <div class="decoration-line"></div>
-            
-            <div class="achievement-category">
-                <h3 class="category-title">Versus</h3>
-                <p class="category-empty">No versus achievements unlocked yet.</p>
+            ${navbarHtml}
+            <div class="achievements-content">
+                ${contentHtml}
             </div>
-            
-            <div class="achievement-category">
-                <h3 class="category-title">Roguelike</h3>
-                <p class="category-empty">No roguelike achievements unlocked yet.</p>
-            </div>
-            
-            <div class="achievement-category">
-                <h3 class="category-title">General</h3>
-                <p class="category-empty">No general achievements unlocked yet.</p>
-            </div>
-            
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
         </div>
     `;
+}
+
+function filterAchievementsByCategory(category) {
+    currentAchievementFilter = category;
+    renderAchievementsContent(category);
+}
+
+function showAchievementsMenu() {
+    console.log('[TAB Menu] Opening Achievements...');
+    hideTabMenu();
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    currentAchievementFilter = 'all';
+    renderAchievementsContent('all');
 }
 
 function showProfileMenu() {
