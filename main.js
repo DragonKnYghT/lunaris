@@ -1474,12 +1474,118 @@ function showTeamMenu() {
 }
 
 // ===== Quests Menu =====
-function showQuestsMenu() {
-    console.log('[TAB Menu] Opening Quests...');
-    hideTabMenu();
+// Quest data
+let currentQuestFilter = 'all';
 
+const questsData = {
+    normal: [
+        { id: 'normal_1', title: 'Gagner 3 combats', description: 'Remportez la victoire dans 3 combats', progress: 1, target: 3, reward: '50 Gold' },
+        { id: 'normal_2', title: 'Utiliser 5 attaques', description: 'Utilisez 5 attaques au total', progress: 2, target: 5, reward: '100 Gold' },
+        { id: 'normal_3', title: 'Capturer 2 créatures', description: 'Capturez 2 créatures sauvages', progress: 0, target: 2, reward: '200 Gold' }
+    ],
+    special: [
+        { id: 'special_1', title: 'Battre un champion', description: 'Battez un champion dans l\'arène', progress: 0, target: 1, reward: '500 Gold' },
+        { id: 'special_2', title: 'Obtenir 10 créatures rares', description: 'Collectionnez 10 créatures rares', progress: 3, target: 10, reward: '1000 Gold' },
+        { id: 'special_3', title: 'Gagner une série de 5', description: 'Remportez 5 combats d\'affilée', progress: 2, target: 5, reward: '750 Gold' }
+    ],
+    daily: [
+        { id: 'daily_1', title: 'Ouvrir 1 Gacha', description: 'Effectuez au minimum 1 tirage Gacha', progress: 0, target: 1, reward: '10 Tickets' },
+        { id: 'daily_2', title: 'Terminer 2 combats', description: 'Participez à 2 combats', progress: 1, target: 2, reward: '50 Gold' },
+        { id: 'daily_3', title: 'Vérifier le shop', description: 'Consultez le shop du jeu', progress: 1, target: 1, reward: '25 Gold', completed: true }
+    ],
+    event: [
+        { id: 'event_1', title: 'Battre un boss spécial', description: 'Affrontez et battez le boss lunaire', progress: 0, target: 1, reward: '1000 Gold + Skin exclusif' },
+        { id: 'event_2', title: 'Événement: Raid collectif', description: 'Participez au raid collectif et contribuez 100 dégâts', progress: 45, target: 100, reward: '500 Gold' },
+        { id: 'event_3', title: 'Célébration: Récupérer le badge', description: 'Complétez les 5 quêtes de l\'événement', progress: 3, target: 5, reward: 'Badge événement' }
+    ]
+};
+
+function renderQuestsContent(filterCategory = 'all') {
     const container = document.getElementById('screen-container');
     if (!container) return;
+
+    let contentHtml = '';
+    const categories = ['normal', 'special', 'daily', 'event'];
+    
+    if (filterCategory === 'all') {
+        contentHtml = categories.map(category => {
+            const quests = questsData[category] || [];
+            if (quests.length === 0) return '';
+            
+            const questsHtml = quests.map(quest => `
+                <div class="quest-card ${quest.completed ? 'quest-completed' : ''}">
+                    <div class="quest-header">
+                        <h4 class="quest-title">${quest.title}</h4>
+                        <span class="quest-reward">${quest.reward}</span>
+                    </div>
+                    <p class="quest-description">${quest.description}</p>
+                    <div class="quest-progress">
+                        <div class="quest-progress-bar">
+                            <div class="quest-progress-fill" style="width: ${(quest.progress / quest.target) * 100}%"></div>
+                        </div>
+                        <span class="quest-progress-text">${quest.progress}/${quest.target}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            const categoryTitle = category === 'normal' ? 'Normal' : 
+                                 category === 'special' ? 'Spéciale' :
+                                 category === 'daily' ? 'Quotidienne' : 'Événement';
+            
+            return `
+                <h3 class="quest-category-title">${categoryTitle}</h3>
+                <div class="quests-grid">
+                    ${questsHtml}
+                </div>
+            `;
+        }).join('');
+    } else {
+        const quests = questsData[filterCategory] || [];
+        if (quests.length === 0) {
+            contentHtml = `<p class="quests-empty">Aucune quête dans cette catégorie.</p>`;
+        } else {
+            contentHtml = `
+                <div class="quests-grid">
+                    ${quests.map(quest => `
+                        <div class="quest-card ${quest.completed ? 'quest-completed' : ''}">
+                            <div class="quest-header">
+                                <h4 class="quest-title">${quest.title}</h4>
+                                <span class="quest-reward">${quest.reward}</span>
+                            </div>
+                            <p class="quest-description">${quest.description}</p>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar">
+                                    <div class="quest-progress-fill" style="width: ${(quest.progress / quest.target) * 100}%"></div>
+                                </div>
+                                <span class="quest-progress-text">${quest.progress}/${quest.target}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+    }
+
+    // Générer la navbar
+    const categoryNames = { normal: 'Normal', special: 'Spéciale', daily: 'Quotidienne', event: 'Événement' };
+    const totalQuests = {
+        normal: questsData.normal.length,
+        special: questsData.special.length,
+        daily: questsData.daily.length,
+        event: questsData.event.length
+    };
+
+    const navbarHtml = `
+        <div class="quests-navbar">
+            <button class="quests-filter-btn ${currentQuestFilter === 'all' ? 'active' : ''}" 
+                    onclick="filterQuestsByCategory('all')">Tous</button>
+            ${['normal', 'special', 'daily', 'event'].map(cat => {
+                const isActive = currentQuestFilter === cat ? 'active' : '';
+                return `<button class="quests-filter-btn ${isActive}" 
+                                onclick="filterQuestsByCategory('${cat}')">${categoryNames[cat]} (${totalQuests[cat]})</button>`;
+            }).join('')}
+        </div>
+    `;
 
     container.innerHTML = `
         <div class="screen" id="quests-screen">
@@ -1488,34 +1594,33 @@ function showQuestsMenu() {
                 <span>✦</span>
                 <span>✦</span>
             </div>
-            <h2>Quests</h2>
+            <h2>Quêtes</h2>
             <div class="decoration-line"></div>
-            
-            <div class="quest-category">
-                <h3 class="category-title">Normal</h3>
-                <p class="category-empty">No normal quests available yet.</p>
+            ${navbarHtml}
+            <div class="quests-content">
+                ${contentHtml}
             </div>
-            
-            <div class="quest-category">
-                <h3 class="category-title">Special</h3>
-                <p class="category-empty">No special quests available yet.</p>
-            </div>
-            
-            <div class="quest-category">
-                <h3 class="category-title">Daily</h3>
-                <p class="category-empty">No daily quests available yet.</p>
-            </div>
-            
-            <div class="quest-category">
-                <h3 class="category-title">Event</h3>
-                <p class="category-empty">No event quests available yet.</p>
-            </div>
-            
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
         </div>
     `;
+}
+
+function filterQuestsByCategory(category) {
+    currentQuestFilter = category;
+    renderQuestsContent(category);
+}
+
+function showQuestsMenu() {
+    console.log('[TAB Menu] Opening Quests...');
+    hideTabMenu();
+
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    currentQuestFilter = 'all';
+    renderQuestsContent('all');
 }
 
 // ===== Achievements Menu =====
