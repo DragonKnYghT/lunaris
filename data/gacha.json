@@ -45,8 +45,8 @@
       "limited": []
     },
     "prices": {
-      "single": 250,
-      "multi": 2500
+      "single": 200,
+      "multi": 2000
     },
     "featured": ["galaxy_titan", "cosmic_guardian"],
     "expiration": null
@@ -71,8 +71,8 @@
       "limited": ["abyss_lord"]
     },
     "prices": {
-      "single": 500,
-      "multi": 5000
+      "single": 400,
+      "multi": 4000
     },
     "featured": ["stellar_overlord", "universal_destroyer"],
     "expiration": null

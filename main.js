@@ -914,6 +914,10 @@ function showGachaMenu() {
                 legendary: 1,
                 ultimate: 0,
                 limited: 0
+            },
+            prices: {
+                single: 100,
+                multi: 1000
             }
         },
         'lucky_draw': {
@@ -926,18 +930,26 @@ function showGachaMenu() {
                 legendary: 4.5,
                 ultimate: 0.5,
                 limited: 0
+            },
+            prices: {
+                single: 200,
+                multi: 2000
             }
         },
         'ultimate_draw': {
             name: 'Tirage Ultime',
             description: 'Tirage premium avec chances élevées pour créatures puissantes',
             rates: {
-                common: 0,
-                rare: 20,
-                epic: 30,
-                legendary: 35,
-                ultimate: 14,
-                limited: 1
+                common: 10,
+                rare: 30,
+                epic: 45,
+                legendary: 10,
+                ultimate: 5,
+                limited: 0
+            },
+            prices: {
+                single: 400,
+                multi: 4000
             }
         },
         'limited_draw': {
@@ -946,10 +958,14 @@ function showGachaMenu() {
             rates: {
                 common: 0,
                 rare: 20,
-                epic: 25,
+                epic: 30,
                 legendary: 35,
-                ultimate: 19.9,
-                limited: 0.1
+                ultimate: 14,
+                limited: 1
+            },
+            prices: {
+                single: 500,
+                multi: 5000
             }
         }
     };
@@ -1006,9 +1022,11 @@ function showGachaMenu() {
                 <div class="banner-actions">
                     <button class="menu-button" onclick="executeGachaPull('${bannerId}', 1)">
                         <span class="pull-single">Single Pull</span>
+                        <span class="pull-cost">${banner.prices.single} gems</span>
                     </button>
                     <button class="menu-button" onclick="executeGachaPull('${bannerId}', 10)">
                         <span class="pull-multi">Multi Pull x10</span>
+                        <span class="pull-cost">${banner.prices.multi} gems</span>
                     </button>
                 </div>
             </div>
@@ -1674,11 +1692,7 @@ function init() {
     // LUNARIS_TODO: Load game data (creatures, moves, items, etc.)
     // LUNARIS_TODO: Initialize game systems (combat, inventory, etc.)
     
-    // Update loading message
-    const loadingMessage = document.getElementById('loading-message');
-    if (loadingMessage) {
-        loadingMessage.textContent = 'Lunaris is ready!';
-    }
+    // Loading message removed
     
     console.log('Lunaris initialized successfully!');
 }
