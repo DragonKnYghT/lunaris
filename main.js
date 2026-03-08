@@ -350,7 +350,7 @@ function showSoloMultiplayerMenu(mode) {
                     <h3>Solo</h3>
                     <p>Play alone against AI opponents.</p>
                 </div>
-                <div class="game-mode-card" onclick="showPlayerCountMenu('${mode}')">
+                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}')">
                     <h3>Multiplayer</h3>
                     <p>Play with friends online.</p>
                 </div>
@@ -364,54 +364,11 @@ function showSoloMultiplayerMenu(mode) {
 }
 
 /**
- * Shows the player count selection menu for multiplayer
- * @param {string} mode - The selected game mode ('roguelike' or 'versus')
- */
-function showPlayerCountMenu(mode) {
-    // Multiplayer variant of current mode
-    gameState.mode = mode;
-    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
-    const container = document.getElementById('screen-container');
-    container.innerHTML = `
-        <div class="screen" id="player-count-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>${modeName} - Multiplayer</h2>
-            <div class="decoration-line"></div>
-            <p>Select number of players:</p>
-            <div class="game-mode-grid">
-                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}', 2)">
-                    <h3>2 Players</h3>
-                    <p>Battle with a friend.</p>
-                </div>
-                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}', 3)">
-                    <h3>3 Players</h3>
-                    <p>Three-way battle!</p>
-                </div>
-                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}', 4)">
-                    <h3>4 Players</h3>
-                    <p>Four-player chaos!</p>
-                </div>
-            </div>
-            <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showSoloMultiplayerMenu('${mode}')">Back</button>
-            </div>
-        </div>
-    `;
-    console.log('Player count menu displayed for mode:', mode);
-}
-
-/**
  * Shows the choice between creating a new lobby or joining an existing one
  * @param {string} mode - Selected game mode ('roguelike' or 'versus')
- * @param {number} playerCount - Number of players
  */
-function showMultiplayerLobbyChoice(mode, playerCount) {
+function showMultiplayerLobbyChoice(mode) {
     gameState.mode = mode;
-    gameState.playerCount = playerCount;
     
     // Forcer création de profil avant le multi
     if (!currentProfile) {
@@ -430,33 +387,74 @@ function showMultiplayerLobbyChoice(mode, playerCount) {
                 <span>✦</span>
                 <span>✦</span>
             </div>
-            <h2>${modeName} - ${playerCount} Joueurs</h2>
+            <h2>${modeName} - Multiplayer</h2>
             <div class="decoration-line"></div>
             <p>Que voulez-vous faire?</p>
             <div class="game-mode-grid">
-                <div class="game-mode-card" onclick="showCreateLobbyMenu('${mode}', ${playerCount})">
+                <div class="game-mode-card" onclick="showPlayerCountMenu('${mode}', 'create')">
                     <h3>Créer</h3>
-                    <p>Créer un nouveau salon et recevoir un code.</p>
+                    <p>Créer un nouveau salon.</p>
                 </div>
-                <div class="game-mode-card" onclick="showJoinLobbyMenu('${mode}', ${playerCount})">
+                <div class="game-mode-card" onclick="showJoinLobbyMenu('${mode}')">
                     <h3>Rejoindre</h3>
-                    <p>Entrer un code pour rejoindre un salon.</p>
+                    <p>Rejoindre un salon existant.</p>
                 </div>
             </div>
             <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showPlayerCountMenu('${mode}')">Back</button>
+                <button class="menu-button secondary" onclick="showSoloMultiplayerMenu('${mode}')">Back</button>
             </div>
         </div>
     `;
-    console.log('Lobby choice menu displayed for mode:', mode, 'players:', playerCount);
+    console.log('Lobby choice menu displayed for mode:', mode);
+}
+
+/**
+ * Shows the player count selection menu for multiplayer (for creating a lobby)
+ * @param {string} mode - The selected game mode ('roguelike' or 'versus')
+ * @param {string} action - The action ('create' or 'join')
+ */
+function showPlayerCountMenu(mode, action = 'create') {
+    // Multiplayer variant of current mode
+    gameState.mode = mode;
+    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
+    const container = document.getElementById('screen-container');
+    container.innerHTML = `
+        <div class="screen" id="player-count-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${modeName} - Multiplayer</h2>
+            <div class="decoration-line"></div>
+            <p>Select number of players:</p>
+            <div class="game-mode-grid">
+                <div class="game-mode-card" onclick="showCreateLobbyMenu('${mode}', 2)">
+                    <h3>2 Players</h3>
+                    <p>Battle with a friend.</p>
+                </div>
+                <div class="game-mode-card" onclick="showCreateLobbyMenu('${mode}', 3)">
+                    <h3>3 Players</h3>
+                    <p>Three-way battle!</p>
+                </div>
+                <div class="game-mode-card" onclick="showCreateLobbyMenu('${mode}', 4)">
+                    <h3>4 Players</h3>
+                    <p>Four-player chaos!</p>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}')">Back</button>
+            </div>
+        </div>
+    `;
+    console.log('Player count menu displayed for mode:', mode);
 }
 
 /**
  * Shows the join lobby menu where player enters a code
  * @param {string} mode - Selected game mode
- * @param {number} playerCount - Number of players
  */
-function showJoinLobbyMenu(mode, playerCount) {
+function showJoinLobbyMenu(mode) {
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
     const container = document.getElementById('screen-container');
     
@@ -482,7 +480,7 @@ function showJoinLobbyMenu(mode, playerCount) {
             <div id="join-state-container"></div>
 
             <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}', ${playerCount})">Back</button>
+                <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}')">Back</button>
             </div>
         </div>
     `;
@@ -507,7 +505,7 @@ function showJoinLobbyMenu(mode, playerCount) {
         };
     }
     
-    console.log('Join lobby menu displayed for mode:', mode, 'players:', playerCount);
+    console.log('Join lobby menu displayed for mode:', mode);
 }
 
 /**
@@ -567,7 +565,7 @@ function showCreateLobbyMenu(mode, playerCount) {
             </div>
 
             <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}', ${playerCount})">Back</button>
+                <button class="menu-button secondary" onclick="showPlayerCountMenu('${mode}', 'create')">Back</button>
             </div>
         </div>
     `;
