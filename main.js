@@ -383,15 +383,15 @@ function showPlayerCountMenu(mode) {
             <div class="decoration-line"></div>
             <p>Select number of players:</p>
             <div class="game-mode-grid">
-                <div class="game-mode-card" onclick="startGame('${mode}', 2, true)">
+                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}', 2)">
                     <h3>2 Players</h3>
                     <p>Battle with a friend.</p>
                 </div>
-                <div class="game-mode-card" onclick="startGame('${mode}', 3, true)">
+                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}', 3)">
                     <h3>3 Players</h3>
                     <p>Three-way battle!</p>
                 </div>
-                <div class="game-mode-card" onclick="startGame('${mode}', 4, true)">
+                <div class="game-mode-card" onclick="showMultiplayerLobbyChoice('${mode}', 4)">
                     <h3>4 Players</h3>
                     <p>Four-player chaos!</p>
                 </div>
@@ -402,6 +402,194 @@ function showPlayerCountMenu(mode) {
         </div>
     `;
     console.log('Player count menu displayed for mode:', mode);
+}
+
+/**
+ * Shows the choice between creating a new lobby or joining an existing one
+ * @param {string} mode - Selected game mode ('roguelike' or 'versus')
+ * @param {number} playerCount - Number of players
+ */
+function showMultiplayerLobbyChoice(mode, playerCount) {
+    gameState.mode = mode;
+    gameState.playerCount = playerCount;
+    
+    // Forcer création de profil avant le multi
+    if (!currentProfile) {
+        alert('Crée d\'abord un profil joueur.');
+        showProfileMenu();
+        return;
+    }
+
+    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
+    const container = document.getElementById('screen-container');
+    
+    container.innerHTML = `
+        <div class="screen" id="lobby-choice-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${modeName} - ${playerCount} Joueurs</h2>
+            <div class="decoration-line"></div>
+            <p>Que voulez-vous faire?</p>
+            <div class="game-mode-grid">
+                <div class="game-mode-card" onclick="showCreateLobbyMenu('${mode}', ${playerCount})">
+                    <h3>Créer</h3>
+                    <p>Créer un nouveau salon et recevoir un code.</p>
+                </div>
+                <div class="game-mode-card" onclick="showJoinLobbyMenu('${mode}', ${playerCount})">
+                    <h3>Rejoindre</h3>
+                    <p>Entrer un code pour rejoindre un salon.</p>
+                </div>
+            </div>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showPlayerCountMenu('${mode}')">Back</button>
+            </div>
+        </div>
+    `;
+    console.log('Lobby choice menu displayed for mode:', mode, 'players:', playerCount);
+}
+
+/**
+ * Shows the join lobby menu where player enters a code
+ * @param {string} mode - Selected game mode
+ * @param {number} playerCount - Number of players
+ */
+function showJoinLobbyMenu(mode, playerCount) {
+    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
+    const container = document.getElementById('screen-container');
+    
+    container.innerHTML = `
+        <div class="screen" id="join-lobby-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${modeName} - Rejoindre</h2>
+            <div class="decoration-line"></div>
+            <p>Entrez le code du salon:</p>
+            
+            <div class="lobby-actions">
+                <div class="settings-option">
+                    <label for="join-code-input">Code Salon</label>
+                    <input id="join-code-input" type="text" maxlength="6" placeholder="ABCD12" style="text-transform:uppercase;">
+                </div>
+                <button class="menu-button" id="join-confirm-btn">Rejoindre</button>
+            </div>
+
+            <div id="join-state-container"></div>
+
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}', ${playerCount})">Back</button>
+            </div>
+        </div>
+    `;
+
+    const joinBtn = document.getElementById('join-confirm-btn');
+    const codeInput = document.getElementById('join-code-input');
+
+    if (joinBtn && codeInput) {
+        joinBtn.onclick = () => {
+            const raw = codeInput.value.trim().toUpperCase();
+            if (!raw || raw.length < 3) {
+                alert('Entre un code de salon valide.');
+                return;
+            }
+            ensureWebSocketConnected(() => {
+                wsClient.send({
+                    type: 'LOBBY_JOIN',
+                    payload: { roomCode: raw },
+                    timestamp: Date.now()
+                });
+            });
+        };
+    }
+    
+    console.log('Join lobby menu displayed for mode:', mode, 'players:', playerCount);
+}
+
+/**
+ * Shows the create lobby menu with player profile and starter pokemon
+ * @param {string} mode - Selected game mode
+ * @param {number} playerCount - Number of players
+ */
+function showCreateLobbyMenu(mode, playerCount) {
+    const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
+    const container = document.getElementById('screen-container');
+    
+    // Generate lobby code
+    const lobbyCode = generateLocalRoomCode();
+    
+    // Get starter pokemon (using a default if not available)
+    const starterName = currentProfile?.starter || 'Bulbasaur';
+    const starterEmoji = currentProfile?.starterEmoji || '🌱';
+    
+    container.innerHTML = `
+        <div class="screen" id="create-lobby-screen">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            <h2>${modeName} - Créer Salon</h2>
+            <div class="decoration-line"></div>
+            
+            <div class="lobby-info-grid">
+                <div class="lobby-info-card">
+                    <h3>Ton Profil</h3>
+                    <div class="profile-info">
+                        <p><strong>Pseudo:</strong> ${currentProfile?.name || 'Joueur'}</p>
+                        <p><strong>Avatar:</strong> ${currentProfile?.avatar || '👤'}</p>
+                    </div>
+                </div>
+                
+                <div class="lobby-info-card">
+                    <h3>Ton Starter</h3>
+                    <div class="starter-info">
+                        <p class="starter-emoji">${starterEmoji}</p>
+                        <p><strong>${starterName}</strong></p>
+                    </div>
+                </div>
+                
+                <div class="lobby-info-card">
+                    <h3>Code du Salon</h3>
+                    <div class="code-display">
+                        <p class="lobby-code">${lobbyCode}</p>
+                        <p class="code-note">Partage ce code avec tes amis</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lobby-actions">
+                <button class="menu-button" id="create-confirm-btn">Démarrer le Jeu</button>
+            </div>
+
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}', ${playerCount})">Back</button>
+            </div>
+        </div>
+    `;
+
+    const createBtn = document.getElementById('create-confirm-btn');
+    if (createBtn) {
+        createBtn.onclick = () => {
+            ensureWebSocketConnected(() => {
+                wsClient.send({
+                    type: 'LOBBY_CREATE',
+                    payload: { roomCode: lobbyCode },
+                    timestamp: Date.now()
+                });
+                // Once confirmed, start the game
+                setTimeout(() => {
+                    startGame(mode, playerCount, true);
+                }, 500);
+            });
+        };
+    }
+    
+    console.log('Create lobby menu displayed for mode:', mode, 'players:', playerCount, 'code:', lobbyCode);
 }
 
 /**
@@ -682,10 +870,6 @@ function showTabMenu() {
                         <span class="tab-menu-text">Achievements</span>
                     </button>
                     ${teamButtonHtml}
-                    <button class="tab-menu-item" onclick="showLobbyMenu()">
-                        <span class="tab-menu-icon">🌐</span>
-                        <span class="tab-menu-text">Lobby</span>
-                    </button>
                     <button class="tab-menu-item" onclick="showProfileMenu()">
                         <span class="tab-menu-icon">👤</span>
                         <span class="tab-menu-text">Profile</span>

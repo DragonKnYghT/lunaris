@@ -1107,6 +1107,90 @@
     margin-bottom: 4px;
 }
 
+/* Lobby Info Grid */
+.lobby-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.lobby-info-card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 2px solid rgba(0, 217, 255, 0.2);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.lobby-info-card:hover {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.3);
+}
+
+.lobby-info-card h3 {
+    margin: 0 0 var(--spacing-md) 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-md);
+}
+
+.profile-info {
+    text-align: left;
+}
+
+.profile-info p {
+    margin: var(--spacing-sm) 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+.profile-info strong {
+    color: var(--text-primary);
+}
+
+.starter-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.starter-emoji {
+    font-size: 3em;
+    margin: 0;
+}
+
+.starter-info p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.starter-info strong {
+    color: var(--text-primary);
+    font-size: var(--font-size-md);
+}
+
+.code-display {
+    text-align: center;
+}
+
+.lobby-code {
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--accent-primary);
+    letter-spacing: 3px;
+    margin: var(--spacing-md) 0;
+    font-family: monospace;
+    text-shadow: 0 0 10px rgba(0, 217, 255, 0.4);
+}
+
+.code-note {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
 /* ===== Gacha Banner Styles ===== */
 .gacha-intro {
     font-size: var(--font-size-lg);
