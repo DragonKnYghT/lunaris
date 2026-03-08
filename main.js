@@ -1666,19 +1666,19 @@ function renderAchievementsContent(filterCategory = 'all') {
             
             const achievementsHtml = achievements.map(achievement => `
                 <div class="achievement-card ${achievement.unlocked ? 'achievement-unlocked' : 'achievement-locked'}">
-                    <div class="achievement-icon">${achievement.icon}</div>
-                    <div class="achievement-content">
-                        <div class="achievement-header">
+                    <div class="achievement-header">
+                        <div class="achievement-title-section">
+                            <span class="achievement-icon">${achievement.icon}</span>
                             <h4 class="achievement-title">${achievement.title}</h4>
-                            <span class="achievement-reward">${achievement.reward}</span>
                         </div>
-                        <p class="achievement-description">${achievement.description}</p>
-                        <div class="achievement-progress">
-                            <div class="achievement-progress-bar">
-                                <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
-                            </div>
-                            <span class="achievement-progress-text">${achievement.progress}/${achievement.target}</span>
+                        <span class="achievement-reward">${achievement.reward}</span>
+                    </div>
+                    <p class="achievement-description">${achievement.description}</p>
+                    <div class="achievement-progress">
+                        <div class="achievement-progress-bar">
+                            <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
                         </div>
+                        <span class="achievement-progress-text">${achievement.progress}/${achievement.target}</span>
                     </div>
                     ${achievement.unlocked ? '<span class="achievement-badge">✓</span>' : ''}
                 </div>
@@ -1703,19 +1703,19 @@ function renderAchievementsContent(filterCategory = 'all') {
                 <div class="achievements-grid">
                     ${achievements.map(achievement => `
                         <div class="achievement-card ${achievement.unlocked ? 'achievement-unlocked' : 'achievement-locked'}">
-                            <div class="achievement-icon">${achievement.icon}</div>
-                            <div class="achievement-content">
-                                <div class="achievement-header">
+                            <div class="achievement-header">
+                                <div class="achievement-title-section">
+                                    <span class="achievement-icon">${achievement.icon}</span>
                                     <h4 class="achievement-title">${achievement.title}</h4>
-                                    <span class="achievement-reward">${achievement.reward}</span>
                                 </div>
-                                <p class="achievement-description">${achievement.description}</p>
-                                <div class="achievement-progress">
-                                    <div class="achievement-progress-bar">
-                                        <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
-                                    </div>
-                                    <span class="achievement-progress-text">${achievement.progress}/${achievement.target}</span>
+                                <span class="achievement-reward">${achievement.reward}</span>
+                            </div>
+                            <p class="achievement-description">${achievement.description}</p>
+                            <div class="achievement-progress">
+                                <div class="achievement-progress-bar">
+                                    <div class="achievement-progress-fill" style="width: ${(achievement.progress / achievement.target) * 100}%"></div>
                                 </div>
+                                <span class="achievement-progress-text">${achievement.progress}/${achievement.target}</span>
                             </div>
                             ${achievement.unlocked ? '<span class="achievement-badge">✓</span>' : ''}
                         </div>
