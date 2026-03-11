@@ -129,7 +129,6 @@ function simpleHash(str) {
     }
     return hash.toString(16);
 }
-}
 
 // ===========================================
 // Gem Currency System (Account-linked)
