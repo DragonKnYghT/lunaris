@@ -13,12 +13,29 @@ const gameState = {
     isMultiplayer: false,
 };
 
-// Simple disc inventory for gacha results (stored in localStorage)
-const DISC_INVENTORY_STORAGE_KEY = 'lunaris_disc_inventory';
+// ===========================================
+// Account Management System
+// ===========================================
 
-let discInventory = loadDiscInventoryFromStorage();
+let accountManager = null;
+let accountUI = null;
+
+function initializeAccountSystem() {
+    if (!accountManager) {
+        accountManager = new AccountManager();
+        accountUI = new AccountUI(accountManager);
+    }
+    return accountManager;
+}
+
+// Wrapper functions for disc inventory (now uses accountManager)
+const DISC_INVENTORY_STORAGE_KEY = 'lunaris_disc_inventory'; // Kept for backward compatibility
 
 function loadDiscInventoryFromStorage() {
+    if (accountManager && accountManager.getCurrentAccount()) {
+        return accountManager.getDiscs();
+    }
+    // Fallback to old storage
     try {
         const raw = localStorage.getItem(DISC_INVENTORY_STORAGE_KEY);
         if (!raw) return [];
@@ -31,34 +48,42 @@ function loadDiscInventoryFromStorage() {
 }
 
 function saveDiscInventoryToStorage() {
-    try {
-        localStorage.setItem(DISC_INVENTORY_STORAGE_KEY, JSON.stringify(discInventory));
-    } catch (e) {
-        console.warn('[DiscInventory] Failed to save to storage', e);
+    if (accountManager && accountManager.getCurrentAccount()) {
+        accountManager.saveAllAccounts();
+    } else {
+        // Fallback
+        console.warn('[DiscInventory] No account logged in, cannot save discs');
     }
 }
 
+let discInventory = [];
+
 function addDiscToInventory(entry) {
-    const now = Date.now();
-    discInventory.push({
-        id: `${entry.bannerId || 'banner'}_${entry.creatureId || 'unknown'}_${now}`,
-        rarity: entry.rarity,
-        visualRarity: entry.visualRarity || entry.rarity,
-        creatureId: entry.creatureId || 'unknown',
-        bannerId: entry.bannerId || null,
-        timestamp: now,
-    });
-    saveDiscInventoryToStorage();
+    if (!accountManager || !accountManager.getCurrentAccount()) {
+        console.error('[DiscInventory] No account logged in');
+        return;
+    }
+    
+    const result = accountManager.addDisc(entry);
+    if (result.success) {
+        discInventory = accountManager.getDiscs();
+    }
 }
 
 // ===========================================
-// Profil local (pseudo / avatar)
+// Profile Management (Account-linked)
 // ===========================================
 
-const PROFILE_STORAGE_KEY = 'lunaris_profile';
-let currentProfile = loadProfileFromStorage();
+const PROFILE_STORAGE_KEY = 'lunaris_profile'; // Legacy key
+let currentProfile = null;
 
 function loadProfileFromStorage() {
+    if (accountManager && accountManager.getCurrentAccount()) {
+        const account = accountManager.getCurrentAccount();
+        currentProfile = account.profile;
+        return currentProfile;
+    }
+    // Fallback to old storage
     try {
         const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
         if (!raw) return null;
@@ -72,21 +97,26 @@ function loadProfileFromStorage() {
 }
 
 function saveProfileToStorage(profile) {
-    try {
-        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    if (accountManager && accountManager.getCurrentAccount()) {
+        const account = accountManager.getCurrentAccount();
+        account.profile = profile;
+        accountManager.saveAllAccounts();
         currentProfile = profile;
-    } catch (e) {
-        console.warn('[Profile] Failed to save profile to storage', e);
+    } else {
+        // Fallback
+        try {
+            localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+            currentProfile = profile;
+        } catch (e) {
+            console.warn('[Profile] Failed to save profile to storage', e);
+        }
     }
 }
 
 function clearProfileFromStorage() {
-    try {
-        localStorage.removeItem(PROFILE_STORAGE_KEY);
-    } catch (e) {
-        console.warn('[Profile] Failed to clear profile from storage', e);
-    }
+    // Clear current profile but account remains
     currentProfile = null;
+    // Don't remove from localStorage as it's account-linked now
 }
 
 // Simple password hashing for local storage (not secure, but prevents plain text)
@@ -99,59 +129,91 @@ function simpleHash(str) {
     }
     return hash.toString(16);
 }
+}
 
 // ===========================================
-// Gem Currency System
+// Gem Currency System (Account-linked)
 // ===========================================
 
-const GEMS_STORAGE_KEY = 'lunaris_gems';
-let playerGems = loadGemsFromStorage();
+const GEMS_STORAGE_KEY = 'lunaris_gems'; // Legacy key
+let playerGems = 0;
 
 function loadGemsFromStorage() {
-    try {
-        const raw = localStorage.getItem(GEMS_STORAGE_KEY);
-        if (!raw) return 0;
-        const parsed = parseInt(raw, 10);
-        return isNaN(parsed) ? 0 : parsed;
-    } catch (e) {
-        console.warn('[Gems] Failed to load gems from storage', e);
-        return 0;
+    if (accountManager && accountManager.getCurrentAccount()) {
+        playerGems = accountManager.getGems();
+    } else {
+        // Fallback to old storage
+        try {
+            const raw = localStorage.getItem(GEMS_STORAGE_KEY);
+            if (!raw) return 0;
+            const parsed = parseInt(raw, 10);
+            return isNaN(parsed) ? 0 : parsed;
+        } catch (e) {
+            console.warn('[Gems] Failed to load gems from storage', e);
+            return 0;
+        }
     }
+    return playerGems;
 }
 
 function saveGemsToStorage(gems) {
-    try {
-        localStorage.setItem(GEMS_STORAGE_KEY, gems.toString());
+    if (accountManager && accountManager.getCurrentAccount()) {
+        const difference = gems - playerGems;
+        if (difference > 0) {
+            accountManager.addGems(difference);
+        } else if (difference < 0) {
+            accountManager.spendGems(-difference);
+        }
         playerGems = gems;
-        updateGemCounter();
-    } catch (e) {
-        console.warn('[Gems] Failed to save gems to storage', e);
+    } else {
+        // Fallback
+        try {
+            localStorage.setItem(GEMS_STORAGE_KEY, gems.toString());
+            playerGems = gems;
+        } catch (e) {
+            console.warn('[Gems] Failed to save gems to storage', e);
+        }
     }
+    updateGemCounter();
 }
 
 function addGems(amount) {
-    const newAmount = playerGems + amount;
-    saveGemsToStorage(newAmount);
-    return newAmount;
+    if (!accountManager || !accountManager.getCurrentAccount()) {
+        console.error('[Gems] No account logged in');
+        return 0;
+    }
+    
+    const result = accountManager.addGems(amount);
+    playerGems = result.gems;
+    updateGemCounter();
+    return playerGems;
 }
 
 function spendGems(amount) {
-    if (playerGems < amount) {
-        return { success: false, message: 'Not enough gems!' };
+    if (!accountManager || !accountManager.getCurrentAccount()) {
+        return { success: false, message: 'No account logged in!' };
     }
-    const newAmount = playerGems - amount;
-    saveGemsToStorage(newAmount);
-    return { success: true, newAmount: newAmount };
+    
+    const result = accountManager.spendGems(amount);
+    if (result.success) {
+        playerGems = result.gems;
+        updateGemCounter();
+    }
+    return result;
 }
 
 function getGems() {
+    if (accountManager && accountManager.getCurrentAccount()) {
+        return accountManager.getGems();
+    }
     return playerGems;
 }
 
 function updateGemCounter() {
     const counter = document.getElementById('gem-counter');
     if (counter) {
-        counter.textContent = playerGems.toLocaleString();
+        const gems = getGems();
+        counter.textContent = gems.toLocaleString();
     }
 }
 
@@ -230,10 +292,34 @@ let combatState = null;
 // ===========================================
 
 /**
+ * Shows the account selection screen
+ */
+function showAccountSelectionScreen() {
+    const container = document.getElementById('screen-container');
+    if (!container) {
+        console.error('screen-container not found');
+        return;
+    }
+    
+    initializeAccountSystem();
+    
+    accountUI.showAccountSelection(container, (accountId) => {
+        console.log('[Game] Account selected:', accountId);
+        loadProfileFromStorage();
+        loadGemsFromStorage();
+        discInventory = loadDiscInventoryFromStorage();
+        updateGemCounter();
+        showMainMenu();
+    });
+}
+
+/**
  * Shows the main menu screen
  */
 function showMainMenu() {
     const container = document.getElementById('screen-container');
+    const currentAccount = accountManager?.getCurrentAccount();
+    
     container.innerHTML = `
         <div class="screen" id="main-menu-screen">
             <div class="decoration-stars">
@@ -241,6 +327,14 @@ function showMainMenu() {
                 <span>✦</span>
                 <span>✦</span>
             </div>
+            ${currentAccount ? `
+                <div class="account-info-bar">
+                    <span class="account-name">⟡ ${currentAccount.username}</span>
+                    <button id="account-menu-btn" class="account-menu-link" title="Gérer les profils">
+                        ⚙ Profils
+                    </button>
+                </div>
+            ` : ''}
             <h2>Main Menu</h2>
             <div class="decoration-line"></div>
             <div class="submenu-buttons">
@@ -253,6 +347,28 @@ function showMainMenu() {
     `;
     
     setupMenuButtonHandlers();
+    
+    // Add account menu handler
+    const accountMenuBtn = document.getElementById('account-menu-btn');
+    if (accountMenuBtn && accountUI) {
+        accountMenuBtn.addEventListener('click', () => {
+            accountUI.showAccountMenu(
+                (accountId) => {
+                    console.log('[Game] Switched to account:', accountId);
+                    loadProfileFromStorage();
+                    loadGemsFromStorage();
+                    discInventory = loadDiscInventoryFromStorage();
+                    updateGemCounter();
+                    showMainMenu();
+                },
+                () => {
+                    console.log('[Game] User logged out');
+                    showAccountSelectionScreen();
+                }
+            );
+        });
+    }
+    
     console.log('Main menu displayed');
 }
 
@@ -370,10 +486,10 @@ function showSoloMultiplayerMenu(mode) {
 function showMultiplayerLobbyChoice(mode) {
     gameState.mode = mode;
     
-    // Forcer création de profil avant le multi
-    if (!currentProfile) {
-        alert('Crée d\'abord un profil joueur.');
-        showProfileMenu();
+    // Vérifier que l'utilisateur a un compte actif
+    if (!accountManager || !accountManager.getCurrentAccount()) {
+        alert('Connecte-toi à un profil avant de jouer en multijoueur.');
+        showAccountSelectionScreen();
         return;
     }
 
@@ -2151,8 +2267,23 @@ function init() {
     // Initialize navigation
     initNavigation();
     
-    // Show main menu by default
-    showMainMenu();
+    // Initialize account system
+    initializeAccountSystem();
+    
+    // Check if user is logged in
+    if (accountManager && accountManager.getCurrentAccount()) {
+        // User is already logged in, load profile data
+        loadProfileFromStorage();
+        loadGemsFromStorage();
+        discInventory = loadDiscInventoryFromStorage();
+        updateGemCounter();
+        
+        // Show main menu
+        showMainMenu();
+    } else {
+        // Show account selection screen
+        showAccountSelectionScreen();
+    }
     
     // LUNARIS_TODO: Initialize game state
     // LUNARIS_TODO: Load game data (creatures, moves, items, etc.)
