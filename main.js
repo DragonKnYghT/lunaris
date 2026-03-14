@@ -2218,22 +2218,12 @@ function showProfileMenu() {
 
         if (changeProfileBtn) {
             changeProfileBtn.addEventListener('click', () => {
-                if (accountUI) {
-                    accountUI.showAccountMenu(
-                        (accountId) => {
-                            loadProfileFromStorage();
-                            loadGemsFromStorage();
-                            discInventory = loadDiscInventoryFromStorage();
-                            updateGemCounter();
-                            showMainMenu();
-                        },
-                        () => {
-                            showAccountSelectionScreen();
-                        }
-                    );
-                } else {
-                    showAccountSelectionScreen();
+                // Force log out before choosing a new account so password is required
+                if (accountManager) {
+                    accountManager.logout();
                 }
+                currentProfile = null;
+                showAccountSelectionScreen();
             });
         }
     }
