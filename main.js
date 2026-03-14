@@ -2168,6 +2168,13 @@ function showProfileMenu() {
     }
 
     // Affichage d'un profil existant
+    const currentAccount = accountManager?.getCurrentAccount();
+    const isLoggedIn = !!currentAccount;
+    const displayName = currentAccount?.username || currentProfile.name;
+
+    const logoutButtonHtml = isLoggedIn ? `<button class="menu-button danger" id="logout-btn">Se déconnecter</button>` : '';
+    const changeProfileButtonHtml = isLoggedIn ? `<button class="menu-button" id="change-profile-btn">Changer de profil</button>` : `<button class="menu-button" onclick="clearProfileFromStorage(); showProfileMenu();">Change Profile</button>`;
+
     container.innerHTML = `
         <div class="screen" id="profile-screen">
             <div class="decoration-stars">
@@ -2180,8 +2187,9 @@ function showProfileMenu() {
             <div class="profile-card">
                 <div class="profile-avatar">${currentProfile.avatar || '🌙'}</div>
                 <div class="profile-info">
-                    <div class="profile-name">${currentProfile.name}</div>
+                    <div class="profile-name">${displayName}</div>
                     <div class="profile-meta">Created: ${new Date(currentProfile.createdAt).toLocaleDateString()}</div>
+                    ${isLoggedIn ? `<div class="profile-meta">Connected as: ${currentAccount.username}</div>` : ''}
                 </div>
             </div>
             <div class="profile-stats">
@@ -2190,11 +2198,45 @@ function showProfileMenu() {
             </div>
             <p class="profile-note">This profile is local to this browser. Your progression is saved here.</p>
             <div class="submenu-buttons">
-                <button class="menu-button" onclick="clearProfileFromStorage(); showProfileMenu();">Change Profile</button>
+                ${logoutButtonHtml}
+                ${changeProfileButtonHtml}
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
         </div>
     `;
+
+    if (isLoggedIn) {
+        const logoutBtn = document.getElementById('logout-btn');
+        const changeProfileBtn = document.getElementById('change-profile-btn');
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                accountManager.logout();
+                showAccountSelectionScreen();
+            });
+        }
+
+        if (changeProfileBtn) {
+            changeProfileBtn.addEventListener('click', () => {
+                if (accountUI) {
+                    accountUI.showAccountMenu(
+                        (accountId) => {
+                            loadProfileFromStorage();
+                            loadGemsFromStorage();
+                            discInventory = loadDiscInventoryFromStorage();
+                            updateGemCounter();
+                            showMainMenu();
+                        },
+                        () => {
+                            showAccountSelectionScreen();
+                        }
+                    );
+                } else {
+                    showAccountSelectionScreen();
+                }
+            });
+        }
+    }
 }
 
 /**
