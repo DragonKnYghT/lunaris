@@ -327,18 +327,11 @@ function showMainMenu() {
                 <span>✦</span>
                 <span>✦</span>
             </div>
-            ${currentAccount ? `
-                <div class="account-info-bar">
-                    <span class="account-name">⟡ ${currentAccount.username}</span>
-                    <button id="account-menu-btn" class="account-menu-link" title="Gérer les profils">
-                        ⚙ Profils
-                    </button>
-                </div>
-            ` : ''}
             <h2>Main Menu</h2>
             <div class="decoration-line"></div>
             <div class="submenu-buttons">
                 <button class="menu-button" id="btn-play" data-action="showPlayMenu">Play</button>
+                <button class="menu-button" id="btn-profile" data-action="showProfileMenu">Profils</button>
                 <button class="menu-button" id="btn-settings" data-action="showSettingsMenu">Settings</button>
                 <button class="menu-button" id="btn-credits" data-action="showCreditsMenu">Credits</button>
             </div>
@@ -347,11 +340,33 @@ function showMainMenu() {
     `;
     
     setupMenuButtonHandlers();
+
+    console.log('Main menu displayed');
+}
+
+/**
+ * Sets up click event handlers for menu buttons
+ */
+function setupMenuButtonHandlers() {
+    console.log('Setting up menu button handlers...');
     
-    // Add account menu handler
-    const accountMenuBtn = document.getElementById('account-menu-btn');
-    if (accountMenuBtn && accountUI) {
-        accountMenuBtn.addEventListener('click', () => {
+    const playBtn = document.getElementById('btn-play');
+    const profileBtn = document.getElementById('btn-profile');
+    const settingsBtn = document.getElementById('btn-settings');
+    const creditsBtn = document.getElementById('btn-credits');
+    
+    if (playBtn) {
+        playBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Play button clicked!');
+            showPlayMenu();
+        };
+    }
+
+    if (profileBtn && accountUI) {
+        profileBtn.onclick = function(e) {
+            e.preventDefault();
+            console.log('Profile button clicked!');
             accountUI.showAccountMenu(
                 (accountId) => {
                     console.log('[Game] Switched to account:', accountId);
@@ -366,27 +381,6 @@ function showMainMenu() {
                     showAccountSelectionScreen();
                 }
             );
-        });
-    }
-    
-    console.log('Main menu displayed');
-}
-
-/**
- * Sets up click event handlers for menu buttons
- */
-function setupMenuButtonHandlers() {
-    console.log('Setting up menu button handlers...');
-    
-    const playBtn = document.getElementById('btn-play');
-    const settingsBtn = document.getElementById('btn-settings');
-    const creditsBtn = document.getElementById('btn-credits');
-    
-    if (playBtn) {
-        playBtn.onclick = function(e) {
-            e.preventDefault();
-            console.log('Play button clicked!');
-            showPlayMenu();
         };
     }
     
