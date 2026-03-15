@@ -331,7 +331,6 @@ function showMainMenu() {
             <div class="decoration-line"></div>
             <div class="submenu-buttons">
                 <button class="menu-button" id="btn-play" data-action="showPlayMenu">Play</button>
-                <button class="menu-button" id="btn-profile" data-action="showProfileMenu">Profils</button>
                 <button class="menu-button" id="btn-settings" data-action="showSettingsMenu">Settings</button>
                 <button class="menu-button" id="btn-credits" data-action="showCreditsMenu">Credits</button>
             </div>
@@ -351,7 +350,6 @@ function setupMenuButtonHandlers() {
     console.log('Setting up menu button handlers...');
     
     const playBtn = document.getElementById('btn-play');
-    const profileBtn = document.getElementById('btn-profile');
     const settingsBtn = document.getElementById('btn-settings');
     const creditsBtn = document.getElementById('btn-credits');
     
@@ -360,27 +358,6 @@ function setupMenuButtonHandlers() {
             e.preventDefault();
             console.log('Play button clicked!');
             showPlayMenu();
-        };
-    }
-
-    if (profileBtn && accountUI) {
-        profileBtn.onclick = function(e) {
-            e.preventDefault();
-            console.log('Profile button clicked!');
-            accountUI.showAccountMenu(
-                (accountId) => {
-                    console.log('[Game] Switched to account:', accountId);
-                    loadProfileFromStorage();
-                    loadGemsFromStorage();
-                    discInventory = loadDiscInventoryFromStorage();
-                    updateGemCounter();
-                    showMainMenu();
-                },
-                () => {
-                    console.log('[Game] User logged out');
-                    showAccountSelectionScreen();
-                }
-            );
         };
     }
     
