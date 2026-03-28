@@ -292,19 +292,41 @@ let combatState = null;
 // ===========================================
 
 /**
+ * Centralized function to render game screens with standard decorations
+ * @param {string} id - The unique ID for the screen
+ * @param {string} title - The title to display
+ * @param {string} content - The HTML content for the screen body
+ */
+function renderScreen(id, title, content) {
+    const container = document.getElementById('screen-container');
+    if (!container) return;
+
+    // Centralizing the UI structure to avoid repetition and errors
+    container.innerHTML = `
+        <div class="screen" id="${id}">
+            <div class="decoration-stars">
+                <span>✦</span>
+                <span>✦</span>
+                <span>✦</span>
+            </div>
+            ${title ? `<h2>${title}</h2><div class="decoration-line"></div>` : ''}
+            <div class="screen-body">
+                ${content}
+            </div>
+        </div>
+    `;
+    
+    // Scroll to top of the container for new screens
+    container.scrollTop = 0;
+}
+
+/**
  * Shows the account selection screen
  */
 function showAccountSelectionScreen() {
     const container = document.getElementById('screen-container');
-    if (!container) {
-        console.error('screen-container not found');
-        return;
-    }
-    
     initializeAccountSystem();
-    
     accountUI.showAccountSelection(container, (accountId) => {
-        console.log('[Game] Account selected:', accountId);
         loadProfileFromStorage();
         loadGemsFromStorage();
         discInventory = loadDiscInventoryFromStorage();
@@ -317,30 +339,17 @@ function showAccountSelectionScreen() {
  * Shows the main menu screen
  */
 function showMainMenu() {
-    const container = document.getElementById('screen-container');
-    const currentAccount = accountManager?.getCurrentAccount();
-    
-    container.innerHTML = `
-        <div class="screen" id="main-menu-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>Main Menu</h2>
-            <div class="decoration-line"></div>
+    const content = `
             <div class="submenu-buttons">
                 <button class="menu-button" id="btn-play" data-action="showPlayMenu">Play</button>
                 <button class="menu-button" id="btn-settings" data-action="showSettingsMenu">Settings</button>
                 <button class="menu-button" id="btn-credits" data-action="showCreditsMenu">Credits</button>
             </div>
             <div class="version-info">v1.2.16</div>
-        </div>
     `;
-    
-    setupMenuButtonHandlers();
 
-    console.log('Main menu displayed');
+    renderScreen('main-menu-screen', 'Main Menu', content);
+    setupMenuButtonHandlers();
 }
 
 /**
@@ -384,16 +393,7 @@ function setupMenuButtonHandlers() {
  * Shows the play menu screen
  */
 function showPlayMenu() {
-    const container = document.getElementById('screen-container');
-    container.innerHTML = `
-        <div class="screen" id="play-menu-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>Choose Your Adventure</h2>
-            <div class="decoration-line"></div>
+    const content = `
             <p>Select a game mode to begin your journey!</p>
             <div class="game-mode-grid">
                 <div class="game-mode-card" onclick="showSoloMultiplayerMenu('roguelike')">
@@ -408,9 +408,9 @@ function showPlayMenu() {
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
-        </div>
     `;
-    console.log('Play menu displayed');
+
+    renderScreen('play-menu-screen', 'Choose Your Adventure', content);
 }
 
 /**
@@ -421,16 +421,7 @@ function showSoloMultiplayerMenu(mode) {
     // Remember chosen base mode in game state
     gameState.mode = mode;
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
-    const container = document.getElementById('screen-container');
-    container.innerHTML = `
-        <div class="screen" id="solo-multiplayer-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>${modeName}</h2>
-            <div class="decoration-line"></div>
+    const content = `
             <p>Choose your game type:</p>
             <div class="game-mode-grid">
                 <div class="game-mode-card" onclick="startGame('${mode}', 1, false)">
@@ -445,9 +436,8 @@ function showSoloMultiplayerMenu(mode) {
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showPlayMenu()">Back</button>
             </div>
-        </div>
     `;
-    console.log('Solo/Multiplayer menu displayed for mode:', mode);
+    renderScreen('solo-multiplayer-screen', modeName, content);
 }
 
 /**
@@ -465,17 +455,7 @@ function showMultiplayerLobbyChoice(mode) {
     }
 
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
-    const container = document.getElementById('screen-container');
-    
-    container.innerHTML = `
-        <div class="screen" id="lobby-choice-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>${modeName} - Multiplayer</h2>
-            <div class="decoration-line"></div>
+    const content = `
             <p>Que voulez-vous faire?</p>
             <div class="game-mode-grid">
                 <div class="game-mode-card" onclick="showPlayerCountMenu('${mode}', 'create')">
@@ -490,9 +470,8 @@ function showMultiplayerLobbyChoice(mode) {
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showSoloMultiplayerMenu('${mode}')">Back</button>
             </div>
-        </div>
     `;
-    console.log('Lobby choice menu displayed for mode:', mode);
+    renderScreen('lobby-choice-screen', `${modeName} - Multiplayer`, content);
 }
 
 /**
@@ -504,16 +483,7 @@ function showPlayerCountMenu(mode, action = 'create') {
     // Multiplayer variant of current mode
     gameState.mode = mode;
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
-    const container = document.getElementById('screen-container');
-    container.innerHTML = `
-        <div class="screen" id="player-count-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>${modeName} - Multiplayer</h2>
-            <div class="decoration-line"></div>
+    const content = `
             <p>Select number of players:</p>
             <div class="game-mode-grid">
                 <div class="game-mode-card" onclick="showCreateLobbyMenu('${mode}', 2)">
@@ -532,9 +502,8 @@ function showPlayerCountMenu(mode, action = 'create') {
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}')">Back</button>
             </div>
-        </div>
     `;
-    console.log('Player count menu displayed for mode:', mode);
+    renderScreen('player-count-screen', `${modeName} - Multiplayer`, content);
 }
 
 /**
@@ -543,17 +512,7 @@ function showPlayerCountMenu(mode, action = 'create') {
  */
 function showJoinLobbyMenu(mode) {
     const modeName = mode === 'roguelike' ? 'Roguelike' : 'Versus';
-    const container = document.getElementById('screen-container');
-    
-    container.innerHTML = `
-        <div class="screen" id="join-lobby-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>${modeName} - Rejoindre</h2>
-            <div class="decoration-line"></div>
+    const content = `
             <p>Entrez le code du salon:</p>
             
             <div class="lobby-actions">
@@ -569,8 +528,9 @@ function showJoinLobbyMenu(mode) {
             <div class="submenu-buttons">
                 <button class="menu-button secondary" onclick="showMultiplayerLobbyChoice('${mode}')">Back</button>
             </div>
-        </div>
     `;
+
+    renderScreen('join-lobby-screen', `${modeName} - Rejoindre`, content);
 
     const joinBtn = document.getElementById('join-confirm-btn');
     const codeInput = document.getElementById('join-code-input');

@@ -112,7 +112,7 @@
     max-width: none;
     flex: 1;
     overflow: visible;
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     word-break: break-word;
     overflow-wrap: anywhere;
     display: flex;
@@ -128,6 +128,14 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.screen-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: var(--spacing-md);
 }
 
 .screen h2 {
