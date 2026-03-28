@@ -7,9 +7,8 @@
 #game-container {
     width: 100%;
     max-width: 800px;
-    min-height: 80vh;
-    height: auto;
-    max-height: none;
+    height: 90vh;
+    max-height: 800px;
     margin: var(--spacing-xl) auto;
     padding: var(--spacing-xl);
     background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
@@ -92,22 +91,35 @@
 
 /* ===== Screen Container Styles - Non-Scrollable Adaptive Block ===== */
 #screen-container {
-    margin-top: var(--spacing-xl);
+    margin-top: var(--spacing-md);
     min-height: 300px;
-    height: auto;
-    max-height: none;
-    overflow-y: visible !important;
+    flex: 1;
+    overflow-y: auto !important;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    padding-bottom: var(--spacing-xl);
-    flex: 1;
+    padding-right: 10px;
+}
+
+/* Style de la barre de défilement pour le container */
+#screen-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+#screen-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+#screen-container::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 10px;
 }
 
 /* ===== Screen Styles ===== */
 .screen {
-    padding: var(--spacing-xl);
+    padding: var(--spacing-md);
     width: 100%;
     max-width: none;
     flex: 1;
@@ -139,15 +151,15 @@
 }
 
 .screen h2 {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-2xl);
     color: var(--text-gold);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     letter-spacing: 2px;
 }
 
 .screen p {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     line-height: 1.6;
     color: var(--text-secondary);
 }
@@ -155,10 +167,10 @@
 /* ===== Menu Button Styles ===== */
 .menu-button {
     display: block;
-    width: 280px;
-    padding: var(--spacing-md) var(--spacing-xl);
-    margin: var(--spacing-md) auto;
-    font-size: var(--font-size-lg);
+    width: 240px;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    margin: var(--spacing-sm) auto;
+    font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--text-primary);
     background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
@@ -225,15 +237,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-lg);
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
 }
 
 /* ===== Game Mode Cards ===== */
 .game-mode-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
     width: 100%;
     margin-top: var(--spacing-lg);
     flex-wrap: wrap;
@@ -243,7 +255,7 @@
     background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-light) 100%);
     border: 2px solid var(--color-primary);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     cursor: pointer;
     transition: all var(--transition-normal);
     text-align: left;
@@ -420,14 +432,14 @@
     width: 100px;
     height: 3px;
     background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-    margin: var(--spacing-lg) auto;
+    margin: var(--spacing-md) auto;
 }
 
 .decoration-stars {
     display: flex;
     justify-content: center;
     gap: var(--spacing-sm);
-    margin: var(--spacing-md) 0;
+    margin: var(--spacing-xs) 0;
 }
 
 .decoration-stars span {
@@ -1269,16 +1281,16 @@
 .banners-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
     width: 100%;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
 }
 
 .banner-card {
     background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-light) 100%);
     border: 2px solid var(--color-primary);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     overflow: hidden;
     transition: all var(--transition-normal);
 }
@@ -1290,14 +1302,14 @@
 }
 
 .banner-header {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     border-bottom: 2px solid var(--color-primary);
-    padding-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
 }
 
 .banner-header h3 {
     color: var(--color-secondary);
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
     margin-bottom: var(--spacing-sm);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -1310,7 +1322,7 @@
 }
 
 .banner-rates {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
 }
 
 .rates-visual {
@@ -1320,8 +1332,8 @@
 .rate-item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
+    gap: var(--spacing-sm);
+    margin-bottom: 4px;
 }
 
 .rate-label {
@@ -1357,7 +1369,7 @@
 
 .rates-stats {
     background: rgba(0, 0, 0, 0.1);
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
     border-radius: var(--radius-md);
     border: 1px solid var(--color-primary);
 }
@@ -1378,7 +1390,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 4px var(--spacing-sm);
     background: rgba(0, 0, 0, 0.1);
     border-radius: var(--radius-sm);
     border-left: 3px solid var(--text-muted);
