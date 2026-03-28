@@ -9,17 +9,20 @@
     <link rel="stylesheet" href="assets/css/layout.css">
     <link rel="stylesheet" href="assets/css/loader.css">
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <style>
+<style>
+        /* Inline overrides for non-scrollable card block - reinforced by style.css */
         #game-container {
             width: 100%;
-            min-height: 600px;
-            max-height: calc(100vh - 150px);
-            background-color: var(--bg-dark);
-            border-radius: 8px;
-            overflow-y: auto;
+            min-height: 80vh;
+            height: auto !important;
+            max-height: none !important;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+            border-radius: var(--radius-xl);
+            overflow: visible !important;
             position: relative;
             display: flex;
             flex-direction: column;
+            box-shadow: var(--shadow-xl), var(--shadow-glow);
         }
         
         #game-loading {

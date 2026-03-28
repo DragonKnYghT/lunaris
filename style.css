@@ -3,19 +3,23 @@
  * Contains game-specific styles for the in-game screens
  */
 
-/* ===== Game Container Styles ===== */
+/* ===== Game Container Styles - Fixed Card Block ===== */
 #game-container {
     width: 100%;
     max-width: 800px;
-    min-height: 600px;
+    min-height: 80vh;
+    height: auto;
+    max-height: none;
     margin: var(--spacing-xl) auto;
     padding: var(--spacing-xl);
     background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl), var(--shadow-glow);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Background pattern overlay */
@@ -86,25 +90,33 @@
     50% { opacity: 0.5; }
 }
 
-/* ===== Screen Container Styles ===== */
+/* ===== Screen Container Styles - Non-Scrollable Adaptive Block ===== */
 #screen-container {
     margin-top: var(--spacing-xl);
     min-height: 300px;
-    max-height: calc(100vh - 250px);
-    overflow-y: auto;
+    height: auto;
+    max-height: none;
+    overflow-y: visible !important;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
     padding-bottom: var(--spacing-xl);
+    flex: 1;
 }
 
 /* ===== Screen Styles ===== */
 .screen {
     padding: var(--spacing-xl);
     width: 100%;
-    max-width: 600px;
+    max-width: none;
+    flex: 1;
+    overflow: visible;
     animation: fadeIn 0.5s ease-out;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes fadeIn {
@@ -216,6 +228,7 @@
     gap: var(--spacing-lg);
     width: 100%;
     margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
 }
 
 .game-mode-card {
@@ -423,12 +436,12 @@
     color: var(--text-muted);
 }
 
-/* ===== Responsive Styles ===== */
+/* ===== Responsive Styles - Adaptive Text Scaling ===== */
 @media (max-width: 768px) {
     #game-container {
         margin: var(--spacing-md);
         padding: var(--spacing-lg);
-        min-height: auto;
+        min-height: 70vh;
     }
     
     .game-title {
@@ -447,14 +460,61 @@
     
     .screen {
         padding: var(--spacing-md);
+        font-size: 0.95em;
     }
     
     .screen h2 {
         font-size: var(--font-size-2xl);
     }
     
-    .game-mode-grid {
-        grid-template-columns: 1fr;
+    .game-mode-grid,
+    .banners-grid,
+    .features-grid,
+    .inventory-grid,
+    .quests-grid,
+    .achievements-grid,
+    .gacha-results-grid {
+        grid-template-columns: 1fr !important;
+        gap: var(--spacing-md);
+    }
+    
+    .screen p,
+    .quest-description,
+    .achievement-description {
+        font-size: 0.9em;
+        line-height: 1.4;
+    }
+}
+
+@media (max-width: 480px) {
+    .screen {
+        font-size: 0.9em;
+        padding: var(--spacing-sm);
+    }
+    
+    .screen h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .menu-button,
+    .btn {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    /* Compact grids for small screens */
+    .features-grid,
+    .banners-grid,
+    .gacha-results-grid {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    
+    .rate-item,
+    .stat-item {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm);
     }
 }
 
