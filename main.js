@@ -757,11 +757,14 @@ function showAttackMenu() {
 
 function resetCombatMenu() {
     const menu = document.getElementById('combat-menu');
-    if(!menu) ret
+    if (!menu) return;
+    menu.innerHTML = `
+        <button class="menu-button" onclick="showAttackMenu()">Attaque</button>
         <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
         <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
         <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
     `;
+}
 
 async function executeAttack(moveName) {
     if (!combatState.isPlayerTurn) return;
@@ -785,7 +788,7 @@ async function executeAttack(moveName) {
     
     // Update UI Ennemi
     const enemyBar = document.getElementById('enemy-hp-bar');
-    enemyBar.style.width = (combatState.enemy.hp / combatState.enemy.maxHp * 100) + '%';
+    if (enemyBar) enemyBar.style.width = (combatState.enemy.hp / combatState.enemy.maxHp * 100) + '%';
 
     await new Promise(r => setTimeout(r, 1000));
     enemyEnt.classList.remove('anim-hit');
@@ -814,8 +817,8 @@ async function executeAttack(moveName) {
     // Update UI Joueur
     const playerBar = document.getElementById('player-hp-bar');
     const playerText = document.getElementById('player-hp-text');
-    playerBar.style.width = (combatState.player.hp / combatState.player.maxHp * 100) + '%';
-    playerText.textContent = `${combatState.player.hp} / ${combatState.player.maxHp}`;
+    if (playerBar) playerBar.style.width = (combatState.player.hp / combatState.player.maxHp * 100) + '%';
+    if (playerText) playerText.textContent = `${combatState.player.hp} / ${combatState.player.maxHp}`;
 
     await new Promise(r => setTimeout(r, 1000));
     playerEnt.classList.remove('anim-hit');
@@ -827,6 +830,7 @@ async function executeAttack(moveName) {
 
 function handleCombatAction(action) {
     const log = document.getElementById('combat-log');
+    if (!log) return;
     
     switch(action) {
         case 'bag':
@@ -834,8 +838,7 @@ function handleCombatAction(action) {
             break;
             
         case 'team':
-            // Simulation d'affichage équipe
-            const content = `
+            const teamContent = `
                 <div style="display: flex; justify-content: space-around; width: 100%; color: #333;">
                     <div><strong>En combat:</strong><br> ${combatState.player.name}</div>
                     <div style="border-left: 2px solid #333; padding-left: 20px;">
@@ -845,7 +848,7 @@ function handleCombatAction(action) {
                     </div>
                 </div>
             `;
-            log.innerHTML = content;
+            log.innerHTML = teamContent;
             break;
             
         case 'run':
@@ -901,16 +904,11 @@ function showSettingsMenu() {
 
     renderScreen('settings-screen', 'Settings', content);
 
-    // Master Volume Slider
     const masterVolumeSlider = document.getElementById("master-volume");
     if (masterVolumeSlider) {
-        masterVolumeSlider.oninput = (e) => {
-            const value = e.target.value / 100;
-            audioSettings.setMasterVolume(value);
-        };
+        masterVolumeSlider.oninput = (e) => audioSettings.setMasterVolume(e.target.value / 100);
     }
 
-    // SFX Toggle
     const sfxBtn = document.getElementById("toggle-sfx-btn");
     if (sfxBtn) {
         sfxBtn.onclick = () => {
@@ -919,205 +917,55 @@ function showSettingsMenu() {
         };
     }
 
-    // Music Volume Slider
     const musicVolumeSlider = document.getElementById("music-volume");
     if (musicVolumeSlider) {
-        musicVolumeSlider.oninput = (e) => {
-            const value = e.target.value / 100;
-            audioSettings.setMusicVolume(value);
-        };
+        musicVolumeSlider.oninput = (e) => audioSettings.setMusicVolume(e.target.value / 100);
     }
 
-    // Fullscreen Toggle
     const fullscreenBtn = document.getElementById("fullscreen-btn");
     if (fullscreenBtn) {
         fullscreenBtn.innerText = document.fullscreenElement ? "ON" : "OFF";
-        
         fullscreenBtn.onclick = () => {
             const gameContainer = document.getElementById('game-container');
-            
-            if (!gameContainer) {
-                console.error('Game container (#game-container) not found!');
-                return;
-            }
-            
+            if (!gameContainer) return;
             if (!document.fullscreenElement) {
-                gameContainer.requestFullscreen().catch(err => {
-                    console.error('Error attempting to enable fullscreen:', err);
-                });
+                gameContainer.requestFullscreen().catch(err => console.error(err));
             } else {
                 document.exitFullscreen();
             }
         };
     }
 
-    // Day/Night Theme Toggle
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     if (themeToggleBtn) {
-        let currentMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
+        let currentMode = (typeof siteManager !== 'undefined' && siteManager.getThemeMode) ? 
+            siteManager.getThemeMode() : (localStorage.getItem('lunaris_theme_mode') || 'dark');
         themeToggleBtn.innerText = currentMode === 'light' ? 'Day' : 'Night';
 
         themeToggleBtn.onclick = () => {
             if (typeof siteManager !== 'undefined' && siteManager.toggleTheme) {
                 siteManager.toggleTheme();
-                const newMode = siteManager.getThemeMode();
-                themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
+                themeToggleBtn.innerText = siteManager.getThemeMode() === 'light' ? 'Day' : 'Night';
             }
         };
     }
-}
-                <div class="settings-option">
-                    <label>Master Volume</label>
-                    <input type="range" id="master-volume" min="0" max="100" value="${audioSettings.masterVolume * 100}">
-                </div>
-
-                <!-- SFX Toggle -->
-                <div class="s
-                    ${audioS" /
-                </div>
-
-                <!-- Music Volume Slider -->ttings-option">
-                    <label>Music Volume</label>
-                    <input type="range" id="music-volume" min="0" max="100" value="${audioSettings.musicVolume * 100}">
-                </div>
-
-                <!-- Fullscreen -->
-                <div class="settings-option">
-                    <label>Fullscreen</label>
-                    <button id="fullscreen-btn" class="value">OFF</button>
-                </div>
-
-                <!-- Day/Night Theme Toggle -->
-                <div class="settings-option">
-                    <label>Theme</label>
-                    <button id="theme-toggle-btn" class="value">Night</button>
-                </div>
-            </div>
-
-            <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
-            </div>
-        </div>
-    `;
-
-    // Master Volume Slider
-    const masterVolumeSlider = document.getElementById("master-volume");
-    if (masterVolumeSlider) {
-        masterVolumeSlider.oninput = (e) => {
-            const value = e.target.value / 100;
-            audioSettings.setMasterVolume(value);
-        };
-    }
-
-    // SFX Toggle
-    const sfxBtn = document.getElementById("toggle-sfx-btn");
-    if (sfxBtn) {
-        sfxBtn.onclick = () => {
-            audioSettings.toggleSfx();
-            sfxBtn.innerText = audioSettings.sfxEnabled ? "ON" : "OFF";
-        };
-    }
-
-    // Music Volume Slider
-    const musicVolumeSlider = document.getElementById("music-volume");
-    if (musicVolumeSlider) {
-        musicVolumeSlider.oninput = (e) => {
-            const value = e.target.value / 100;
-            audioSettings.setMusicVolume(value);
-        };
-    }
-
-    // Fullscreen Toggle
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-    if (fullscreenBtn) {
-        fullscreenBtn.innerText = document.fullscreenElement ? "ON" : "OFF";
-        
-        fullscreenBtn.onclick = () => {
-            const gameContainer = document.getElementById('game-container');
-            
-            if (!gameContainer) {
-                console.error('Game container (#game-container) not found!');
-                return;
-            }
-            
-            if (!document.fullscreenElement) {
-                gameContainer.requestFullscreen().catch(err => {
-                    console.error('Error attempting to enable fullscreen:', err);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        };
-    }
-
-    // Listen for fullscreen changes to update the UI
-    document.addEventListener('fullscreenchange', () => {
-        const fsBtn = document.getElementById('fullscreen-btn');
-        if (fsBtn) {
-            fsBtn.innerText = document.fullscreenElement ? "ON" : "OFF";
-        }
-    });
-
-    // Day/Night Theme Toggle
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    if (themeToggleBtn) {
-        // Initial label en fonction du mode actuel du site si dispo
-        let currentMode = 'dark';
-        if (typeof siteManager !== 'undefined' && siteManager && typeof siteManager.getThemeMode === 'function') {
-            currentMode = siteManager.getThemeMode();
-        } else {
-            currentMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
-        }
-        themeToggleBtn.innerText = currentMode === 'light' ? 'Day' : 'Night';
-
-        themeToggleBtn.onclick = () => {
-            // Toujours passer par le systeme global du site
-            if (typeof siteManager !== 'undefined' && siteManager && typeof siteManager.toggleTheme === 'function') {
-                siteManager.toggleTheme();
-                const newMode = siteManager.getThemeMode();
-                themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
-            } else if (typeof themeManager !== 'undefined' && themeManager) {
-                // Fallback sur l'ancien ThemeManager si jamais
-                toggleTheme();
-                const newMode = (typeof getThemeMode === 'function') ? getThemeMode() : (localStorage.getItem('lunaris_theme_mode') || 'dark');
-                themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
-            }
-        };
-    }
-
-    console.log('Settings menu displayed');
 }
 
 /**
  * Shows the credits screen
  */
 function showCreditsMenu() {
-    const container = document.getElementById('screen-container');
-    container.innerHTML = `
-        <div class="screen" id="credits-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
-            </div>
-            <h2>Credits</h2>
-            <div class="decoration-line"></div>
-            <p><strong>Lunaris</strong></p>
-            <p>A Modular Creature-Battling Roguelike</p>
-            <p style="margin-top: 20px;"><strong>Version 0.1.0</strong></p>
-            <p style="margin-top: 30px; color: var(--text-muted);">
-                Created with passion for gaming!
-            </p>
-            <p style="margin-top: 20px; color: var(--text-muted);">
-                © 2024 Lunaris. All rights reserved.
-            </p>
-            <div class="submenu-buttons">
-                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
-            </div>
+    const content = `
+        <p><strong>Lunaris</strong></p>
+        <p>A Modular Creature-Battling Roguelike</p>
+        <p style="margin-top: 20px;"><strong>Version 0.1.0</strong></p>
+        <p style="margin-top: 30px; color: var(--text-muted);">Created with passion for gaming!</p>
+        <p style="margin-top: 20px; color: var(--text-muted);">© 2024 Lunaris. All rights reserved.</p>
+        <div class="submenu-buttons">
+            <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
         </div>
     `;
-
-    console.log('Credits screen displayed');
+    renderScreen('credits-screen', 'Credits', content);
 }
 
 // ===========================================
