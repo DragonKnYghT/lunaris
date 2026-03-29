@@ -664,26 +664,82 @@ function startGame(mode, playerCount, isMultiplayer) {
         const modeLabel = mode === 'roguelike' ? 'Roguelike' : (mode === 'versus' ? 'Versus' : mode);
         const typeLabel = isMultiplayer ? 'Multiplayer' : 'Solo';
 
-        container.innerHTML = `
-            <div class="screen" id="game-start-screen">
-                <div class="decoration-stars">
-                    <span>✦</span>
-                    <span>✦</span>
-                    <span>✦</span>
-                </div>
-                <h2>${modeLabel} - ${typeLabel}</h2>
-                <div class="decoration-line"></div>
-                <p>Your adventure is about to begin.</p>
-                <p><strong>Players:</strong> ${playerCount}</p>
-                <p class="text-muted">Game engine coming next: creatures, zones, combat...</p>
-                <div class="submenu-buttons">
-                    <button class="menu-button secondary" onclick="showPlayMenu()">Back to Mode Selection</button>
-                </div>
-            </div>
-        `;
+        showCombatScreen({
+            name: currentProfile?.starter || 'Bulbasaur',
+            level: 5,
+            hp: 20,
+            maxHp: 20,
+            sprite: '🌱' 
+        }, {
+            name: 'Lunar Phantom',
+            level: 4,
+            hp: 15,
+            maxHp: 15,
+            sprite: '👻'
+        });
     }
 }
 
+/**
+ * Displays the combat screen
+ * @param {Object} player - Player creature data
+ * @param {Object} enemy - Enemy creature data
+ */
+function showCombatScreen(player, enemy) {
+    const content = `
+        <div class="combat-arena">
+            <!-- Enemy Side -->
+            <div class="combat-entity entity-enemy">
+                <div class="status-card">
+                    <div class="status-header">
+                        <span>${enemy.name}</span>
+                        <span>Lv.${enemy.level}</span>
+                    </div>
+                    <div class="hp-bar-container">
+                        <div class="hp-bar-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="creature-sprite" style="font-size: 80px; display: flex; justify-content: center; align-items: center;">${enemy.sprite}</div>
+            </div>
+
+            <!-- Player Side -->
+            <div class="combat-entity entity-player">
+                <div class="creature-sprite" style="font-size: 80px; display: flex; justify-content: center; align-items: center;">${player.sprite}</div>
+                <div class="status-card">
+                    <div class="status-header">
+                        <span>${player.name}</span>
+                        <span>Lv.${player.level}</span>
+                    </div>
+                    <div class="hp-bar-container">
+                        <div class="hp-bar-fill" style="width: 100%"></div>
+                    </div>
+                    <div style="text-align: right; font-size: 12px; margin-top: 2px;">${player.hp}/${player.maxHp}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="combat-ui-footer">
+            <div class="combat-message-box" id="combat-log">
+                Que doit faire ${player.name} ?
+            </div>
+            <div class="combat-actions-grid">
+                <button class="menu-button" onclick="handleCombatAction('attack')">Attaque</button>
+                <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
+                <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
+                <button class="menu-button danger" onclick="handleCombatAction('run')">Fuite</button>
+            </div>
+        </div>
+    `;
+
+    renderScreen('combat-screen', '', content);
+}
+
+function handleCombatAction(action) {
+    const log = document.getElementById('combat-log');
+    if (log) {
+        log.textContent = `Action sélectionnée : ${action}. En attente de la logique de combat...`;
+    }
+}
 /**
  * Shows the settings menu screen
  */
