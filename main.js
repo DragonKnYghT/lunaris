@@ -666,56 +666,67 @@ function startGame(mode, playerCount, isMultiplayer) {
         const modeLabel = mode === 'roguelike' ? 'Roguelike' : (mode === 'versus' ? 'Versus' : mode);
         const typeLabel = isMultiplayer ? 'Multiplayer' : 'Solo';
 
-        showCombatScreen({
-            name: currentProfile?.starter || 'Bulbasaur',
-            level: 5,
-            hp: 20,
-            maxHp: 20,
-            sprite: '🌱' 
-        }, {
-            name: 'Lunar Phantom',
-            level: 4,
-            hp: 15,
-            maxHp: 15,
-            sprite: '👻'
-        });
+        console.log(`Starting ${typeLabel} ${modeLabel} game...`);
+
+        // Initialisation de l'état de combat avec les données demandées
+        combatState = {
+            player: { 
+                name: 'Lunaris 1', 
+                level: 8, 
+                hp: 16, 
+                maxHp: 37, 
+                sprite: 'assets/sprite/Lunaris/starteur/lunaris1.png' 
+            },
+            enemy: { 
+                name: 'Lunaris 2', 
+                level: 6, 
+                hp: 20, 
+                maxHp: 20, 
+                sprite: 'assets/sprite/Lunaris/starteur/lunaris2.png' 
+            },
+            isPlayerTurn: true
+        };
+
+        showCombatScreen(combatState.player, combatState.enemy);
     }
 }
 
 /**
- * Displays the combat screen
- * @param {Object} player - Player creature data
- * @param {Object} enemy - Enemy creature data
+ * Affiche l'écran de combat
  */
 function showCombatScreen(player, enemy) {
     const content = `
         <div class="combat-arena">
+            <div class="wave-badge">VAGUE ${gameState.wave}</div>
+            
             <!-- Enemy Side -->
-            <div class="combat-entity entity-enemy">
+            <div class="combat-entity entity-enemy" id="enemy-entity">
                 <div class="status-card">
                     <div class="status-header">
-                        <span>${enemy.name}</span>
-                        <span>Lv.${enemy.level}</span>
+                        <span>${enemy.name.toUpperCase()}</span>
+                        <span>N.${enemy.level}</span>
                     </div>
                     <div class="hp-bar-container">
-                        <div class="hp-bar-fill" style="width: 100%"></div>
+                        <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
                     </div>
                 </div>
-                <div class="creature-sprite" style="font-size: 80px; display: flex; justify-content: center; align-items: center;">${enemy.sprite}</div>
+                <img src="${enemy.sprite}" class="creature-sprite" alt="Enemy">
             </div>
-
+ 
             <!-- Player Side -->
-            <div class="combat-entity entity-player">
-                <div class="creature-sprite" style="font-size: 80px; display: flex; justify-content: center; align-items: center;">${player.sprite}</div>
+            <div class="combat-entity entity-player" id="player-entity">
+                <img src="${player.sprite}" class="creature-sprite" alt="Player">
                 <div class="status-card">
                     <div class="status-header">
-                        <span>${player.name}</span>
-                        <span>Lv.${player.level}</span>
+                        <span>${player.name.toUpperCase()}</span>
+                        <span>N.${player.level}</span>
                     </div>
                     <div class="hp-bar-container">
-                        <div class="hp-bar-fill" style="width: 100%"></div>
+                        <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
                     </div>
-                    <div style="text-align: right; font-size: 12px; margin-top: 2px;">${player.hp}/${player.maxHp}</div>
+                    <div style="text-align: right; font-size: 14px; margin-top: 2px; font-weight: bold;" id="player-hp-text">
+                        ${player.hp} / ${player.maxHp}
+                    </div>
                 </div>
             </div>
         </div>
@@ -724,43 +735,100 @@ function showCombatScreen(player, enemy) {
             <div class="combat-message-box" id="combat-log">
                 Que doit faire ${player.name} ?
             </div>
-            <div class="combat-actions-grid">
-                <button class="menu-button" onclick="handleCombatAction('attack')">Griffe</button>
+            <div class="combat-actions-grid" id="combat-menu">
+                <button class="menu-button" onclick="showAttackMenu()">Attaque</button>
                 <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
                 <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
-                <button class="menu-button danger" onclick="handleCombatAction('run')">Fuite</button>
+                <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
             </div>
         </div>
     `;
-
     renderScreen('combat-screen', '', content);
+}
+
+function showAttackMenu() {
+    const menu = document.getElementById('combat-menu');
+    if (!menu) return;
+    menu.innerHTML = `
+        <button class="menu-button" onclick="executeAttack('Griffe')">Griffe <br><small>PP 35/35</small></button>
+        <button class="menu-button secondary" onclick="resetCombatMenu()">Retour</button>
+    `;
+}
+
+function resetCombatMenu() {
+    const menu = document.getElementById('combat-menu');
+    if(!menu) ret
+        <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
+        <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
+        <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
+    `;
+
+async function executeAttack(moveName) {
+    if (!combatState.isPlayerTurn) return;
+    combatState.isPlayerTurn = false;
+
+    const log = document.getElementById('combat-log');
+    const playerEnt = document.getElementById('player-entity');
+    const enemyEnt = document.getElementById('enemy-entity');
+
+    // 1. Animation Attaque Joueur
+    log.textContent = `${combatState.player.name} utilise ${moveName} !`;
+    playerEnt.classList.add('anim-attack-player');
+    
+    await new Promise(r => setTimeout(r, 300));
+    playerEnt.classList.remove('anim-attack-player');
+    enemyEnt.classList.add('anim-hit');
+
+    // 2. Calcul Dégâts
+    combatState.enemy.hp -= 2;
+    if (combatState.enemy.hp < 0) combatState.enemy.hp = 0;
+    
+    // Update UI Ennemi
+    const enemyBar = document.getElementById('enemy-hp-bar');
+    enemyBar.style.width = (combatState.enemy.hp / combatState.enemy.maxHp * 100) + '%';
+
+    await new Promise(r => setTimeout(r, 1000));
+    enemyEnt.classList.remove('anim-hit');
+
+    if (combatState.enemy.hp <= 0) {
+        log.textContent = `${combatState.enemy.name} est K.O !`;
+        setTimeout(() => {
+            gameState.wave++;
+            startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+        }, 1500);
+        return;
+    }
+
+    // 3. Tour de l'ennemi
+    log.textContent = `${combatState.enemy.name} riposte !`;
+    await new Promise(r => setTimeout(r, 800));
+    
+    enemyEnt.classList.add('anim-attack-enemy');
+    await new Promise(r => setTimeout(r, 300));
+    enemyEnt.classList.remove('anim-attack-enemy');
+    playerEnt.classList.add('anim-hit');
+
+    combatState.player.hp -= 1;
+    if (combatState.player.hp < 0) combatState.player.hp = 0;
+
+    // Update UI Joueur
+    const playerBar = document.getElementById('player-hp-bar');
+    const playerText = document.getElementById('player-hp-text');
+    playerBar.style.width = (combatState.player.hp / combatState.player.maxHp * 100) + '%';
+    playerText.textContent = `${combatState.player.hp} / ${combatState.player.maxHp}`;
+
+    await new Promise(r => setTimeout(r, 1000));
+    playerEnt.classList.remove('anim-hit');
+    
+    log.textContent = `Que doit faire ${combatState.player.name} ?`;
+    combatState.isPlayerTurn = true;
+    resetCombatMenu();
 }
 
 function handleCombatAction(action) {
     const log = document.getElementById('combat-log');
     
     switch(action) {
-        case 'attack':
-            currentEnemyHP -= 2;
-            if (currentEnemyHP < 0) currentEnemyHP = 0;
-            
-            // Update UI
-            const bar = document.getElementById('enemy-hp-bar');
-            const text = document.getElementById('enemy-hp-text');
-            if (bar) bar.style.width = (currentEnemyHP / 20 * 100) + '%';
-            if (text) text.textContent = `${currentEnemyHP}/20`;
-            
-            log.textContent = "Lunaris 1 utilise Griffe ! Lunaris 2 perd 2 PV.";
-            
-            if (currentEnemyHP <= 0) {
-                setTimeout(() => {
-                    alert("Lunaris 2 est K.O ! Passage à la vague suivante.");
-                    gameState.wave++;
-                    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
-                }, 1000);
-            }
-            break;
-            
         case 'bag':
             log.textContent = "Sac : Vous n'avez aucun objet.";
             break;
@@ -768,11 +836,11 @@ function handleCombatAction(action) {
         case 'team':
             // Simulation d'affichage équipe
             const content = `
-                <div style="display: flex; justify-content: space-around; width: 100%;">
-                    <div><strong>En combat:</strong><br> Lunaris 1</div>
-                    <div style="border-left: 1px solid white; padding-left: 20px;">
+                <div style="display: flex; justify-content: space-around; width: 100%; color: #333;">
+                    <div><strong>En combat:</strong><br> ${combatState.player.name}</div>
+                    <div style="border-left: 2px solid #333; padding-left: 20px;">
                         <strong>Équipe:</strong><br>
-                        (Vide)<br>
+                        (Emplacement vide)<br>
                         (Vide)
                     </div>
                 </div>
@@ -789,40 +857,126 @@ function handleCombatAction(action) {
             break;
     }
 }
+
 /**
  * Shows the settings menu screen
  */
 function showSettingsMenu() {
-    const container = document.getElementById('screen-container');
-    container.innerHTML = `
-        <div class="screen" id="settings-menu-screen">
-            <div class="decoration-stars">
-                <span>✦</span>
-                <span>✦</span>
-                <span>✦</span>
+    const content = `
+        <div class="settings-options">
+            <div class="settings-option">
+                <label>Master Volume</label>
+                <input type="range" id="master-volume" min="0" max="100" value="${audioSettings.masterVolume * 100}">
             </div>
 
-            <h2>Settings</h2>
-            <div class="decoration-line"></div>
+            <!-- SFX Toggle -->
+            <div class="settings-option">
+                <label>Sound Effects</label>
+                <button id="toggle-sfx-btn" class="value">${audioSettings.sfxEnabled ? "ON" : "OFF"}</button>
+            </div>
 
-            <div class="settings-options">
+            <!-- Music Volume Slider -->
+            <div class="settings-option">
+                <label>Music Volume</label>
+                <input type="range" id="music-volume" min="0" max="100" value="${audioSettings.musicVolume * 100}">
+            </div>
 
-                <!-- Master Volume Slider -->
+            <!-- Fullscreen -->
+            <div class="settings-option">
+                <label>Fullscreen</label>
+                <button id="fullscreen-btn" class="value">OFF</button>
+            </div>
+
+            <!-- Day/Night Theme Toggle -->
+            <div class="settings-option">
+                <label>Theme</label>
+                <button id="theme-toggle-btn" class="value">Night</button>
+            </div>
+        </div>
+
+        <div class="submenu-buttons">
+            <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+        </div>
+    `;
+
+    renderScreen('settings-screen', 'Settings', content);
+
+    // Master Volume Slider
+    const masterVolumeSlider = document.getElementById("master-volume");
+    if (masterVolumeSlider) {
+        masterVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setMasterVolume(value);
+        };
+    }
+
+    // SFX Toggle
+    const sfxBtn = document.getElementById("toggle-sfx-btn");
+    if (sfxBtn) {
+        sfxBtn.onclick = () => {
+            audioSettings.toggleSfx();
+            sfxBtn.innerText = audioSettings.sfxEnabled ? "ON" : "OFF";
+        };
+    }
+
+    // Music Volume Slider
+    const musicVolumeSlider = document.getElementById("music-volume");
+    if (musicVolumeSlider) {
+        musicVolumeSlider.oninput = (e) => {
+            const value = e.target.value / 100;
+            audioSettings.setMusicVolume(value);
+        };
+    }
+
+    // Fullscreen Toggle
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+    if (fullscreenBtn) {
+        fullscreenBtn.innerText = document.fullscreenElement ? "ON" : "OFF";
+        
+        fullscreenBtn.onclick = () => {
+            const gameContainer = document.getElementById('game-container');
+            
+            if (!gameContainer) {
+                console.error('Game container (#game-container) not found!');
+                return;
+            }
+            
+            if (!document.fullscreenElement) {
+                gameContainer.requestFullscreen().catch(err => {
+                    console.error('Error attempting to enable fullscreen:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        };
+    }
+
+    // Day/Night Theme Toggle
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    if (themeToggleBtn) {
+        let currentMode = localStorage.getItem('lunaris_theme_mode') || 'dark';
+        themeToggleBtn.innerText = currentMode === 'light' ? 'Day' : 'Night';
+
+        themeToggleBtn.onclick = () => {
+            if (typeof siteManager !== 'undefined' && siteManager.toggleTheme) {
+                siteManager.toggleTheme();
+                const newMode = siteManager.getThemeMode();
+                themeToggleBtn.innerText = newMode === 'light' ? 'Day' : 'Night';
+            }
+        };
+    }
+}
                 <div class="settings-option">
                     <label>Master Volume</label>
                     <input type="range" id="master-volume" min="0" max="100" value="${audioSettings.masterVolume * 100}">
                 </div>
 
                 <!-- SFX Toggle -->
-                <div class="settings-option">
-                    <label>Sound Effects</label>
-                    <button id="toggle-sfx-btn" class="value">
-                        ${audioSettings.sfxEnabled ? "ON" : "OFF"}
-                    </button>
+                <div class="s
+                    ${audioS" /
                 </div>
 
-                <!-- Music Volume Slider -->
-                <div class="settings-option">
+                <!-- Music Volume Slider -->ttings-option">
                     <label>Music Volume</label>
                     <input type="range" id="music-volume" min="0" max="100" value="${audioSettings.musicVolume * 100}">
                 </div>
