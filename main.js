@@ -11,6 +11,7 @@ const gameState = {
     mode: null,            // 'roguelike' | 'versus' | etc.
     playerCount: 1,
     isMultiplayer: false,
+    wave: 1
 };
 
 // ===========================================
@@ -286,6 +287,7 @@ async function initGameData() {
 
 // Global combat state
 let combatState = null;
+let currentEnemyHP = 20;
 
 // ===========================================
 // Screen Management Functions
@@ -723,7 +725,7 @@ function showCombatScreen(player, enemy) {
                 Que doit faire ${player.name} ?
             </div>
             <div class="combat-actions-grid">
-                <button class="menu-button" onclick="handleCombatAction('attack')">Attaque</button>
+                <button class="menu-button" onclick="handleCombatAction('attack')">Griffe</button>
                 <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
                 <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
                 <button class="menu-button danger" onclick="handleCombatAction('run')">Fuite</button>
@@ -736,8 +738,55 @@ function showCombatScreen(player, enemy) {
 
 function handleCombatAction(action) {
     const log = document.getElementById('combat-log');
-    if (log) {
-        log.textContent = `Action sélectionnée : ${action}. En attente de la logique de combat...`;
+    
+    switch(action) {
+        case 'attack':
+            currentEnemyHP -= 2;
+            if (currentEnemyHP < 0) currentEnemyHP = 0;
+            
+            // Update UI
+            const bar = document.getElementById('enemy-hp-bar');
+            const text = document.getElementById('enemy-hp-text');
+            if (bar) bar.style.width = (currentEnemyHP / 20 * 100) + '%';
+            if (text) text.textContent = `${currentEnemyHP}/20`;
+            
+            log.textContent = "Lunaris 1 utilise Griffe ! Lunaris 2 perd 2 PV.";
+            
+            if (currentEnemyHP <= 0) {
+                setTimeout(() => {
+                    alert("Lunaris 2 est K.O ! Passage à la vague suivante.");
+                    gameState.wave++;
+                    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+                }, 1000);
+            }
+            break;
+            
+        case 'bag':
+            log.textContent = "Sac : Vous n'avez aucun objet.";
+            break;
+            
+        case 'team':
+            // Simulation d'affichage équipe
+            const content = `
+                <div style="display: flex; justify-content: space-around; width: 100%;">
+                    <div><strong>En combat:</strong><br> Lunaris 1</div>
+                    <div style="border-left: 1px solid white; padding-left: 20px;">
+                        <strong>Équipe:</strong><br>
+                        (Vide)<br>
+                        (Vide)
+                    </div>
+                </div>
+            `;
+            log.innerHTML = content;
+            break;
+            
+        case 'run':
+            log.textContent = "Vous prenez la fuite...";
+            setTimeout(() => {
+                gameState.wave++;
+                startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+            }, 1000);
+            break;
     }
 }
 /**
