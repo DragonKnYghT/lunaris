@@ -696,59 +696,60 @@ function startGame(mode, playerCount, isMultiplayer) {
  */
 function showCombatScreen(player, enemy) {
     const content = `
-        <div class="combat-arena">
-            <div class="wave-badge">VAGUE ${gameState.wave}</div>
-            
-            <!-- Enemy Side -->
-            <div class="combat-entity entity-enemy" id="enemy-entity">
-                <div class="status-card">
-                    <div class="status-header">
-                        <span>${enemy.name.toUpperCase()}</span>
-                        <span>N.${enemy.level}</span>
+        <div> <!-- Wrapper div added -->
+            <div class="combat-arena">
+                <div class="wave-badge">VAGUE ${gameState.wave}</div>
+                
+                <!-- Enemy Side -->
+                <div class="combat-entity entity-enemy" id="enemy-entity">
+                    <div class="status-card">
+                        <div class="status-header">
+                            <span>${enemy.name.toUpperCase()}</span>
+                            <span>N.${enemy.level}</span>
+                        </div>
+                        <div class="hp-bar-container">
+                            <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
+                        </div>
                     </div>
-                    <div class="hp-bar-container">
-                        <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
-                    </div>
+                    <img src="${enemy.sprite}" class="creature-sprite" alt="Enemy">
                 </div>
-                <img src="${enemy.sprite}" class="creature-sprite" alt="Enemy">
-            </div>
  
-            <!-- Player Side -->
-            <div class="combat-entity entity-player" id="player-entity">
-                <img src="${player.sprite}" class="creature-sprite" alt="Player">
-                <div class="status-card">
-                    <div class="status-header">
-                        <span>${player.name.toUpperCase()}</span>
-                        <span>N.${player.level}</span>
-                    </div>
-                    <div class="hp-bar-container">
-                        <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
-                    </div>
-                    <div style="text-align: right; font-size: 14px; margin-top: 2px; font-weight: bold;" id="player-hp-text">
-                        ${player.hp} / ${player.maxHp}
+                <!-- Player Side -->
+                <div class="combat-entity entity-player" id="player-entity">
+                    <img src="${player.sprite}" class="creature-sprite" alt="Player">
+                    <div class="status-card">
+                        <div class="status-header">
+                            <span>${player.name.toUpperCase()}</span>
+                            <span>N.${player.level}</span>
+                        </div>
+                        <div class="hp-bar-container">
+                            <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
+                        </div>
+                        <div style="text-align: right; font-size: 14px; margin-top: 2px; font-weight: bold;" id="player-hp-text">
+                            ${player.hp} / ${player.maxHp}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="combat-ui-footer">
-            <div class="combat-message-box" id="combat-log">
-                Que doit faire ${player.name} ?
+            <div class="combat-ui-footer">
+                <div class="combat-message-box" id="combat-log">
+                    Que doit faire ${player.name} ?
+                </div>
+                <div class="combat-actions-grid" id="combat-menu">
+                    <button class="menu-button" onclick="showAttackMenu()">Attaque</button>
+                    <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
+                    <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
+                    <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
+                </div>
             </div>
-            <div class="combat-actions-grid" id="combat-menu">
-                <button class="menu-button" onclick="showAttackMenu()">Attaque</button>
-                <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
-                <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
-                <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
-            </div>
-        </div>
+        </div> <!-- Closing wrapper div -->
     `;
     renderScreen('combat-screen', '', content);
 }
 
 function showAttackMenu() {
     const menu = document.getElementById('combat-menu');
-    if (!menu) return;
     menu.innerHTML = `
         <button class="menu-button" onclick="executeAttack('Griffe')">Griffe <br><small>PP 35/35</small></button>
         <button class="menu-button secondary" onclick="resetCombatMenu()">Retour</button>
@@ -757,7 +758,7 @@ function showAttackMenu() {
 
 function resetCombatMenu() {
     const menu = document.getElementById('combat-menu');
-    if (!menu) return;
+    if (!menu) return; // Ensure menu exists before trying to update its innerHTML
     menu.innerHTML = `
         <button class="menu-button" onclick="showAttackMenu()">Attaque</button>
         <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
@@ -866,40 +867,42 @@ function handleCombatAction(action) {
  */
 function showSettingsMenu() {
     const content = `
-        <div class="settings-options">
-            <div class="settings-option">
-                <label>Master Volume</label>
-                <input type="range" id="master-volume" min="0" max="100" value="${audioSettings.masterVolume * 100}">
+        <div> <!-- Wrapper div added -->
+            <div class="settings-options">
+                <div class="settings-option">
+                    <label>Master Volume</label>
+                    <input type="range" id="master-volume" min="0" max="100" value="${audioSettings.masterVolume * 100}">
+                </div>
+
+                <!-- SFX Toggle -->
+                <div class="settings-option">
+                    <label>Sound Effects</label>
+                    <button id="toggle-sfx-btn" class="value">${audioSettings.sfxEnabled ? "ON" : "OFF"}</button>
+                </div>
+
+                <!-- Music Volume Slider -->
+                <div class="settings-option">
+                    <label>Music Volume</label>
+                    <input type="range" id="music-volume" min="0" max="100" value="${audioSettings.musicVolume * 100}">
+                </div>
+
+                <!-- Fullscreen -->
+                <div class="settings-option">
+                    <label>Fullscreen</label>
+                    <button id="fullscreen-btn" class="value">OFF</button>
+                </div>
+
+                <!-- Day/Night Theme Toggle -->
+                <div class="settings-option">
+                    <label>Theme</label>
+                    <button id="theme-toggle-btn" class="value">Night</button>
+                </div>
             </div>
 
-            <!-- SFX Toggle -->
-            <div class="settings-option">
-                <label>Sound Effects</label>
-                <button id="toggle-sfx-btn" class="value">${audioSettings.sfxEnabled ? "ON" : "OFF"}</button>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
             </div>
-
-            <!-- Music Volume Slider -->
-            <div class="settings-option">
-                <label>Music Volume</label>
-                <input type="range" id="music-volume" min="0" max="100" value="${audioSettings.musicVolume * 100}">
-            </div>
-
-            <!-- Fullscreen -->
-            <div class="settings-option">
-                <label>Fullscreen</label>
-                <button id="fullscreen-btn" class="value">OFF</button>
-            </div>
-
-            <!-- Day/Night Theme Toggle -->
-            <div class="settings-option">
-                <label>Theme</label>
-                <button id="theme-toggle-btn" class="value">Night</button>
-            </div>
-        </div>
-
-        <div class="submenu-buttons">
-            <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
-        </div>
+        </div> <!-- Closing wrapper div -->
     `;
 
     renderScreen('settings-screen', 'Settings', content);
@@ -956,14 +959,16 @@ function showSettingsMenu() {
  */
 function showCreditsMenu() {
     const content = `
-        <p><strong>Lunaris</strong></p>
-        <p>A Modular Creature-Battling Roguelike</p>
-        <p style="margin-top: 20px;"><strong>Version 0.1.0</strong></p>
-        <p style="margin-top: 30px; color: var(--text-muted);">Created with passion for gaming!</p>
-        <p style="margin-top: 20px; color: var(--text-muted);">© 2024 Lunaris. All rights reserved.</p>
-        <div class="submenu-buttons">
-            <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
-        </div>
+        <div> <!-- Wrapper div added -->
+            <p><strong>Lunaris</strong></p>
+            <p>A Modular Creature-Battling Roguelike</p>
+            <p style="margin-top: 20px;"><strong>Version 0.1.0</strong></p>
+            <p style="margin-top: 30px; color: var(--text-muted);">Created with passion for gaming!</p>
+            <p style="margin-top: 20px; color: var(--text-muted);">© 2024 Lunaris. All rights reserved.</p>
+            <div class="submenu-buttons">
+                <button class="menu-button secondary" onclick="showMainMenu()">Back</button>
+            </div>
+        </div> <!-- Closing wrapper div -->
     `;
     renderScreen('credits-screen', 'Credits', content);
 }
