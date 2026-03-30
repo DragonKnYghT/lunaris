@@ -668,33 +668,43 @@ function startGame(mode, playerCount, isMultiplayer) {
 
         console.log(`Starting ${typeLabel} ${modeLabel} game...`);
 
-        // Initialisation de l'état de combat avec les données demandées
-        combatState = {
-            player: {
-                name: 'Lunaris 1',
-                level: 8,
-                hp: 37,
-                maxHp: 37,
-                stats: { attack: 15, defense: 10 },
-                moves: [
-                    { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
-                    { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
-                ],
-                sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
-            },
-            enemy: {
-                name: 'Lunaris 2',
-                level: 6,
-                hp: 20,
-                maxHp: 20,
-                stats: { attack: 12, defense: 8 },
-                moves: [
-                    { name: 'Charge', power: 8, pp: 35, maxPp: 35 }
-                ],
-                sprite: 'sprite/Lunaris/Starteur/Starteur 2.png'
-            },
-            isPlayerTurn: true
+        const isBoss = gameState.wave % 10 === 0;
+
+        // Persistance : On garde le joueur si on est en plein run, sinon on l'initialise
+        if (!combatState || gameState.wave === 1) {
+            combatState = {
+                player: {
+                    name: 'Lunaris 1',
+                    level: 5,
+                    hp: 40,
+                    maxHp: 40,
+                    xp: 0,
+                    maxXp: 100,
+                    stats: { attack: 15, defense: 10 },
+                    moves: [
+                        { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
+                        { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
+                    ],
+                    sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
+                }
+            };
+        }
+
+        // Nouvel ennemi pour cette vague
+        const enemyLevel = isBoss ? gameState.wave + 2 : Math.max(1, gameState.wave + Math.floor(Math.random() * 3) - 1);
+        const baseEnemyHp = 20 + (enemyLevel * 2);
+        
+        combatState.enemy = {
+            name: isBoss ? 'BOSS LUNARIS' : `Sauvage Lv.${enemyLevel}`,
+            level: enemyLevel,
+            hp: isBoss ? baseEnemyHp * 3 : baseEnemyHp,
+            maxHp: isBoss ? baseEnemyHp * 3 : baseEnemyHp,
+            stats: { attack: 10 + enemyLevel, defense: 5 + enemyLevel },
+            moves: [{ name: 'Charge', power: 8, pp: 35, maxPp: 35 }],
+            sprite: isBoss ? 'sprite/Lunaris/Starteur/Starteur 2.png' : 'sprite/Lunaris/Starteur/Starteur 2.png', // LUNARIS_TODO: Varier les sprites
+            isBoss: isBoss
         };
+        combatState.isPlayerTurn = true;
 
         showCombatScreen(combatState.player, combatState.enemy);
     }
@@ -839,11 +849,31 @@ async function executeAttack(moveIndex) {
     enemyEnt.classList.remove('anim-hit');
 
     if (combatState.enemy.hp <= 0) {
-        log.textContent = `${combatState.enemy.name} est K.O !`;
+        const xpGained = combatState.enemy.level * 25;
+        log.textContent = `${combatState.enemy.name} est K.O ! +${xpGained} XP`;
+        
+        // Gestion XP et Level Up
+        combatState.player.xp += xpGained;
+        if (combatState.player.xp >= combatState.player.maxXp) {
+            combatState.player.level++;
+            combatState.player.xp -= combatState.player.maxXp;
+            combatState.player.maxXp = Math.floor(combatState.player.maxXp * 1.2);
+            combatState.player.maxHp += 5;
+            combatState.player.hp = combatState.player.maxHp; // Soin léger au level up
+            log.textContent = `LEVEL UP ! ${combatState.player.name} passe niveau ${combatState.player.level} !`;
+        }
+
+        // Soin complet si c'était un Boss
+        if (combatState.enemy.isBoss) {
+            combatState.player.hp = combatState.player.maxHp;
+            combatState.player.moves.forEach(m => m.pp = m.maxPp);
+            log.textContent += " Victoire contre le Boss ! Équipe soignée.";
+        }
+
         setTimeout(() => {
             gameState.wave++;
             startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
-        }, 1500);
+        }, 2000);
         return;
     }
 
