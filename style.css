@@ -1465,7 +1465,7 @@
 .combat-arena {
     flex: 1; /* Prend tout l'espace disponible au dessus du footer */
     position: relative;
-    background: url('sprite/Fond/Champs de fleurs.webp') no-repeat center center;
+    background: url('assets/sprite/fond_fleurs.webp') no-repeat center center;
     background-size: cover;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -1642,27 +1642,6 @@
 .anim-attack-player { animation: bumpPlayer 0.3s ease-in-out; }
 .anim-attack-enemy { animation: bumpEnemy 0.3s ease-in-out; }
 
-/* Animations de combat */
-@keyframes bumpRight {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(40px); }
-    100% { transform: translateX(0); }
-}
-
-@keyframes bumpLeft {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(-40px); }
-    100% { transform: translateX(0); }
-}
-
-@keyframes flashRed {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(0.5) sepia(1) hue-rotate(-50deg) saturate(5); }
-    100% { filter: brightness(1); }
-}
-
-.anim-attack-player { animation: bumpLeft 0.3s ease-in-out; }
-.anim-attack-enemy { animation: bumpRight 0.3s ease-in-out; }
 .anim-hit { animation: flashRed 0.2s ease-in-out 2; }
 
 .combat-ui-footer {
