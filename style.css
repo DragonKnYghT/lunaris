@@ -1465,7 +1465,7 @@
 .combat-arena {
     flex: 1; /* Prend tout l'espace disponible au dessus du footer */
     position: relative;
-    background: url('assets/sprite/fond_fleurs.webp') no-repeat center center;
+    background: url('./assets/sprite/fond_fleurs.webp') no-repeat center center;
     background-size: cover;
     border-radius: var(--radius-lg);
     overflow: hidden;
