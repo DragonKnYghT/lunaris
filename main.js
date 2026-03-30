@@ -680,7 +680,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                     { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
                     { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
                 ],
-                sprite: './assets/sprite/lunaris1.png'
+                sprite: 'assets/sprite/lunaris1.png'
             },
             enemy: {
                 name: 'Lunaris 2',
@@ -691,7 +691,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                 moves: [
                     { name: 'Charge', power: 8, pp: 35, maxPp: 35 }
                 ],
-                sprite: './assets/sprite/lunaris2.png'
+                sprite: 'assets/sprite/lunaris2.png'
             },
             isPlayerTurn: true
         };
@@ -819,6 +819,12 @@ async function executeAttack(moveIndex) {
     const log = document.getElementById('combat-log');
     const playerEnt = document.getElementById('player-entity');
     const enemyEnt = document.getElementById('enemy-entity');
+    const playerPpBar = document.getElementById('player-pp-bar');
+
+    // Mise à jour visuelle immédiate des PP
+    if (playerPpBar) {
+        playerPpBar.style.width = (move.pp / move.maxPp * 100) + '%';
+    }
 
     // 1. Tour du Joueur
     log.textContent = `${combatState.player.name} utilise ${move.name} !`;
