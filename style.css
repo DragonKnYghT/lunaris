@@ -13,8 +13,8 @@ html, body {
 /* ===== Game Container Styles - Fixed Card Block ===== */
 #game-container {
     width: 100%;
-    width: 800px;
-    height: 600px;
+    width: 950px;
+    height: 650px;
     margin: var(--spacing-xl) auto;
     padding: var(--spacing-xl);
     background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
@@ -1499,22 +1499,23 @@ html, body {
 
 .combat-entity {
     position: absolute;
-    width: 300px;
     display: flex;
     flex-direction: column;
     transition: transform 0.2s ease-out;
 }
 
 .entity-enemy {
-    top: 40px;
-    right: 60px;
+    top: 100px;
+    right: 180px;
     align-items: center;
+    z-index: 3;
 }
 
 .entity-player {
-    bottom: 40px;
-    left: 60px;
+    bottom: 60px;
+    left: 180px;
     align-items: center;
+    z-index: 4;
 }
 
 .sprite-container {
@@ -1535,24 +1536,29 @@ html, body {
 }
 
 .sprite-player {
-    transform: scale(1.2); /* On grossit un peu le sprite du joueur car il est "proche" */
+    transform: scale(1.4); /* Joueur plus grand car plus proche */
 }
 
 .status-card {
+    position: absolute;
     background: rgba(255, 255, 255, 0.9);
     border: 3px solid #444;
     border-radius: 10px;
     padding: 10px;
     width: 240px;
     box-shadow: 5px 5px 0px rgba(0,0,0,0.3);
-    margin: 10px;
+    z-index: 10;
 }
 
 .enemy-status {
+    top: 20px;
+    right: 20px;
     border-radius: 15px 0 15px 0;
 }
 
 .player-status {
+    bottom: 20px;
+    left: 20px;
     border-radius: 0 15px 0 15px;
 }
 

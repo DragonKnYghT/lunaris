@@ -709,12 +709,7 @@ function showCombatScreen(player, enemy) {
             <div class="combat-arena">
                 <div class="wave-badge">VAGUE ${gameState.wave}</div>
                 
-                <!-- Zone Ennemi (Droite) -->
-                <div class="combat-entity entity-enemy" id="enemy-entity">
-                    <div class="status-card enemy-status">
-                        <div class="status-header">
-                            <span class="creature-name">${enemy.name.toUpperCase()}</span>
-                            <span class="creature-level">Lv.${enemy.level}</span>
+                <!--        <span class="creature-level">Lv.${enemy.level}</span>
                         </div>
                         <div class="stat-bars">
                             <div class="hp-bar-container">
@@ -726,33 +721,27 @@ function showCombatScreen(player, enemy) {
                                 ${enemy.hp} / ${enemy.maxHp}
                             </span>
                         </div>
-                    </div>
-                    <div class="sprite-container">
-                        <img src="${enemy.sprite}" class="creature-sprite sprite-enemy" alt="Enemy">
-                    </div>
                 </div>
- 
-                <!-- Zone Joueur (Gauche) -->
-                <div class="combat-entity entity-player" id="player-entity">
-                    <div class="status-card player-status">
-                        <div class="status-header">
-                            <span class="creature-name">${player.name.toUpperCase()}</span>
-                            <span class="creature-level">Lv.${player.level}</span>
-                        </div>
-                        <div class="stat-bars">
-                            <div class="hp-bar-container">
-                                <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
-                            </div>
-                            <div class="pp-bar-container">
-                                <div class="pp-bar-fill" id="player-pp-bar" style="width: 100%"></div>
-                            </div>
+card player-status" id="player-status-card">
+    <div                      n et-level">Lv.${player.level}</span>
+                         <div class="stat-bars">
+                     
                         </div>
                         <div class="hp-text-container">
                             <span class="hp-text" id="player-hp-text">
                                 ${player.hp} / ${player.maxHp}
                             </span>
                         </div>
+                </div>
+                
+                <!-- Les Lunaris au centre face à face -->
+                <div class="combat-entity entity-enemy" id="enemy-entity">
+                    <div class="sprite-container">
+                        <img src="${enemy.sprite}" class="creature-sprite sprite-enemy" alt="Enemy">
                     </div>
+                </div>
+ 
+                <div class="combat-entity entity-player" id="player-entity">
                     <div class="sprite-container">
                         <img src="${player.sprite}" class="creature-sprite sprite-player" alt="Player">
                     </div>
