@@ -709,7 +709,7 @@ function showCombatScreen(player, enemy) {
             <div class="combat-arena">
                 <div class="wave-badge">VAGUE ${gameState.wave}</div>
                 
-                <!--        <span class="creature-level">Lv.${enemy.level}</span>
+                        <span class="creature-level">Lv.${enemy.level}</span> 
                         </div>
                         <div class="stat-bars">
                             <div class="hp-bar-container">
