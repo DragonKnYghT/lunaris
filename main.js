@@ -839,10 +839,19 @@ async function executeAttack(moveIndex) {
     if (combatState.enemy.hp < 0) combatState.enemy.hp = 0;
     
     // Update UI Ennemi
-    const enemyBar = document.getElementById('enemy-hp-bar');
     const enemyText = document.getElementById('enemy-hp-text');
-    
-    if (enemyBar) updateBarColor(enemyBar, combatState.enemy.hp / combatState.enemy.maxHp);
+    if (combatState.enemy.isBoss) {
+        const half = combatState.enemy.maxHp / 2;
+        const barTop = document.getElementById('enemy-hp-bar-top');
+        const barBottom = document.getElementById('enemy-hp-bar-bottom');
+        
+        if (barTop) updateBarColor(barTop, Math.max(0, (combatState.enemy.hp - half) / half));
+        if (barBottom) updateBarColor(barBottom, Math.min(1, combatState.enemy.hp / half));
+    } else {
+        const enemyBar = document.getElementById('enemy-hp-bar');
+        if (enemyBar) updateBarColor(enemyBar, combatState.enemy.hp / combatState.enemy.maxHp);
+    }
+
     if (enemyText) enemyText.textContent = `${combatState.enemy.hp} / ${combatState.enemy.maxHp}`;
 
     await new Promise(r => setTimeout(r, 1000));

@@ -1562,29 +1562,23 @@ html, body {
     border-radius: 0 15px 0 15px;
 }
 
-/* Boss Life Bar Segments */
-.boss-segments {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 6px;
+/* Boss HP Segments Styling */
+.boss-hp-layout {
+    gap: 0 !important; /* On colle les barres */
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-.boss-segments .segment {
-    flex: 1;
-    height: 6px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid #444;
-    border-radius: 2px;
+.boss-segment {
+    height: 8px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #444 !important;
 }
 
-.boss-segments .segment.active {
-    background: #e74c3c;
-    box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
-}
-
-.boss-battle .combat-arena {
-    border: 4px solid #e74c3c;
-    box-shadow: inset 0 0 100px rgba(231, 76, 60, 0.3);
+.boss-segment:first-child {
+    border-bottom: 1px solid rgba(0,0,0,0.5) !important;
 }
 
 .creature-name {
