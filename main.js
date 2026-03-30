@@ -680,7 +680,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                     { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
                     { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
                 ],
-                sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
+                sprite: './sprite/Lunaris/Starteur/Starteur 1.png'
             },
             enemy: {
                 name: 'Lunaris 2',
@@ -691,7 +691,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                 moves: [
                     { name: 'Charge', power: 8, pp: 35, maxPp: 35 }
                 ],
-                sprite: 'sprite/Lunaris/Starteur/Starteur 2.png'
+                sprite: './sprite/Lunaris/Starteur/Starteur 2.png'
             },
             isPlayerTurn: true
         };
