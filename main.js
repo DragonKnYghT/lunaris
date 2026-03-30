@@ -696,36 +696,40 @@ function startGame(mode, playerCount, isMultiplayer) {
  */
 function showCombatScreen(player, enemy) {
     const content = `
-        <div> <!-- Wrapper div added -->
+        <div class="combat-wrapper">
             <div class="combat-arena">
                 <div class="wave-badge">VAGUE ${gameState.wave}</div>
                 
-                <!-- Enemy Side -->
+                <!-- Zone Ennemi (Haut Gauche) -->
                 <div class="combat-entity entity-enemy" id="enemy-entity">
-                    <div class="status-card">
+                    <div class="status-card enemy-status">
                         <div class="status-header">
-                            <span>${enemy.name.toUpperCase()}</span>
-                            <span>N.${enemy.level}</span>
+                            <span class="creature-name">${enemy.name.toUpperCase()}</span>
+                            <span class="creature-level">Lv.${enemy.level}</span>
                         </div>
                         <div class="hp-bar-container">
                             <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
                         </div>
                     </div>
-                    <img src="${enemy.sprite}" class="creature-sprite" alt="Enemy">
+                    <div class="sprite-container">
+                        <img src="${enemy.sprite}" class="creature-sprite sprite-enemy" alt="Enemy">
+                    </div>
                 </div>
  
-                <!-- Player Side -->
+                <!-- Zone Joueur (Bas Droite) -->
                 <div class="combat-entity entity-player" id="player-entity">
-                    <img src="${player.sprite}" class="creature-sprite" alt="Player">
-                    <div class="status-card">
+                    <div class="sprite-container">
+                        <img src="${player.sprite}" class="creature-sprite sprite-player" alt="Player">
+                    </div>
+                    <div class="status-card player-status">
                         <div class="status-header">
-                            <span>${player.name.toUpperCase()}</span>
-                            <span>N.${player.level}</span>
+                            <span class="creature-name">${player.name.toUpperCase()}</span>
+                            <span class="creature-level">Lv.${player.level}</span>
                         </div>
                         <div class="hp-bar-container">
                             <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
                         </div>
-                        <div style="text-align: right; font-size: 14px; margin-top: 2px; font-weight: bold;" id="player-hp-text">
+                        <div class="hp-text" id="player-hp-text">
                             ${player.hp} / ${player.maxHp}
                         </div>
                     </div>
@@ -743,7 +747,7 @@ function showCombatScreen(player, enemy) {
                     <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
                 </div>
             </div>
-        </div> <!-- Closing wrapper div -->
+        </div>
     `;
     renderScreen('combat-screen', '', content);
 }
