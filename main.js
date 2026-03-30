@@ -670,19 +670,28 @@ function startGame(mode, playerCount, isMultiplayer) {
 
         // Initialisation de l'état de combat avec les données demandées
         combatState = {
-            player: { 
-                name: 'Lunaris 1', 
-                level: 8, 
-                hp: 16, 
-                maxHp: 37, 
-                sprite: 'assets/sprite/Lunaris/starteur/lunaris1.png' 
+            player: {
+                name: 'Lunaris 1',
+                level: 8,
+                hp: 37,
+                maxHp: 37,
+                stats: { attack: 15, defense: 10 },
+                moves: [
+                    { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
+                    { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
+                ],
+                sprite: 'assets/sprite/Lunaris/starteur/lunaris1.png'
             },
-            enemy: { 
-                name: 'Lunaris 2', 
-                level: 6, 
-                hp: 20, 
-                maxHp: 20, 
-                sprite: 'assets/sprite/Lunaris/starteur/lunaris2.png' 
+            enemy: {
+                name: 'Lunaris 2',
+                level: 6,
+                hp: 20,
+                maxHp: 20,
+                stats: { attack: 12, defense: 8 },
+                moves: [
+                    { name: 'Charge', power: 8, pp: 35, maxPp: 35 }
+                ],
+                sprite: 'assets/sprite/Lunaris/starteur/lunaris2.png'
             },
             isPlayerTurn: true
         };
@@ -700,15 +709,22 @@ function showCombatScreen(player, enemy) {
             <div class="combat-arena">
                 <div class="wave-badge">VAGUE ${gameState.wave}</div>
                 
-                <!-- Zone Ennemi (Haut Gauche) -->
+                <!-- Zone Ennemi (Droite) -->
                 <div class="combat-entity entity-enemy" id="enemy-entity">
                     <div class="status-card enemy-status">
                         <div class="status-header">
                             <span class="creature-name">${enemy.name.toUpperCase()}</span>
                             <span class="creature-level">Lv.${enemy.level}</span>
                         </div>
-                        <div class="hp-bar-container">
-                            <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
+                        <div class="stat-bars">
+                            <div class="hp-bar-container">
+                                <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
+                            </div>
+                        </div>
+                        <div class="hp-text-container">
+                            <span class="hp-text" id="enemy-hp-text">
+                                ${enemy.hp} / ${enemy.maxHp}
+                            </span>
                         </div>
                     </div>
                     <div class="sprite-container">
@@ -716,22 +732,29 @@ function showCombatScreen(player, enemy) {
                     </div>
                 </div>
  
-                <!-- Zone Joueur (Bas Droite) -->
+                <!-- Zone Joueur (Gauche) -->
                 <div class="combat-entity entity-player" id="player-entity">
-                    <div class="sprite-container">
-                        <img src="${player.sprite}" class="creature-sprite sprite-player" alt="Player">
-                    </div>
                     <div class="status-card player-status">
                         <div class="status-header">
                             <span class="creature-name">${player.name.toUpperCase()}</span>
                             <span class="creature-level">Lv.${player.level}</span>
                         </div>
-                        <div class="hp-bar-container">
-                            <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
+                        <div class="stat-bars">
+                            <div class="hp-bar-container">
+                                <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
+                            </div>
+                            <div class="pp-bar-container">
+                                <div class="pp-bar-fill" id="player-pp-bar" style="width: 100%"></div>
+                            </div>
                         </div>
-                        <div class="hp-text" id="player-hp-text">
-                            ${player.hp} / ${player.maxHp}
+                        <div class="hp-text-container">
+                            <span class="hp-text" id="player-hp-text">
+                                ${player.hp} / ${player.maxHp}
+                            </span>
                         </div>
+                    </div>
+                    <div class="sprite-container">
+                        <img src="${player.sprite}" class="creature-sprite sprite-player" alt="Player">
                     </div>
                 </div>
             </div>
@@ -754,8 +777,21 @@ function showCombatScreen(player, enemy) {
 
 function showAttackMenu() {
     const menu = document.getElementById('combat-menu');
+    
+    const movesHtml = combatState.player.moves.map((move, index) => {
+        const isDisabled = move.pp <= 0 ? 'disabled' : '';
+        return `
+            <button class="menu-button move-btn" 
+                    ${isDisabled} 
+                    onclick="executeAttack(${index})">
+                <span class="move-name">${move.name}</span>
+                <span class="move-pp">${move.pp}/${move.maxPp}</span>
+            </button>
+        `;
+    }).join('');
+
     menu.innerHTML = `
-        <button class="menu-button" onclick="executeAttack('Griffe')">Griffe <br><small>PP 35/35</small></button>
+        ${movesHtml}
         <button class="menu-button secondary" onclick="resetCombatMenu()">Retour</button>
     `;
 }
@@ -771,16 +807,21 @@ function resetCombatMenu() {
     `;
 }
 
-async function executeAttack(moveName) {
+async function executeAttack(moveIndex) {
     if (!combatState.isPlayerTurn) return;
+    
+    const move = combatState.player.moves[moveIndex];
+    if (move.pp <= 0) return;
+
     combatState.isPlayerTurn = false;
+    move.pp--;
 
     const log = document.getElementById('combat-log');
     const playerEnt = document.getElementById('player-entity');
     const enemyEnt = document.getElementById('enemy-entity');
 
-    // 1. Animation Attaque Joueur
-    log.textContent = `${combatState.player.name} utilise ${moveName} !`;
+    // 1. Tour du Joueur
+    log.textContent = `${combatState.player.name} utilise ${move.name} !`;
     playerEnt.classList.add('anim-attack-player');
     
     await new Promise(r => setTimeout(r, 300));
@@ -788,12 +829,16 @@ async function executeAttack(moveName) {
     enemyEnt.classList.add('anim-hit');
 
     // 2. Calcul Dégâts
-    combatState.enemy.hp -= 2;
+    const damage = Math.floor((move.power * (combatState.player.stats.attack / combatState.enemy.stats.defense)) / 2) + 2;
+    combatState.enemy.hp -= damage;
     if (combatState.enemy.hp < 0) combatState.enemy.hp = 0;
     
     // Update UI Ennemi
     const enemyBar = document.getElementById('enemy-hp-bar');
-    if (enemyBar) enemyBar.style.width = (combatState.enemy.hp / combatState.enemy.maxHp * 100) + '%';
+    const enemyText = document.getElementById('enemy-hp-text');
+    
+    if (enemyBar) updateBarColor(enemyBar, combatState.enemy.hp / combatState.enemy.maxHp);
+    if (enemyText) enemyText.textContent = `${combatState.enemy.hp} / ${combatState.enemy.maxHp}`;
 
     await new Promise(r => setTimeout(r, 1000));
     enemyEnt.classList.remove('anim-hit');
@@ -816,13 +861,15 @@ async function executeAttack(moveName) {
     enemyEnt.classList.remove('anim-attack-enemy');
     playerEnt.classList.add('anim-hit');
 
-    combatState.player.hp -= 1;
+    // Dégâts ennemis simples
+    const enemyDamage = 5; 
+    combatState.player.hp -= enemyDamage;
     if (combatState.player.hp < 0) combatState.player.hp = 0;
 
     // Update UI Joueur
     const playerBar = document.getElementById('player-hp-bar');
     const playerText = document.getElementById('player-hp-text');
-    if (playerBar) playerBar.style.width = (combatState.player.hp / combatState.player.maxHp * 100) + '%';
+    if (playerBar) updateBarColor(playerBar, combatState.player.hp / combatState.player.maxHp);
     if (playerText) playerText.textContent = `${combatState.player.hp} / ${combatState.player.maxHp}`;
 
     await new Promise(r => setTimeout(r, 1000));
@@ -831,6 +878,13 @@ async function executeAttack(moveName) {
     log.textContent = `Que doit faire ${combatState.player.name} ?`;
     combatState.isPlayerTurn = true;
     resetCombatMenu();
+}
+
+function updateBarColor(barElement, ratio) {
+    barElement.style.width = (ratio * 100) + '%';
+    if (ratio < 0.2) barElement.style.background = '#ff4d4d';
+    else if (ratio < 0.5) barElement.style.background = '#ffbd4d';
+    else barElement.style.background = '#4ade80';
 }
 
 function handleCombatAction(action) {
