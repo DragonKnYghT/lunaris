@@ -718,42 +718,56 @@ function showCombatScreen(player, enemy) {
         <div class="combat-wrapper">
             <div class="combat-arena">
                 <div class="wave-badge">VAGUE ${gameState.wave}</div>
-                
-                        <span class="creature-level">Lv.${enemy.level}</span> 
-                        </div>
-                        <div class="stat-bars">
+
+                <!-- Ennemi Status -->
+                <div class="status-card enemy-status">
+                    <div class="status-header">
+                        <span class="creature-name">${enemy.name}</span>
+                        <span class="creature-level">Lv.${enemy.level}</span>
+                    </div>
+                    <div class="stat-bars">
+                        ${enemy.isBoss ? `
+                            <div class="boss-hp-wrapper">
+                                <div class="boss-hp-bar"><div class="boss-hp-fill" id="enemy-hp-bar-1" style="width: ${Math.max(0, (enemy.hp - enemy.maxHp/2) / (enemy.maxHp/2) * 100)}%"></div></div>
+                                <div class="boss-hp-bar"><div class="boss-hp-fill" id="enemy-hp-bar-2" style="width: ${Math.min(100, (enemy.hp) / (enemy.maxHp/2) * 100)}%"></div></div>
+                            </div>
+                        ` : `
                             <div class="hp-bar-container">
                                 <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>
                             </div>
-                        </div>
-                        <div class="hp-text-container">
-                            <span class="hp-text" id="enemy-hp-text">
-                                ${enemy.hp} / ${enemy.maxHp}
-                            </span>
-                        </div>
+                        `}
+                    </div>
+                    <div class="hp-text-container">
+                        <span class="hp-text" id="enemy-hp-text">${enemy.hp} / ${enemy.maxHp}</span>
+                    </div>
                 </div>
-card player-status" id="player-status-card">
-    <div                      n et-level">Lv.${player.level}</span>
-                         <div class="stat-bars">
-                     
-                        </div>
-                        <div class="hp-text-container">
-                            <span class="hp-text" id="player-hp-text">
-                                ${player.hp} / ${player.maxHp}
-                            </span>
-                        </div>
-                </div>
-                
-                <!-- Les Lunaris au centre face à face -->
+
+                <!-- Entités -->
                 <div class="combat-entity entity-enemy" id="enemy-entity">
                     <div class="sprite-container">
                         <img src="${enemy.sprite}" class="creature-sprite sprite-enemy" alt="Enemy">
                     </div>
                 </div>
- 
+
                 <div class="combat-entity entity-player" id="player-entity">
                     <div class="sprite-container">
                         <img src="${player.sprite}" class="creature-sprite sprite-player" alt="Player">
+                    </div>
+                </div>
+
+                <!-- Player Status -->
+                <div class="status-card player-status" id="player-status-card">
+                    <div class="status-header">
+                        <span class="creature-name">${player.name}</span>
+                        <span class="creature-level">Lv.${player.level}</span>
+                    </div>
+                    <div class="stat-bars">
+                        <div class="hp-bar-container">
+                            <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
+                        </div>
+                    </div>
+                    <div class="hp-text-container">
+                        <span class="hp-text" id="player-hp-text">${player.hp} / ${player.maxHp}</span>
                     </div>
                 </div>
             </div>
@@ -842,11 +856,11 @@ async function executeAttack(moveIndex) {
     const enemyText = document.getElementById('enemy-hp-text');
     if (combatState.enemy.isBoss) {
         const half = combatState.enemy.maxHp / 2;
-        const barTop = document.getElementById('enemy-hp-bar-top');
-        const barBottom = document.getElementById('enemy-hp-bar-bottom');
+        const bar1 = document.getElementById('enemy-hp-bar-1');
+        const bar2 = document.getElementById('enemy-hp-bar-2');
         
-        if (barTop) updateBarColor(barTop, Math.max(0, (combatState.enemy.hp - half) / half));
-        if (barBottom) updateBarColor(barBottom, Math.min(1, combatState.enemy.hp / half));
+        if (bar1) updateBarColor(bar1, Math.max(0, (combatState.enemy.hp - half) / half));
+        if (bar2) updateBarColor(bar2, Math.min(1, combatState.enemy.hp / half));
     } else {
         const enemyBar = document.getElementById('enemy-hp-bar');
         if (enemyBar) updateBarColor(enemyBar, combatState.enemy.hp / combatState.enemy.maxHp);
