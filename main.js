@@ -727,10 +727,10 @@ function showCombatScreen(player, enemy) {
                     </div>
                     <div class="stat-bars">
                         ${enemy.isBoss ? `
-                            <div class="boss-hp-wrapper">
-                                <div class="boss-hp-bar"><div class="boss-hp-fill" id="enemy-hp-bar-1" style="width: ${Math.max(0, (enemy.hp - enemy.maxHp/2) / (enemy.maxHp/2) * 100)}%"></div></div>
-                                <div class="boss-hp-bar"><div class="boss-hp-fill" id="enemy-hp-bar-2" style="width: ${Math.min(100, (enemy.hp) / (enemy.maxHp/2) * 100)}%"></div></div>
-                            </div>
+                        <div class="boss-hp-wrapper">
+                            <div class="boss-hp-bar"><div class="boss-hp-fill" id="enemy-hp-bar-1" style="width: ${Math.max(0, (enemy.hp - enemy.maxHp/2) / (enemy.maxHp/2) * 100)}%"></div></div>
+                            <div class="boss-hp-bar"><div class="boss-hp-fill" id="enemy-hp-bar-2" style="width: ${Math.min(100, (enemy.hp) / (enemy.maxHp/2) * 100)}%"></div></div>
+                        </div>
                         ` : `
                             <div class="hp-bar-container">
                                 <div class="hp-bar-fill" id="enemy-hp-bar" style="width: ${(enemy.hp/enemy.maxHp)*100}%"></div>

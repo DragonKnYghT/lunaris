@@ -129,6 +129,7 @@ html, body {
     width: 100%;
     max-width: none;
     flex: 1;
+    height: 100%;
     overflow: visible;
     animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     word-break: break-word;
@@ -153,6 +154,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     flex: 1;
+    height: 100%;
     width: 100%;
     gap: var(--spacing-md);
 }
@@ -1563,22 +1565,29 @@ html, body {
 }
 
 /* Boss HP Segments Styling */
-.boss-hp-layout {
-    gap: 0 !important; /* On colle les barres */
+.boss-hp-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
     border: 1px solid #333;
     border-radius: 4px;
+    background: #444;
+    padding: 1px;
     overflow: hidden;
 }
 
-.boss-segment {
-    height: 8px !important;
-    border: none !important;
-    border-radius: 0 !important;
-    background: #444 !important;
+.boss-hp-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(0,0,0,0.3);
+    position: relative;
 }
 
-.boss-segment:first-child {
-    border-bottom: 1px solid rgba(0,0,0,0.5) !important;
+.boss-hp-fill {
+    height: 100%;
+    background: #4ade80;
+    transition: width 0.3s ease-out;
 }
 
 .creature-name {
