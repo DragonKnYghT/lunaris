@@ -884,6 +884,12 @@ async function executeAttack(moveIndex) {
         const xpGained = combatState.enemy.level * 25;
         log.textContent = `${combatState.enemy.name} est K.O ! +${xpGained} XP`;
         
+        // Mise à jour visuelle de la barre d'EXP avant le changement d'écran
+        const expBar = document.getElementById('player-exp-bar');
+        if (expBar) {
+            expBar.style.width = Math.min(100, ((combatState.player.xp + xpGained) / combatState.player.maxXp) * 100) + '%';
+        }
+        
         // Gestion XP et Level Up
         combatState.player.xp += xpGained;
         if (combatState.player.xp >= combatState.player.maxXp) {
