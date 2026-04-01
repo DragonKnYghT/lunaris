@@ -908,8 +908,34 @@ async function executeAttack(moveIndex) {
         }, 2000);
         return;
     }
+
+    // 3. Tour de l'ennemi
+    log.textContent = `${combatState.enemy.name} riposte !`;
+    await new Promise(r => setTimeout(r, 800));
     
-    // ... (Reste de la logique du tour ennemi inchangée)
+    enemyEnt.classList.add('anim-attack-enemy');
+    await new Promise(r => setTimeout(r, 300));
+    enemyEnt.classList.remove('anim-attack-enemy');
+    playerEnt.classList.add('anim-hit');
+
+    // Dégâts ennemis simples
+    const enemyDamage = 5; 
+    combatState.player.hp -= enemyDamage;
+    if (combatState.player.hp < 0) combatState.player.hp = 0;
+
+    // Update UI Joueur
+    const playerBar = document.getElementById('player-hp-bar');
+    const playerText = document.getElementById('player-hp-text');
+    if (playerBar) updateBarColor(playerBar, combatState.player.hp / combatState.player.maxHp);
+    if (playerText) playerText.textContent = `${combatState.player.hp} / ${combatState.player.maxHp}`;
+
+    await new Promise(r => setTimeout(r, 1000));
+    playerEnt.classList.remove('anim-hit');
+    
+    log.textContent = `Que doit faire ${combatState.player.name} ?`;
+    combatState.isPlayerTurn = true;
+    resetCombatMenu();
+}
 
 /**
  * Affiche l'écran de récompense et de magasin entre les vagues
@@ -949,42 +975,11 @@ function showRewardScreen() {
 
 function pickReward(itemId, isFree, price = 0) {
     if (!isFree) {
-        // Note: Intégration simplifiée avec accountManager si disponible
         console.log(`Achat de ${itemId} pour ${price}`);
     }
-    
     if (!combatState.player.inventory) combatState.player.inventory = {};
     combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + 1;
-    
     startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
-}
-
-    // 3. Tour de l'ennemi
-    log.textContent = `${combatState.enemy.name} riposte !`;
-    await new Promise(r => setTimeout(r, 800));
-    
-    enemyEnt.classList.add('anim-attack-enemy');
-    await new Promise(r => setTimeout(r, 300));
-    enemyEnt.classList.remove('anim-attack-enemy');
-    playerEnt.classList.add('anim-hit');
-
-    // Dégâts ennemis simples
-    const enemyDamage = 5; 
-    combatState.player.hp -= enemyDamage;
-    if (combatState.player.hp < 0) combatState.player.hp = 0;
-
-    // Update UI Joueur
-    const playerBar = document.getElementById('player-hp-bar');
-    const playerText = document.getElementById('player-hp-text');
-    if (playerBar) updateBarColor(playerBar, combatState.player.hp / combatState.player.maxHp);
-    if (playerText) playerText.textContent = `${combatState.player.hp} / ${combatState.player.maxHp}`;
-
-    await new Promise(r => setTimeout(r, 1000));
-    playerEnt.classList.remove('anim-hit');
-    
-    log.textContent = `Que doit faire ${combatState.player.name} ?`;
-    combatState.isPlayerTurn = true;
-    resetCombatMenu();
 }
 
 function updateBarColor(barElement, ratio) {
