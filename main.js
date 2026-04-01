@@ -685,7 +685,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                         { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
                         { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
                     ],
-                    inventory: { 'potion': 1, 'super_potion': 0, 'revive': 0 },
+                    inventory: { 'dmg_boost': 1 },
                     sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
                 }
             };
@@ -712,9 +712,32 @@ function startGame(mode, playerCount, isMultiplayer) {
 }
 
 /**
+ * Helper pour obtenir les infos d'un objet
+ */
+function getItemInfo(id) {
+    const itemData = {
+        'dmg_boost': { icon: '💥', name: 'Force', desc: 'Augmente les dégâts infligés' },
+        'def_boost': { icon: '🛡️', name: 'Armure', desc: 'Réduit les dégâts subis' },
+        'speed_boost': { icon: '👟', name: 'Vitesse', desc: 'Augmente la rapidité d\'action' },
+        'potion': { icon: '🧪', name: 'Potion', desc: 'Soigne 20 PV' },
+        'super_potion': { icon: '⚗️', name: 'Super Potion', desc: 'Soigne 50 PV' },
+        'revive': { icon: '✨', name: 'Rappel', desc: 'Réanime un Lunaris K.O.' }
+    };
+    return itemData[id] || { icon: '❓', name: id, desc: 'Objet mystérieux' };
+}
+
+/**
  * Affiche l'écran de combat
  */
 function showCombatScreen(player, enemy) {
+    // Filtrer les objets bonus uniquement pour la barre du bas
+    const bonusItemsHtml = Object.entries(player.inventory || {})
+        .filter(([id, qty]) => qty > 0 && !['potion', 'super_potion', 'revive'].includes(id))
+        .map(([id, qty]) => {
+            const info = getItemInfo(id);
+            return `<div class="item-slot" data-description="${info.desc}">${info.icon} <span>x${qty}</span></div>`;
+        }).join('');
+
     const content = `
         <div class="combat-wrapper">
             <div class="combat-arena">
@@ -788,9 +811,7 @@ function showCombatScreen(player, enemy) {
                 </div>
             </div>
             <div class="combat-item-bar" id="combat-item-bar">
-                <div class="item-slot">🧪 <span>x${player.inventory?.potion || 0}</span></div>
-                <div class="item-slot">⚗️ <span>x${player.inventory?.super_potion || 0}</span></div>
-                <div class="item-slot">✨ <span>x${player.inventory?.revive || 0}</span></div>
+                ${bonusItemsHtml || '<span style="color:rgba(255,255,255,0.3); font-size:12px;">Aucun bonus possédé</span>'}
             </div>
         </div>
     `;
@@ -948,9 +969,9 @@ async function executeAttack(moveIndex) {
  */
 function showRewardScreen() {
     const rewards = [
-        { id: 'potion', name: 'Potion', emoji: '🧪' },
-        { id: 'super_potion', name: 'Super Potion', emoji: '⚗️' },
-        { id: 'revive', name: 'Rappel', emoji: '✨' }
+        { id: 'dmg_boost', name: 'Force', emoji: '💥', desc: 'Boost dégâts' },
+        { id: 'def_boost', name: 'Armure', emoji: '🛡️', desc: 'Boost défense' },
+        { id: 'speed_boost', name: 'Vitesse', emoji: '👟', desc: 'Boost vitesse' }
     ];
 
     const content = `
