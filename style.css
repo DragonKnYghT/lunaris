@@ -1477,7 +1477,7 @@ html, body {
     position: relative;
     background: url('./sprite/Fond/Champs%20de%20fleurs.webp') no-repeat center center;
     background-size: cover;
-    min-height: 300px; /* Sécurité pour éviter le collapse */
+    min-height: 360px; /* Augmenté de 20% pour plus de visibilité */
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 4px solid #333;
@@ -1736,4 +1736,26 @@ html, body {
     background: var(--bg-light);
     transform: none;
     box-shadow: none;
+}
+
+.combat-item-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 8px;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    border: 2px solid var(--color-primary);
+    border-top: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.item-slot {
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }

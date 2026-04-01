@@ -685,6 +685,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                         { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
                         { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
                     ],
+                    inventory: { 'potion': 1, 'super_potion': 0, 'revive': 0 },
                     sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
                 }
             };
@@ -765,6 +766,9 @@ function showCombatScreen(player, enemy) {
                         <div class="hp-bar-container">
                             <div class="hp-bar-fill" id="player-hp-bar" style="width: ${(player.hp/player.maxHp)*100}%"></div>
                         </div>
+                        <div class="exp-bar-container">
+                            <div class="exp-bar-fill" id="player-exp-bar" style="width: ${(player.xp/player.maxXp)*100}%"></div>
+                        </div>
                     </div>
                     <div class="hp-text-container">
                         <span class="hp-text" id="player-hp-text">${player.hp} / ${player.maxHp}</span>
@@ -782,6 +786,11 @@ function showCombatScreen(player, enemy) {
                     <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
                     <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
                 </div>
+            </div>
+            <div class="combat-item-bar" id="combat-item-bar">
+                <div class="item-slot">🧪 <span>x${player.inventory?.potion || 0}</span></div>
+                <div class="item-slot">⚗️ <span>x${player.inventory?.super_potion || 0}</span></div>
+                <div class="item-slot">✨ <span>x${player.inventory?.revive || 0}</span></div>
             </div>
         </div>
     `;
@@ -895,10 +904,60 @@ async function executeAttack(moveIndex) {
 
         setTimeout(() => {
             gameState.wave++;
-            startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+            showRewardScreen();
         }, 2000);
         return;
     }
+    
+    // ... (Reste de la logique du tour ennemi inchangée)
+
+/**
+ * Affiche l'écran de récompense et de magasin entre les vagues
+ */
+function showRewardScreen() {
+    const rewards = [
+        { id: 'potion', name: 'Potion', emoji: '🧪' },
+        { id: 'super_potion', name: 'Super Potion', emoji: '⚗️' },
+        { id: 'revive', name: 'Rappel', emoji: '✨' }
+    ];
+
+    const content = `
+        <div class="reward-screen">
+            <h3>Fin de la vague ${gameState.wave - 1} !</h3>
+            <p>Choisissez une récompense gratuite :</p>
+            <div class="game-mode-grid">
+                ${rewards.map(r => `
+                    <div class="game-mode-card" onclick="pickReward('${r.id}', true)">
+                        <h3>${r.emoji} ${r.name}</h3>
+                        <p>Gratuit</p>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="decoration-line"></div>
+            <p>Magasin de voyage :</p>
+            <div class="game-mode-card" style="max-width: 300px; margin: 0 auto;" onclick="pickReward('potion', false, 50)">
+                <h3>🧪 Acheter Potion</h3>
+                <p>Prix : 50 Devises</p>
+            </div>
+            <div class="submenu-buttons" style="margin-top: 20px;">
+                <button class="menu-button secondary" onclick="startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer)">Passer</button>
+            </div>
+        </div>
+    `;
+    renderScreen('reward-screen', 'Récompenses & Magasin', content);
+}
+
+function pickReward(itemId, isFree, price = 0) {
+    if (!isFree) {
+        // Note: Intégration simplifiée avec accountManager si disponible
+        console.log(`Achat de ${itemId} pour ${price}`);
+    }
+    
+    if (!combatState.player.inventory) combatState.player.inventory = {};
+    combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + 1;
+    
+    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+}
 
     // 3. Tour de l'ennemi
     log.textContent = `${combatState.enemy.name} riposte !`;
