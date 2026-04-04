@@ -1102,6 +1102,31 @@ function handleCombatAction(action) {
                 <button class="menu-button secondary" style="grid-column: span 2;" onclick="resetCombatMenu()">Retour</button>
             </div>`;
             break;
+            
+        case 'team':
+            const teamContent = `
+                <div style="display: flex; justify-content: space-around; width: 100%; color: #333;">
+                    <div><strong>En combat:</strong><br> ${combatState.player.name}</div>
+                    <div style="border-left: 2px solid #333; padding-left: 20px;">
+                        <strong>Équipe:</strong><br>
+                        (Emplacement vide)<br>
+                        (Vide)
+                    </div>
+                </div>
+            `;
+            log.innerHTML = teamContent;
+            break;
+            
+        case 'run':
+            log.textContent = "Vous prenez la fuite...";
+            setTimeout(() => {
+                gameState.wave++;
+                startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+            }, 1000);
+            break;
+    }
+}
+
 /**
  * Applique l'effet d'un objet immédiatement (pour les soins en boutique)
  */
@@ -1210,30 +1235,6 @@ function generateItemSprite(itemId) {
     }
     
     return canvas.toDataURL();
-}
-            
-        case 'team':
-            const teamContent = `
-                <div style="display: flex; justify-content: space-around; width: 100%; color: #333;">
-                    <div><strong>En combat:</strong><br> ${combatState.player.name}</div>
-                    <div style="border-left: 2px solid #333; padding-left: 20px;">
-                        <strong>Équipe:</strong><br>
-                        (Emplacement vide)<br>
-                        (Vide)
-                    </div>
-                </div>
-            `;
-            log.innerHTML = teamContent;
-            break;
-            
-        case 'run':
-            log.textContent = "Vous prenez la fuite...";
-            setTimeout(() => {
-                gameState.wave++;
-                startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
-            }, 1000);
-            break;
-    }
 }
 
 /**
