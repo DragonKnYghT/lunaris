@@ -1873,7 +1873,8 @@ html, body {
     background: rgba(0, 0, 0, 0.6);
     padding: 15px;
     border-radius: 10px;
-    width: 95%;
+    width: 100%;
+    max-width: 500px;
     margin: auto;
     display: flex;
     flex-direction: column;

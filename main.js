@@ -1151,59 +1151,13 @@ function handleCombatAction(action) {
     if (!log) return;
     
     switch(action) {
-        case 'bag': {
-            const disqueItems = Object.entries(combatState.player.inventory || {})
-                .filter(([id, qty]) => {
-                    const info = lunarisData.items[id];
-                    return qty > 0 && info && info.category === 'Disque';
-                })
-                .map(([id, qty]) => {
-                    const info = getItemInfo(id);
-                    return `
-                        <div class="bag-row" onclick="useItemInBattle('${id}')">
-                            <div class="bag-left">${info.icon} ${info.name}</div>
-                            <div class="bag-right">x${qty}</div>
-                        </div>
-                    `;
-                }).join('');
-
-            log.innerHTML = `
-                <div class="bag-panel">
-                    <h3 style="margin:0; color:var(--text-gold); font-size:16px;">DISQUES</h3>
-                    ${disqueItems || "<p>Aucun disque disponible.</p>"}
-                    <button class="menu-button secondary" style="width:100%; height:35px; margin-top:5px;" onclick="resetCombatMenu()">Retour</button>
-                </div>
-            `;
+        case 'bag':
+            showBagScreen();
             break;
-        }
             
-        case 'team': {
-            const teamSlots = Array.from({ length: 6 }).map((_, idx) => {
-                const lunaris = gameState.playerTeam[idx];
-                if (!lunaris) {
-                    return `<button class="menu-button empty-slot" disabled style="height:40px; font-size:12px;">Slot Vide</button>`;
-                }
-                const isCurrent = idx === combatState.activeTeamIndex;
-                const isKO = lunaris.hp <= 0;
-                return `
-                    <button class="menu-button ${isCurrent ? 'active' : ''} ${isKO ? 'danger' : ''}" 
-                            style="width:100%; height:40px; text-transform:none; font-size:12px;" 
-                            ${isCurrent || isKO ? 'disabled' : ''} 
-                            onclick="switchLunaris(${idx})">
-                        ${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp}) ${isKO ? '[KO]' : ''}
-                    </button>
-                `;
-            }).join('');
-
-            log.innerHTML = `
-                <div class="team-page">
-                    <h3 style="margin:0; color:var(--text-gold); font-size:16px;">ÉQUIPE</h3>
-                    <div class="team-grid">${teamSlots}</div>
-                    <button class="menu-button secondary" style="width:100%; height:35px; margin-top:5px;" onclick="resetCombatMenu()">Retour</button>
-                </div>
-            `;
+        case 'team':
+            showTeamScreen();
             break;
-        }
             
         case 'run':
             log.textContent = "Vous prenez la fuite...";
@@ -1213,6 +1167,67 @@ function handleCombatAction(action) {
             }, 1000);
             break;
     }
+}
+
+/**
+ * Affiche la page du sac (Disques) en plein écran
+ */
+function showBagScreen() {
+    const disqueItems = Object.entries(combatState.player.inventory || {})
+        .filter(([id, qty]) => {
+            const info = lunarisData.items[id];
+            return qty > 0 && info && info.category === 'Disque';
+        })
+        .map(([id, qty]) => {
+            const info = getItemInfo(id);
+            return `
+                <div class="bag-row" onclick="useItemInBattle('${id}')">
+                    <div class="bag-left">${info.icon} ${info.name}</div>
+                    <div class="bag-right">x${qty}</div>
+                </div>
+            `;
+        }).join('');
+
+    const content = `
+        <div class="bag-panel">
+            ${disqueItems || "<p style='text-align:center; opacity:0.5;'>Votre sac de disques est vide.</p>"}
+        </div>
+        <div class="submenu-buttons">
+            <button class="menu-button secondary" onclick="showCombatScreen(combatState.player, combatState.enemy)">Retour au combat</button>
+        </div>
+    `;
+    renderScreen('bag-page-screen', 'Sac - Disques', content);
+}
+
+/**
+ * Affiche la page de l'équipe en plein écran
+ */
+function showTeamScreen() {
+    const teamSlots = Array.from({ length: 6 }).map((_, idx) => {
+        const lunaris = gameState.playerTeam[idx];
+        if (!lunaris) {
+            return `<button class="menu-button empty-slot" disabled>Slot Vide</button>`;
+        }
+        const isCurrent = idx === combatState.activeTeamIndex;
+        const isKO = lunaris.hp <= 0;
+        return `
+            <button class="menu-button ${isCurrent ? 'active' : ''} ${isKO ? 'danger' : ''}" 
+                    ${isCurrent || isKO ? 'disabled' : ''} 
+                    onclick="switchLunaris(${idx})">
+                ${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp}) ${isKO ? '[KO]' : ''}
+            </button>
+        `;
+    }).join('');
+
+    const content = `
+        <div class="team-page">
+            <div class="team-grid">${teamSlots}</div>
+        </div>
+        <div class="submenu-buttons">
+            <button class="menu-button secondary" onclick="showCombatScreen(combatState.player, combatState.enemy)">Retour au combat</button>
+        </div>
+    `;
+    renderScreen('team-page-screen', 'Équipe', content);
 }
 
 /**
@@ -1335,6 +1350,10 @@ async function useItemInBattle(itemId) {
     
     if (item.category === 'Disque') {
         combatState.player.inventory[itemId]--;
+        
+        // On revient à l'écran de combat pour voir l'animation de capture
+        showCombatScreen(combatState.player, combatState.enemy);
+        
         log.textContent = `${combatState.player.name} lance un ${item.name} !`;
         
         // Animation et calcul de capture
