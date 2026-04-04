@@ -718,7 +718,14 @@ function startGame(mode, playerCount, isMultiplayer) {
  * Helper pour obtenir les infos d'un objet
  */
 function getItemInfo(id) {
-    const itemData = {
+    // Recherche dans les données chargées dynamiquement
+    if (lunarisData && lunarisData.items && lunarisData.items[id]) {
+        const item = lunarisData.items[id];
+        return { icon: item.icon, name: item.name, desc: item.description };
+    }
+
+    // Fallback pour les anciens IDs ou objets de base
+    const legacyData = {
         'dmg_boost': { icon: '💥', name: 'Force', desc: 'Augmente les dégâts infligés' },
         'def_boost': { icon: '🛡️', name: 'Armure', desc: 'Réduit les dégâts subis' },
         'speed_boost': { icon: '👟', name: 'Vitesse', desc: 'Augmente la rapidité d\'action' },
@@ -726,7 +733,7 @@ function getItemInfo(id) {
         'super_potion': { icon: '⚗️', name: 'Super Potion', desc: 'Soigne 50 PV' },
         'revive': { icon: '✨', name: 'Rappel', desc: 'Réanime un Lunaris K.O.' }
     };
-    return itemData[id] || { icon: '❓', name: id, desc: 'Objet mystérieux' };
+    return legacyData[id] || { icon: '❓', name: id, desc: 'Objet mystérieux' };
 }
 
 /**
