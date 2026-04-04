@@ -11,7 +11,9 @@ const gameState = {
     mode: null,            // 'roguelike' | 'versus' | etc.
     playerCount: 1,
     isMultiplayer: false,
-    wave: 1
+    wave: 1,
+    playerTeam: [],        // Équipe de Lunaris
+    activeBuffs: []        // [{ id, duration }]
 };
 
 // ===========================================
@@ -674,25 +676,30 @@ function startGame(mode, playerCount, isMultiplayer) {
         const isBoss = gameState.wave % 10 === 0;
 
         // Persistance : On garde le joueur si on est en plein run, sinon on l'initialise
-        if (!combatState || gameState.wave === 1) {
-            combatState = {
-                player: {
-                    name: 'Lunaris 1',
-                    level: 5,
-                    hp: 40,
-                    maxHp: 40,
-                    xp: 0,
-                    maxXp: 100,
-                    stats: { attack: 15, defense: 10 },
-                    moves: [
-                        { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
-                        { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
-                    ],
-                    inventory: {},
-                    sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
-                }
+        if (gameState.wave === 1 || gameState.playerTeam.length === 0) {
+            const starter = {
+                name: 'Lunaris 1',
+                level: 5,
+                hp: 40,
+                maxHp: 40,
+                xp: 0,
+                maxXp: 100,
+                stats: { attack: 15, defense: 10 },
+                moves: [
+                    { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
+                    { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
+                ],
+                inventory: {},
+                sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
             };
+            gameState.playerTeam = [starter];
+            gameState.activeBuffs = [];
         }
+
+        combatState = {
+            player: gameState.playerTeam[0], // Le premier en vie ou sélectionné
+            activeTeamIndex: 0
+        };
 
         // Nouvel ennemi pour cette vague
         const enemyLevel = isBoss ? gameState.wave + 2 : Math.max(1, gameState.wave + Math.floor(Math.random() * 3) - 1);
@@ -738,18 +745,27 @@ function getItemInfo(id) {
  * Affiche l'écran de combat
  */
 function showCombatScreen(player, enemy) {
-    // Filtrer pour la barre du bas : PAS de disques, PAS de PP, PAS de soin, PAS d'argent
-    const excludedCategories = ['Disque', 'PP+', 'Soin', 'Argent', 'Restauration PP'];
-    
+    // 1. Objets permanents / consommables (Baies, etc.)
+    const excluded = ['Disque', 'PP+', 'Soin', 'Rappel', 'Argent', 'Stat Temporaire'];
     const bonusItemsHtml = Object.entries(player.inventory || {})
         .filter(([id, qty]) => {
             const info = lunarisData.items[id];
-            return qty > 0 && info && !excludedCategories.includes(info.category);
+            return qty > 0 && info && !excluded.includes(info.category);
         })
         .map(([id, qty]) => {
             const info = getItemInfo(id);
             return `<div class="item-slot" data-description="${info.desc}">${info.icon} <span>x${qty}</span></div>`;
         }).join('');
+
+    // 2. Buffs temporaires avec compteur
+    const buffsHtml = gameState.activeBuffs.map(buff => {
+        const info = getItemInfo(buff.id);
+        return `
+            <div class="item-slot" data-description="${info.desc} (${buff.duration} tours restants)">
+                ${info.icon}
+                <span class="item-duration-badge">${buff.duration}</span>
+            </div>`;
+    }).join('');
 
     const content = `
         <div class="combat-wrapper">
@@ -824,7 +840,7 @@ function showCombatScreen(player, enemy) {
                 </div>
             </div>
             <div class="combat-item-bar" id="combat-item-bar">
-                ${bonusItemsHtml || '<span style="color:rgba(255,255,255,0.3); font-size:12px;">Aucun bonus possédé</span>'}
+                ${(bonusItemsHtml + buffsHtml) || '<span style="color:rgba(255,255,255,0.3); font-size:12px;">Aucun bonus actif</span>'}
             </div>
         </div>
     `;
@@ -1086,18 +1102,17 @@ function pickReward(itemId, isFree, price = 0) {
     }
 
     // 3. Objets de Soin : Application immédiate
-    if (item && item.category === 'Soin') {
-        applyItemEffect(itemId, combatState.player);
-        startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+    if (item.category === 'Soin' || item.category === 'Rappel') {
+        showTeamSelectionForItem(itemId);
         return;
     }
 
-    // 4. Autres objets (Boosts, Baies, Disques) : Stockage inventaire
-    if (!combatState.player.inventory) combatState.player.inventory = {};
-    const quantity = (item.category === 'Disque') ? 5 : 1;
-    combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + quantity;
-    
-    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+    // 4. Objets Temporaires : Compteur de 5 tours
+    if (item.category === 'Stat Temporaire') {
+        gameState.activeBuffs.push({ id: itemId, duration: 5 });
+        startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+        return;
+    }
 }
 
 function updateBarColor(barElement, ratio) {
@@ -1174,17 +1189,23 @@ function applyPPItemToMove(itemId, moveIndex) {
             break;
             
         case 'team':
-            const teamContent = `
-                <div style="display: flex; justify-content: space-around; width: 100%; color: #333;">
-                    <div><strong>En combat:</strong><br> ${combatState.player.name}</div>
-                    <div style="border-left: 2px solid #333; padding-left: 20px;">
-                        <strong>Équipe:</strong><br>
-                        (Emplacement vide)<br>
-                        (Vide)
-                    </div>
-                </div>
-            `;
-            log.innerHTML = teamContent;
+            const teamButtons = gameState.playerTeam.map((lunaris, idx) => {
+                const isCurrent = idx === combatState.activeTeamIndex;
+                const isKO = lunaris.hp <= 0;
+                return `
+                    <button class="menu-button ${isCurrent ? 'active' : ''} ${isKO ? 'danger' : ''}" 
+                            style="width:100%; text-transform:none;" 
+                            ${isCurrent || isKO ? 'disabled' : ''} 
+                            onclick="switchLunaris(${idx})">
+                        <span>${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp}) ${isKO ? '[KO]' : ''}</span>
+                    </button>
+                `;
+            }).join('');
+            
+            log.innerHTML = `<div style="display:grid; gap:5px; width:100%;">
+                ${teamButtons}
+                <button class="menu-button secondary" onclick="resetCombatMenu()">Retour</button>
+            </div>`;
             break;
             
         case 'run':
@@ -1200,13 +1221,60 @@ function applyPPItemToMove(itemId, moveIndex) {
 /**
  * Applique l'effet d'un objet immédiatement (pour les soins en boutique)
  */
+/**
+ * Change de Lunaris pendant le combat
+ */
+function switchLunaris(index) {
+    if (gameState.playerTeam[index].hp <= 0) return;
+    
+    combatState.activeTeamIndex = index;
+    combatState.player = gameState.playerTeam[index];
+    
+    const log = document.getElementById('combat-log');
+    log.textContent = `En avant, ${combatState.player.name} !`;
+    
+    setTimeout(() => {
+        showCombatScreen(combatState.player, combatState.enemy);
+        triggerEnemyTurn(); // Changer de Lunaris coûte un tour
+    }, 1000);
+}
+
+/**
+ * Affiche la sélection d'équipe pour utiliser un soin ou un rappel (usage immédiat)
+ */
+function showTeamSelectionForItem(itemId) {
+    const item = lunarisData.items[itemId];
+    const listHtml = gameState.playerTeam.map((lunaris, idx) => `
+        <button class="menu-button" onclick="applyImmediateItem(${idx}, '${itemId}')">
+            ${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp})
+        </button>
+    `).join('');
+
+    renderScreen('item-team-selection', `Utiliser ${item.name}`, `
+        <div class="submenu-buttons">${listHtml}</div>
+        <button class="menu-button secondary" onclick="showRewardScreen()">Retour</button>
+    `);
+}
+
+function applyImmediateItem(index, itemId) {
+    const target = gameState.playerTeam[index];
+    applyItemEffect(itemId, target);
+    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+}
+
 function applyItemEffect(itemId, target) {
     const item = lunarisData.items[itemId];
     if (!item) return;
     
     switch(item.effect) {
+        case 'revive_50':
+            if (target.hp <= 0) target.hp = Math.floor(target.maxHp * 0.5);
+            break;
+        case 'revive_100':
+            if (target.hp <= 0) target.hp = target.maxHp;
+            break;
         case 'heal_30_percent':
-            target.hp = Math.min(target.maxHp, target.hp + Math.floor(target.maxHp * 0.3));
+            if (target.hp > 0) target.hp = Math.min(target.maxHp, target.hp + Math.floor(target.maxHp * 0.3));
             break;
         case 'heal_60_percent':
             target.hp = Math.min(target.maxHp, target.hp + Math.floor(target.maxHp * 0.6));

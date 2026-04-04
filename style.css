@@ -1779,6 +1779,21 @@ html, body {
     cursor: help;
 }
 
+.item-duration-badge {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background: var(--color-secondary);
+    color: var(--bg-dark);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 4px;
+    border: 1px solid white;
+    pointer-events: none;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
 /* Bulle de description (Tooltip) */
 .item-slot::after {
     content: attr(data-description);
