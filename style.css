@@ -1867,5 +1867,45 @@ html, body {
     font-family: monospace;
 }
 
-    transform: translateX(-50%) scale(1);
+
+/* Refonte UI Sac & Équipe */
+.bag-panel, .team-page {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 15px;
+    border-radius: 10px;
+    width: 95%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.bag-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bag-row:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.bag-left { font-weight: bold; display: flex; align-items: center; gap: 8px; }
+.bag-right { opacity: 0.8; font-family: monospace; }
+
+.team-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+}
+
+.empty-slot {
+    opacity: 0.4;
+    border-style: dashed !important;
 }

@@ -966,6 +966,17 @@ async function executeAttack(moveIndex) {
     }
 
     // 3. Tour de l'ennemi
+    await triggerEnemyTurn();
+}
+
+/**
+ * Gère le tour de l'adversaire et la fin du cycle (buffs)
+ */
+async function triggerEnemyTurn() {
+    const log = document.getElementById('combat-log');
+    const playerEnt = document.getElementById('player-entity');
+    const enemyEnt = document.getElementById('enemy-entity');
+
     log.textContent = `${combatState.enemy.name} riposte !`;
     await new Promise(r => setTimeout(r, 800));
     
@@ -974,12 +985,10 @@ async function executeAttack(moveIndex) {
     enemyEnt.classList.remove('anim-attack-enemy');
     playerEnt.classList.add('anim-hit');
 
-    // Dégâts ennemis simples
     const enemyDamage = 5; 
     combatState.player.hp -= enemyDamage;
     if (combatState.player.hp < 0) combatState.player.hp = 0;
 
-    // Update UI Joueur
     const playerBar = document.getElementById('player-hp-bar');
     const playerText = document.getElementById('player-hp-text');
     if (playerBar) updateBarColor(playerBar, combatState.player.hp / combatState.player.maxHp);
@@ -988,9 +997,17 @@ async function executeAttack(moveIndex) {
     await new Promise(r => setTimeout(r, 1000));
     playerEnt.classList.remove('anim-hit');
     
-    log.textContent = `Que doit faire ${combatState.player.name} ?`;
-    combatState.isPlayerTurn = true;
-    resetCombatMenu();
+    updateTemporaryBuffs();
+    
+    if (combatState.player.hp <= 0) {
+        log.textContent = `${combatState.player.name} est K.O. !`;
+        setTimeout(() => handleCombatAction('team'), 1500);
+    } else {
+        log.textContent = `Que doit faire ${combatState.player.name} ?`;
+        combatState.isPlayerTurn = true;
+        showCombatScreen(combatState.player, combatState.enemy);
+        resetCombatMenu();
+    }
 }
 
 /**
@@ -1134,48 +1151,59 @@ function handleCombatAction(action) {
     if (!log) return;
     
     switch(action) {
-        case 'bag':
-            // Seuls les disques apparaissent dans le sac
-            const items = Object.entries(combatState.player.inventory || {})
+        case 'bag': {
+            const disqueItems = Object.entries(combatState.player.inventory || {})
                 .filter(([id, qty]) => {
                     const info = lunarisData.items[id];
                     return qty > 0 && info && info.category === 'Disque';
                 })
                 .map(([id, qty]) => {
-                    const info = lunarisData.items[id] || { name: id, icon: '📦' };
+                    const info = getItemInfo(id);
                     return `
-                        <button class="menu-button move-btn" style="width:100%; text-transform:none;" onclick="useItemInBattle('${id}')">
-                            <span class="move-name">${info.icon} ${info.name}</span>
-                            <span class="move-pp">Qté: ${qty}</span>
-                        </button>
+                        <div class="bag-row" onclick="useItemInBattle('${id}')">
+                            <div class="bag-left">${info.icon} ${info.name}</div>
+                            <div class="bag-right">x${qty}</div>
+                        </div>
                     `;
                 }).join('');
-            
-            log.innerHTML = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; width:100%;">
-                ${items || '<p style="grid-column: span 2;">Le sac est vide.</p>'}
-                <button class="menu-button secondary" style="grid-column: span 2;" onclick="resetCombatMenu()">Retour</button>
-            </div>`;
+
+            log.innerHTML = `
+                <div class="bag-panel">
+                    <h3 style="margin:0; color:var(--text-gold); font-size:16px;">DISQUES</h3>
+                    ${disqueItems || "<p>Aucun disque disponible.</p>"}
+                    <button class="menu-button secondary" style="width:100%; height:35px; margin-top:5px;" onclick="resetCombatMenu()">Retour</button>
+                </div>
+            `;
             break;
+        }
             
-        case 'team':
-            const teamButtons = gameState.playerTeam.map((lunaris, idx) => {
+        case 'team': {
+            const teamSlots = Array.from({ length: 6 }).map((_, idx) => {
+                const lunaris = gameState.playerTeam[idx];
+                if (!lunaris) {
+                    return `<button class="menu-button empty-slot" disabled style="height:40px; font-size:12px;">Slot Vide</button>`;
+                }
                 const isCurrent = idx === combatState.activeTeamIndex;
                 const isKO = lunaris.hp <= 0;
                 return `
                     <button class="menu-button ${isCurrent ? 'active' : ''} ${isKO ? 'danger' : ''}" 
-                            style="width:100%; text-transform:none;" 
+                            style="width:100%; height:40px; text-transform:none; font-size:12px;" 
                             ${isCurrent || isKO ? 'disabled' : ''} 
                             onclick="switchLunaris(${idx})">
-                        <span>${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp}) ${isKO ? '[KO]' : ''}</span>
+                        ${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp}) ${isKO ? '[KO]' : ''}
                     </button>
                 `;
             }).join('');
-            
-            log.innerHTML = `<div style="display:grid; gap:5px; width:100%;">
-                ${teamButtons}
-                <button class="menu-button secondary" onclick="resetCombatMenu()">Retour</button>
-            </div>`;
+
+            log.innerHTML = `
+                <div class="team-page">
+                    <h3 style="margin:0; color:var(--text-gold); font-size:16px;">ÉQUIPE</h3>
+                    <div class="team-grid">${teamSlots}</div>
+                    <button class="menu-button secondary" style="width:100%; height:35px; margin-top:5px;" onclick="resetCombatMenu()">Retour</button>
+                </div>
+            `;
             break;
+        }
             
         case 'run':
             log.textContent = "Vous prenez la fuite...";
@@ -1228,9 +1256,12 @@ function applyPPItemToMove(itemId, moveIndex) {
 /**
  * Applique l'effet d'un objet immédiatement (pour les soins en boutique)
  */
-/**
- * Change de Lunaris pendant le combat
- */
+function updateTemporaryBuffs() {
+    gameState.activeBuffs = gameState.activeBuffs
+        .map(buff => ({ ...buff, duration: buff.duration - 1 }))
+        .filter(buff => buff.duration > 0);
+}
+
 function switchLunaris(index) {
     if (gameState.playerTeam[index].hp <= 0) return;
     
