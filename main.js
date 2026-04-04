@@ -13,7 +13,8 @@ const gameState = {
     isMultiplayer: false,
     wave: 1,
     playerTeam: [],        // Équipe de Lunaris
-    activeBuffs: []        // [{ id, duration }]
+    activeBuffs: [],       // [{ id, duration }]
+    currentShopItems: null // Liste des objets proposés
 };
 
 // ===========================================
@@ -655,6 +656,7 @@ function startGame(mode, playerCount, isMultiplayer) {
     gameState.playerCount = playerCount;
     gameState.isMultiplayer = !!isMultiplayer;
     gameState.inRun = true;
+    gameState.currentShopItems = null; // Réinitialise la boutique pour la prochaine vague
 
     console.log('Starting game with state:', gameState);
 
@@ -1058,7 +1060,10 @@ function getRandomShopItems(count = 3) {
  * Affiche l'écran de récompense et de magasin entre les vagues
  */
 function showRewardScreen() {
-    const shopItems = getRandomShopItems(3);
+    if (!gameState.currentShopItems) {
+        gameState.currentShopItems = getRandomShopItems(3);
+    }
+    const shopItems = gameState.currentShopItems;
     const currentMoney = accountManager?.getCurrency('standard') || 0;
 
     const content = `
@@ -1095,16 +1100,18 @@ function pickReward(itemId, isFree, price = 0) {
     const item = lunarisData.items[itemId];
     if (!item) return;
 
+    // Vérification du solde avant toute action
     if (!isFree) {
-        const success = accountManager.spendCurrency('standard', price);
-        if (!success) {
+        const currentMoney = accountManager?.getCurrency('standard') || 0;
+        if (currentMoney < price) {
             alert("Vous n'avez pas assez d'argent !");
             return;
         }
     }
 
-    // 1. Objets d'Argent : Donnent directement de l'argent
+    // 1. Objets d'Argent
     if (item.category === 'Argent' || item.effect.includes('money_boost')) {
+        if (!isFree) accountManager.spendCurrency('standard', price);
         const bonus = 100 * gameState.wave; // Exemple de calcul de gain
         accountManager.addCurrency('standard', bonus);
         console.log(`Argent reçu : ${bonus}`);
@@ -1112,27 +1119,29 @@ function pickReward(itemId, isFree, price = 0) {
         return;
     }
 
-    // 2. Objets de PP : Demander sur quelle attaque
+    // 2. Objets de PP
     if (item.category === 'PP+') {
-        showMoveSelectionForPPItem(itemId);
+        showMoveSelectionForPPItem(itemId, isFree ? 0 : price);
         return;
     }
 
-    // 3. Objets de Soin : Application immédiate
+    // 3. Objets de Soin / Rappel
     if (item.category === 'Soin' || item.category === 'Rappel') {
-        showTeamSelectionForItem(itemId);
+        showTeamSelectionForItem(itemId, isFree ? 0 : price);
         return;
     }
 
-    // 4. Objets Temporaires : Compteur de 5 tours
+    // 4. Objets Temporaires
     if (item.category === 'Stat Temporaire') {
+        if (!isFree) accountManager.spendCurrency('standard', price);
         gameState.activeBuffs.push({ id: itemId, duration: 5 });
         startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
         return;
     }
 
-    // 5. Autres objets (Disques, Stat Permanent, Baies, etc.) -> Inventaire
+    // 5. Autres objets (Inventaire)
     if (!combatState.player.inventory) combatState.player.inventory = {};
+    if (!isFree) accountManager.spendCurrency('standard', price);
     const quantity = (item.category === 'Disque') ? 5 : 1;
     combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + quantity;
     
@@ -1233,12 +1242,12 @@ function showTeamScreen() {
 /**
  * Interface pour choisir une attaque sur laquelle appliquer un bonus de PP
  */
-function showMoveSelectionForPPItem(itemId) {
+function showMoveSelectionForPPItem(itemId, price = 0) {
     const item = lunarisData.items[itemId];
     const player = combatState.player;
     
     const movesHtml = player.moves.map((move, index) => `
-        <button class="menu-button move-btn" onclick="applyPPItemToMove('${itemId}', ${index})">
+        <button class="menu-button move-btn" onclick="applyPPItemToMove('${itemId}', ${index}, ${price})">
             <span class="move-name">${move.name}</span>
             <span class="move-pp">PP Actuels: ${move.maxPp}</span>
         </button>
@@ -1249,13 +1258,17 @@ function showMoveSelectionForPPItem(itemId) {
         <div class="submenu-buttons">
             ${movesHtml}
         </div>
+        <button class="menu-button secondary" onclick="showRewardScreen()" style="margin-top: 20px;">Retour</button>
     `);
 }
 
 /**
  * Applique l'effet PP sur le mouvement choisi
  */
-function applyPPItemToMove(itemId, moveIndex) {
+function applyPPItemToMove(itemId, moveIndex, price = 0) {
+    if (price > 0) {
+        accountManager.spendCurrency('standard', price);
+    }
     const item = lunarisData.items[itemId];
     const move = combatState.player.moves[moveIndex];
     
@@ -1295,10 +1308,10 @@ function switchLunaris(index) {
 /**
  * Affiche la sélection d'équipe pour utiliser un soin ou un rappel (usage immédiat)
  */
-function showTeamSelectionForItem(itemId) {
+function showTeamSelectionForItem(itemId, price = 0) {
     const item = lunarisData.items[itemId];
     const listHtml = gameState.playerTeam.map((lunaris, idx) => `
-        <button class="menu-button" onclick="applyImmediateItem(${idx}, '${itemId}')">
+        <button class="menu-button" onclick="applyImmediateItem(${idx}, '${itemId}', ${price})">
             ${lunaris.name} (HP: ${lunaris.hp}/${lunaris.maxHp})
         </button>
     `).join('');
@@ -1309,7 +1322,10 @@ function showTeamSelectionForItem(itemId) {
     `);
 }
 
-function applyImmediateItem(index, itemId) {
+function applyImmediateItem(index, itemId, price = 0) {
+    if (price > 0) {
+        accountManager.spendCurrency('standard', price);
+    }
     const target = gameState.playerTeam[index];
     applyItemEffect(itemId, target);
     startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
