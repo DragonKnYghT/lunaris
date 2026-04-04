@@ -975,24 +975,67 @@ async function executeAttack(moveIndex) {
 }
 
 /**
+ * Sélectionne 3 objets aléatoires pour la boutique basés sur la rareté
+ */
+function getRandomShopItems(count = 3) {
+    if (!lunarisData || !lunarisData.items) return [];
+
+    const weights = {
+        "Commun": 100,
+        "Rare": 40,
+        "Épique": 15,
+        "Légendaire": 4,
+        "Mythique": 1
+    };
+
+    // Filtrer les objets interdits (Boss, Unique/Paradox)
+    const pool = Object.entries(lunarisData.items)
+        .filter(([id, item]) => 
+            item.category !== "Boss" && 
+            item.rarity !== "Unique" && 
+            id !== "paradoxdisque"
+        );
+
+    const selected = [];
+    const poolCopy = [...pool];
+
+    for (let i = 0; i < count; i++) {
+        if (poolCopy.length === 0) break;
+
+        let totalWeight = poolCopy.reduce((sum, [id, item]) => sum + (weights[item.rarity] || 0), 0);
+        let random = Math.random() * totalWeight;
+        let currentSum = 0;
+
+        for (let j = 0; j < poolCopy.length; j++) {
+            currentSum += weights[poolCopy[j][1].rarity] || 0;
+            if (random <= currentSum) {
+                selected.push({ id: poolCopy[j][0], ...poolCopy[j][1] });
+                poolCopy.splice(j, 1); // Éviter les doublons dans le même tirage
+                break;
+            }
+        }
+    }
+    return selected;
+}
+
+/**
  * Affiche l'écran de récompense et de magasin entre les vagues
  */
 function showRewardScreen() {
-    const rewards = [
-        { id: 'dmg_boost', name: 'Force', emoji: '💥', desc: 'Boost dégâts' },
-        { id: 'def_boost', name: 'Armure', emoji: '🛡️', desc: 'Boost défense' },
-        { id: 'speed_boost', name: 'Vitesse', emoji: '👟', desc: 'Boost vitesse' }
-    ];
+    const shopItems = getRandomShopItems(3);
 
     const content = `
         <div class="reward-screen">
             <h3>Fin de la vague ${gameState.wave - 1} !</h3>
-            <p>Choisissez une récompense gratuite :</p>
+            <p>Le marchand itinérant vous propose 3 objets (1 gratuit au choix) :</p>
             <div class="game-mode-grid">
-                ${rewards.map(r => `
-                    <div class="game-mode-card" onclick="pickReward('${r.id}', true)">
-                        <h3>${r.emoji} ${r.name}</h3>
-                        <p>Gratuit</p>
+                ${shopItems.map(item => `
+                    <div class="game-mode-card" onclick="pickReward('${item.id}', true)">
+                        <div style="font-size: 24px;">${item.icon}</div>
+                        <h3>${item.name}</h3>
+                        <p style="font-size: 12px; color: var(--text-muted);">${item.rarity}</p>
+                        <p>${item.description}</p>
+                        <strong style="color: var(--color-secondary);">GRATUIT</strong>
                     </div>
                 `).join('')}
             </div>
