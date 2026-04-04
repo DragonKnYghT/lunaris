@@ -1,0 +1,142 @@
+{
+  "feu": {
+    "name": "Feu",
+    "emoji": "🔥",
+    "icon": "assets/sprites/types/feu.png",
+    "forces": ["plante", "glace", "insecte", "acier"],
+    "faiblesses": ["eau", "pierre", "terre"]
+  },
+  "eau": {
+    "name": "Eau",
+    "emoji": "💧",
+    "icon": "assets/sprites/types/eau.png",
+    "forces": ["feu", "pierre", "terre"],
+    "faiblesses": ["plante", "electrik"]
+  },
+  "plante": {
+    "name": "Plante",
+    "emoji": "🍃",
+    "icon": "assets/sprites/types/plante.png",
+    "forces": ["eau", "pierre", "terre"],
+    "faiblesses": ["feu", "glace", "poison", "vent", "insecte"]
+  },
+  "electrik": {
+    "name": "Électrik",
+    "emoji": "⚡",
+    "icon": "assets/sprites/types/electrik.png",
+    "forces": ["eau", "vent"],
+    "faiblesses": ["terre"]
+  },
+  "pierre": {
+    "name": "Pierre",
+    "emoji": "🪨",
+    "icon": "assets/sprites/types/pierre.png",
+    "forces": ["feu", "glace", "vent", "insecte"],
+    "faiblesses": ["eau", "plante", "combat", "terre", "acier"]
+  },
+  "terre": {
+    "name": "Terre",
+    "emoji": "🌍",
+    "icon": "assets/sprites/types/terre.png",
+    "forces": ["feu", "electrik", "poison", "pierre", "acier"],
+    "faiblesses": ["eau", "plante", "glace"]
+  },
+  "vent": {
+    "name": "Vent",
+    "emoji": "🌬️",
+    "icon": "assets/sprites/types/vent.png",
+    "forces": ["plante", "combat", "insecte"],
+    "faiblesses": ["electrik", "glace", "pierre"]
+  },
+  "glace": {
+    "name": "Glace",
+    "emoji": "❄️",
+    "icon": "assets/sprites/types/glace.png",
+    "forces": ["plante", "terre", "vent", "dragon"],
+    "faiblesses": ["feu", "combat", "pierre", "acier"]
+  },
+  "insecte": {
+    "name": "Insecte",
+    "emoji": "🐛",
+    "icon": "assets/sprites/types/insecte.png",
+    "forces": ["plante", "psy", "tenebres"],
+    "faiblesses": ["feu", "vent", "pierre"]
+  },
+  "poison": {
+    "name": "Poison",
+    "emoji": "☠️",
+    "icon": "assets/sprites/types/poison.png",
+    "forces": ["plante", "cristal"],
+    "faiblesses": ["terre", "psy"]
+  },
+  "combat": {
+    "name": "Combat",
+    "emoji": "🥋",
+    "icon": "assets/sprites/types/combat.png",
+    "forces": ["pierre", "glace", "acier", "tenebres", "cristal"],
+    "faiblesses": ["vent", "psy", "esprit"]
+  },
+  "tenebres": {
+    "name": "Ténèbres",
+    "emoji": "🌑",
+    "icon": "assets/sprites/types/tenebres.png",
+    "forces": ["psy", "esprit"],
+    "faiblesses": ["combat", "lumiere", "insecte"]
+  },
+  "lumiere": {
+    "name": "Lumière",
+    "emoji": "✨",
+    "icon": "assets/sprites/types/lumiere.png",
+    "forces": ["tenebres", "esprit", "chaos"],
+    "faiblesses": ["cristal", "chaos"]
+  },
+  "psy": {
+    "name": "Psy",
+    "emoji": "🧠",
+    "icon": "assets/sprites/types/psy.png",
+    "forces": ["combat", "poison"],
+    "faiblesses": ["insecte", "tenebres", "esprit"]
+  },
+  "dragon": {
+    "name": "Dragon",
+    "emoji": "🐉",
+    "icon": "assets/sprites/types/dragon.png",
+    "forces": ["dragon"],
+    "faiblesses": ["glace", "dragon", "cristal"]
+  },
+  "acier": {
+    "name": "Acier",
+    "emoji": "⚙️",
+    "icon": "assets/sprites/types/acier.png",
+    "forces": ["pierre", "glace", "cristal"],
+    "faiblesses": ["feu", "combat", "terre"]
+  },
+  "esprit": {
+    "name": "Esprit",
+    "emoji": "🧿",
+    "icon": "assets/sprites/types/esprit.png",
+    "forces": ["psy", "esprit"],
+    "faiblesses": ["tenebres", "esprit", "lumiere"]
+  },
+  "cristal": {
+    "name": "Cristal",
+    "emoji": "🧬",
+    "icon": "assets/sprites/types/cristal.png",
+    "forces": ["dragon", "esprit", "lumiere"],
+    "faiblesses": ["poison", "combat", "acier"]
+  },
+  "chaos": {
+    "name": "Chaos",
+    "emoji": "🌀",
+    "icon": "assets/sprites/types/chaos.png",
+    "forces": ["feu", "eau", "plante", "electrik", "tenebres", "lumiere", "psy", "esprit"],
+    "faiblesses": ["lumiere", "divin"]
+  },
+  "divin": {
+    "name": "Divin",
+    "emoji": "👑",
+    "icon": "assets/sprites/types/divin.png",
+    "forces": ["chaos"],
+    "faiblesses": []
+  }
+}

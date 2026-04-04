@@ -230,14 +230,15 @@ function updateGemCounter() {
  * @returns {Promise<Object>} Object containing all game data
  */
 async function loadLunarisData() {
-    const [creatures, moves, items, zones, modes, gacha, tickets] = await Promise.all([
+    const [creatures, moves, items, zones, modes, gacha, tickets, types] = await Promise.all([
         fetch("data/creatures.json").then(r => r.json()),
         fetch("data/moves.json").then(r => r.json()),
         fetch("data/items.json").then(r => r.json()),
         fetch("data/zones.json").then(r => r.json()),
         fetch("data/modes.json").then(r => r.json()),
         fetch("data/gacha.json").then(r => r.json()),
-        fetch("data/tickets.json").then(r => r.json())
+        fetch("data/tickets.json").then(r => r.json()),
+        fetch("data/types.json").then(r => r.json())
     ]);
     
     console.log('Lunaris data loaded:', {
@@ -247,10 +248,11 @@ async function loadLunarisData() {
         zonesCount: Object.keys(zones).filter(k => !k.startsWith('_')).length,
         modesCount: Object.keys(modes).filter(k => !k.startsWith('_')).length,
         bannersCount: Object.keys(gacha).filter(k => !k.startsWith('_')).length,
-        ticketsCount: Object.keys(tickets).filter(k => !k.startsWith('_')).length
+        ticketsCount: Object.keys(tickets).filter(k => !k.startsWith('_')).length,
+        typesCount: Object.keys(types).length
     });
     
-    return { creatures, moves, items, zones, modes, gacha, tickets };
+    return { creatures, moves, items, zones, modes, gacha, tickets, types };
 }
 
 // Global game data store
@@ -275,7 +277,8 @@ async function initGameData() {
             zones: {},
             modes: {},
             gacha: {},
-            tickets: {}
+            tickets: {},
+            types: {}
         };
     }
 }
