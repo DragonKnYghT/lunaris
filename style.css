@@ -1820,5 +1820,12 @@ html, body {
 }
 
 .item-slot:hover::before {
+.item-icon-img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+
     transform: translateX(-50%) scale(1);
 }

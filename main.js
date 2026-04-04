@@ -688,7 +688,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                         { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
                         { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
                     ],
-                    inventory: { 'dmg_boost': 1 },
+                    inventory: {},
                     sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
                 }
             };
@@ -721,19 +721,13 @@ function getItemInfo(id) {
     // Recherche dans les données chargées dynamiquement
     if (lunarisData && lunarisData.items && lunarisData.items[id]) {
         const item = lunarisData.items[id];
-        return { icon: item.icon, name: item.name, desc: item.description };
+        return { 
+            icon: `<img src="${generateItemSprite(id)}" class="item-icon-img" alt="${item.name}">`, 
+            name: item.name, 
+            desc: item.description 
+        };
     }
-
-    // Fallback pour les anciens IDs ou objets de base
-    const legacyData = {
-        'dmg_boost': { icon: '💥', name: 'Force', desc: 'Augmente les dégâts infligés' },
-        'def_boost': { icon: '🛡️', name: 'Armure', desc: 'Réduit les dégâts subis' },
-        'speed_boost': { icon: '👟', name: 'Vitesse', desc: 'Augmente la rapidité d\'action' },
-        'potion': { icon: '🧪', name: 'Potion', desc: 'Soigne 20 PV' },
-        'super_potion': { icon: '⚗️', name: 'Super Potion', desc: 'Soigne 50 PV' },
-        'revive': { icon: '✨', name: 'Rappel', desc: 'Réanime un Lunaris K.O.' }
-    };
-    return legacyData[id] || { icon: '❓', name: id, desc: 'Objet mystérieux' };
+    return { icon: '❓', name: id, desc: 'Objet mystérieux' };
 }
 
 /**
@@ -1057,8 +1051,21 @@ function pickReward(itemId, isFree, price = 0) {
     if (!isFree) {
         console.log(`Achat de ${itemId} pour ${price}`);
     }
-    if (!combatState.player.inventory) combatState.player.inventory = {};
-    combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + 1;
+
+    const item = lunarisData.items[itemId];
+    
+    if (item && item.category === 'Soin') {
+        // Usage unique immédiat : on soigne le joueur directement
+        applyItemEffect(itemId, combatState.player);
+        console.log(`Soin appliqué immédiatement : ${item.name}`);
+    } else {
+        if (!combatState.player.inventory) combatState.player.inventory = {};
+        
+        // Les disques sont donnés par pack de 5
+        const quantity = (item && item.category === 'Disque') ? 5 : 1;
+        combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + quantity;
+    }
+
     startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
 }
 
@@ -1075,8 +1082,132 @@ function handleCombatAction(action) {
     
     switch(action) {
         case 'bag':
-            log.textContent = "Sac : Vous n'avez aucun objet.";
+            const items = Object.entries(combatState.player.inventory || {})
+                .filter(([id, qty]) => qty > 0)
+                .map(([id, qty]) => {
+                    const info = lunarisData.items[id] || { name: id, icon: '📦' };
+                    return `
+                        <button class="menu-button move-btn" style="width:100%; text-transform:none;" onclick="useItemInBattle('${id}')">
+                            <span class="move-name">${info.icon} ${info.name}</span>
+                            <span class="move-pp">Qté: ${qty}</span>
+                        </button>
+                    `;
+                }).join('');
+            
+            log.innerHTML = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; width:100%;">
+                ${items || '<p style="grid-column: span 2;">Le sac est vide.</p>'}
+                <button class="menu-button secondary" style="grid-column: span 2;" onclick="resetCombatMenu()">Retour</button>
+            </div>`;
             break;
+/**
+ * Applique l'effet d'un objet immédiatement (pour les soins en boutique)
+ */
+function applyItemEffect(itemId, target) {
+    const item = lunarisData.items[itemId];
+    if (!item) return;
+    
+    switch(item.effect) {
+        case 'heal_30_percent':
+            target.hp = Math.min(target.maxHp, target.hp + Math.floor(target.maxHp * 0.3));
+            break;
+        case 'heal_60_percent':
+            target.hp = Math.min(target.maxHp, target.hp + Math.floor(target.maxHp * 0.6));
+            break;
+        case 'heal_max':
+            target.hp = target.maxHp;
+            break;
+        case 'cure_status':
+            // LUNARIS_TODO: implémenter retrait altérations
+            break;
+    }
+}
+
+/**
+ * Utilise un objet depuis le sac pendant le combat (Capture)
+ */
+async function useItemInBattle(itemId) {
+    const item = lunarisData.items[itemId];
+    const log = document.getElementById('combat-log');
+    
+    if (item.category === 'Disque') {
+        combatState.player.inventory[itemId]--;
+        log.textContent = `${combatState.player.name} lance un ${item.name} !`;
+        
+        // Animation et calcul de capture
+        await new Promise(r => setTimeout(r, 1000));
+        const success = Math.random() > 0.5; // TODO: utiliser les taux réels
+        
+        if (success) {
+            log.textContent = "Capture réussie !";
+            setTimeout(() => {
+                gameState.wave++;
+                showRewardScreen();
+            }, 1000);
+        } else {
+            log.textContent = "Le Lunaris sauvage s'est libéré !";
+            setTimeout(resetCombatMenu, 1000);
+        }
+    } else {
+        log.textContent = "Cet objet ne peut pas être utilisé ici.";
+        setTimeout(resetCombatMenu, 1000);
+    }
+}
+
+/**
+ * Génère une image d'item via Canvas (pixel-art procédural)
+ */
+function generateItemSprite(itemId) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    const item = lunarisData.items[itemId];
+    
+    // Fond transparent / ombre
+    ctx.fillStyle = 'rgba(0,0,0,0.2)';
+    ctx.beginPath();
+    ctx.ellipse(16, 26, 8, 4, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    if (item && item.category === 'Disque') {
+        // Dessin d'un disque futuriste
+        ctx.fillStyle = itemId.includes('stelladisque') ? '#4169e1' : (itemId.includes('novadisque') ? '#e74c3c' : '#bdc3c7');
+        ctx.beginPath();
+        ctx.arc(16, 16, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        
+        // Noyau lumineux
+        ctx.fillStyle = '#00d9ff';
+        ctx.beginPath();
+        ctx.arc(16, 16, 4, 0, Math.PI * 2);
+        ctx.fill();
+    } else if (item && item.category === 'Soin') {
+        // Dessin d'une fiole/potion
+        ctx.fillStyle = '#ecf0f1';
+        ctx.fillRect(12, 6, 8, 4); // Goulot
+        ctx.fillStyle = '#ff4d4d'; // Couleur liquide
+        ctx.beginPath();
+        ctx.moveTo(10, 10);
+        ctx.lineTo(22, 10);
+        ctx.lineTo(24, 24);
+        ctx.lineTo(8, 24);
+        ctx.fill();
+    } else {
+        // Fallback générique (cristal)
+        ctx.fillStyle = '#9b59b6';
+        ctx.beginPath();
+        ctx.moveTo(16, 4);
+        ctx.lineTo(26, 16);
+        ctx.lineTo(16, 28);
+        ctx.lineTo(6, 16);
+        ctx.fill();
+    }
+    
+    return canvas.toDataURL();
+}
             
         case 'team':
             const teamContent = `
