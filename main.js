@@ -706,7 +706,10 @@ function startGame(mode, playerCount, isMultiplayer) {
             stats: { attack: 10 + enemyLevel, defense: 5 + enemyLevel },
             moves: [{ name: 'Charge', power: 8, pp: 35, maxPp: 35 }],
             sprite: isBoss ? 'sprite/Lunaris/Starteur/Starteur 2.png' : 'sprite/Lunaris/Starteur/Starteur 2.png', // LUNARIS_TODO: Varier les sprites
-            isBoss: isBoss
+            isBoss: isBoss,
+            status: null, // Pour les calculs de capture
+            types: ['Normal'], // Placeholder
+            rarity: isBoss ? 'legendary' : (Math.random() > 0.9 ? 'rare' : 'common')
         };
         combatState.isPlayerTurn = true;
 

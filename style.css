@@ -1827,5 +1827,18 @@ html, body {
     image-rendering: pixelated;
 }
 
+/* Animation de capture (secousses) */
+@keyframes captureShake {
+    0%, 100% { transform: rotate(0) translateX(0); }
+    25% { transform: rotate(-15deg) translateX(-5px); }
+    75% { transform: rotate(15deg) translateX(5px); }
+}
+
+.anim-capture-attempt {
+    animation: captureShake 0.4s ease-in-out infinite;
+    filter: sepia(1) saturate(5) hue-rotate(180deg) brightness(1.2);
+    transition: all 0.3s ease;
+}
+
     transform: translateX(-50%) scale(1);
 }
