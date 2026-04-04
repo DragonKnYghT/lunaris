@@ -1062,9 +1062,9 @@ function showRewardScreen() {
             </div>
             <div class="decoration-line"></div>
             <p>Magasin de voyage :</p>
-            <div class="game-mode-card" style="max-width: 300px; margin: 0 auto;" onclick="pickReward('potion', false, 50)">
+            <div class="game-mode-card" style="max-width: 300px; margin: 0 auto;" onclick="pickReward('potion_lunaire', false, 200)">
                 <h3>🧪 Acheter Potion</h3>
-                <p>Prix : 50 Devises</p>
+                <p>Prix : 200 Devises</p>
             </div>
             <div class="submenu-buttons" style="margin-top: 20px;">
                 <button class="menu-button secondary" onclick="startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer)">Passer</button>
@@ -1113,6 +1113,13 @@ function pickReward(itemId, isFree, price = 0) {
         startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
         return;
     }
+
+    // 5. Autres objets (Disques, Stat Permanent, Baies, etc.) -> Inventaire
+    if (!combatState.player.inventory) combatState.player.inventory = {};
+    const quantity = (item.category === 'Disque') ? 5 : 1;
+    combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + quantity;
+    
+    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
 }
 
 function updateBarColor(barElement, ratio) {
@@ -1136,44 +1143,6 @@ function handleCombatAction(action) {
                 })
                 .map(([id, qty]) => {
                     const info = lunarisData.items[id] || { name: id, icon: '📦' };
-/**
- * Interface pour choisir une attaque sur laquelle appliquer un bonus de PP
- */
-function showMoveSelectionForPPItem(itemId) {
-    const item = lunarisData.items[itemId];
-    const player = combatState.player;
-    
-    const movesHtml = player.moves.map((move, index) => `
-        <button class="menu-button move-btn" onclick="applyPPItemToMove('${itemId}', ${index})">
-            <span class="move-name">${move.name}</span>
-            <span class="move-pp">PP Actuels: ${move.maxPp}</span>
-        </button>
-    `).join('');
-
-    renderScreen('pp-selection-screen', item.name, `
-        <p>Sur quelle attaque de <strong>${player.name}</strong> voulez-vous utiliser ${item.name} ?</p>
-        <div class="submenu-buttons">
-            ${movesHtml}
-        </div>
-    `);
-}
-
-/**
- * Applique l'effet PP sur le mouvement choisi
- */
-function applyPPItemToMove(itemId, moveIndex) {
-    const item = lunarisData.items[itemId];
-    const move = combatState.player.moves[moveIndex];
-    
-    if (item.effect === 'increase_pp_2') move.maxPp += 2;
-    else if (item.effect === 'increase_pp_4') move.maxPp += 4;
-    
-    move.pp = move.maxPp; // Recharge les PP au passage
-    
-    console.log(`Boost PP appliqué sur ${move.name}`);
-    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
-}
-
                     return `
                         <button class="menu-button move-btn" style="width:100%; text-transform:none;" onclick="useItemInBattle('${id}')">
                             <span class="move-name">${info.icon} ${info.name}</span>
@@ -1216,6 +1185,44 @@ function applyPPItemToMove(itemId, moveIndex) {
             }, 1000);
             break;
     }
+}
+
+/**
+ * Interface pour choisir une attaque sur laquelle appliquer un bonus de PP
+ */
+function showMoveSelectionForPPItem(itemId) {
+    const item = lunarisData.items[itemId];
+    const player = combatState.player;
+    
+    const movesHtml = player.moves.map((move, index) => `
+        <button class="menu-button move-btn" onclick="applyPPItemToMove('${itemId}', ${index})">
+            <span class="move-name">${move.name}</span>
+            <span class="move-pp">PP Actuels: ${move.maxPp}</span>
+        </button>
+    `).join('');
+
+    renderScreen('pp-selection-screen', item.name, `
+        <p>Sur quelle attaque de <strong>${player.name}</strong> voulez-vous utiliser ${item.name} ?</p>
+        <div class="submenu-buttons">
+            ${movesHtml}
+        </div>
+    `);
+}
+
+/**
+ * Applique l'effet PP sur le mouvement choisi
+ */
+function applyPPItemToMove(itemId, moveIndex) {
+    const item = lunarisData.items[itemId];
+    const move = combatState.player.moves[moveIndex];
+    
+    if (item.effect === 'increase_pp_2') move.maxPp += 2;
+    else if (item.effect === 'increase_pp_4') move.maxPp += 4;
+    
+    move.pp = move.maxPp; // Recharge les PP au passage
+    
+    console.log(`Boost PP appliqué sur ${move.name}`);
+    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
 }
 
 /**
