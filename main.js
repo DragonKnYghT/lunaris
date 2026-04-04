@@ -727,7 +727,8 @@ function getItemInfo(id) {
         return { 
             icon: `<img src="${generateItemSprite(id)}" class="item-icon-img" alt="${item.name}">`, 
             name: item.name, 
-            desc: item.description 
+            desc: item.description,
+            category: item.category
         };
     }
     return { icon: '❓', name: id, desc: 'Objet mystérieux' };
@@ -737,9 +738,14 @@ function getItemInfo(id) {
  * Affiche l'écran de combat
  */
 function showCombatScreen(player, enemy) {
-    // Filtrer les objets bonus uniquement pour la barre du bas
+    // Filtrer pour la barre du bas : PAS de disques, PAS de PP, PAS de soin, PAS d'argent
+    const excludedCategories = ['Disque', 'PP+', 'Soin', 'Argent', 'Restauration PP'];
+    
     const bonusItemsHtml = Object.entries(player.inventory || {})
-        .filter(([id, qty]) => qty > 0 && !['potion', 'super_potion', 'revive'].includes(id))
+        .filter(([id, qty]) => {
+            const info = lunarisData.items[id];
+            return qty > 0 && info && !excludedCategories.includes(info.category);
+        })
         .map(([id, qty]) => {
             const info = getItemInfo(id);
             return `<div class="item-slot" data-description="${info.desc}">${info.icon} <span>x${qty}</span></div>`;
@@ -1020,10 +1026,12 @@ function getRandomShopItems(count = 3) {
  */
 function showRewardScreen() {
     const shopItems = getRandomShopItems(3);
+    const currentMoney = accountManager?.getCurrency('standard') || 0;
 
     const content = `
         <div class="reward-screen">
             <h3>Fin de la vague ${gameState.wave - 1} !</h3>
+            <div class="shop-currency-display">💰 Votre Argent : <strong>${currentMoney.toLocaleString()}</strong></div>
             <p>Le marchand itinérant vous propose 3 objets (1 gratuit au choix) :</p>
             <div class="game-mode-grid">
                 ${shopItems.map(item => `
@@ -1051,24 +1059,44 @@ function showRewardScreen() {
 }
 
 function pickReward(itemId, isFree, price = 0) {
-    if (!isFree) {
-        console.log(`Achat de ${itemId} pour ${price}`);
-    }
-
     const item = lunarisData.items[itemId];
-    
-    if (item && item.category === 'Soin') {
-        // Usage unique immédiat : on soigne le joueur directement
-        applyItemEffect(itemId, combatState.player);
-        console.log(`Soin appliqué immédiatement : ${item.name}`);
-    } else {
-        if (!combatState.player.inventory) combatState.player.inventory = {};
-        
-        // Les disques sont donnés par pack de 5
-        const quantity = (item && item.category === 'Disque') ? 5 : 1;
-        combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + quantity;
+    if (!item) return;
+
+    if (!isFree) {
+        const success = accountManager.spendCurrency('standard', price);
+        if (!success) {
+            alert("Vous n'avez pas assez d'argent !");
+            return;
+        }
     }
 
+    // 1. Objets d'Argent : Donnent directement de l'argent
+    if (item.category === 'Argent' || item.effect.includes('money_boost')) {
+        const bonus = 100 * gameState.wave; // Exemple de calcul de gain
+        accountManager.addCurrency('standard', bonus);
+        console.log(`Argent reçu : ${bonus}`);
+        startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+        return;
+    }
+
+    // 2. Objets de PP : Demander sur quelle attaque
+    if (item.category === 'PP+') {
+        showMoveSelectionForPPItem(itemId);
+        return;
+    }
+
+    // 3. Objets de Soin : Application immédiate
+    if (item && item.category === 'Soin') {
+        applyItemEffect(itemId, combatState.player);
+        startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+        return;
+    }
+
+    // 4. Autres objets (Boosts, Baies, Disques) : Stockage inventaire
+    if (!combatState.player.inventory) combatState.player.inventory = {};
+    const quantity = (item.category === 'Disque') ? 5 : 1;
+    combatState.player.inventory[itemId] = (combatState.player.inventory[itemId] || 0) + quantity;
+    
     startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
 }
 
@@ -1085,10 +1113,52 @@ function handleCombatAction(action) {
     
     switch(action) {
         case 'bag':
+            // Seuls les disques apparaissent dans le sac
             const items = Object.entries(combatState.player.inventory || {})
-                .filter(([id, qty]) => qty > 0)
+                .filter(([id, qty]) => {
+                    const info = lunarisData.items[id];
+                    return qty > 0 && info && info.category === 'Disque';
+                })
                 .map(([id, qty]) => {
                     const info = lunarisData.items[id] || { name: id, icon: '📦' };
+/**
+ * Interface pour choisir une attaque sur laquelle appliquer un bonus de PP
+ */
+function showMoveSelectionForPPItem(itemId) {
+    const item = lunarisData.items[itemId];
+    const player = combatState.player;
+    
+    const movesHtml = player.moves.map((move, index) => `
+        <button class="menu-button move-btn" onclick="applyPPItemToMove('${itemId}', ${index})">
+            <span class="move-name">${move.name}</span>
+            <span class="move-pp">PP Actuels: ${move.maxPp}</span>
+        </button>
+    `).join('');
+
+    renderScreen('pp-selection-screen', item.name, `
+        <p>Sur quelle attaque de <strong>${player.name}</strong> voulez-vous utiliser ${item.name} ?</p>
+        <div class="submenu-buttons">
+            ${movesHtml}
+        </div>
+    `);
+}
+
+/**
+ * Applique l'effet PP sur le mouvement choisi
+ */
+function applyPPItemToMove(itemId, moveIndex) {
+    const item = lunarisData.items[itemId];
+    const move = combatState.player.moves[moveIndex];
+    
+    if (item.effect === 'increase_pp_2') move.maxPp += 2;
+    else if (item.effect === 'increase_pp_4') move.maxPp += 4;
+    
+    move.pp = move.maxPp; // Recharge les PP au passage
+    
+    console.log(`Boost PP appliqué sur ${move.name}`);
+    startGame(gameState.mode, gameState.playerCount, gameState.isMultiplayer);
+}
+
                     return `
                         <button class="menu-button move-btn" style="width:100%; text-transform:none;" onclick="useItemInBattle('${id}')">
                             <span class="move-name">${info.icon} ${info.name}</span>
