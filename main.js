@@ -323,9 +323,6 @@ function renderScreen(id, title, content) {
             </div>
         </div>
     `;
-    
-    // Scroll to top of the container for new screens
-    container.scrollTop = 0;
 }
 
 /**
