@@ -1363,24 +1363,74 @@ function applyItemEffect(itemId, target) {
 async function useItemInBattle(itemId) {
     const item = lunarisData.items[itemId];
     const log = document.getElementById('combat-log');
+    const enemyEnt = document.getElementById('enemy-entity');
     
     if (item.category === 'Disque') {
         combatState.player.inventory[itemId]--;
         
-        // On revient à l'écran de combat pour voir l'animation de capture
-        showCombatScreen(combatState.player, combatState.enemy);
-        
         log.textContent = `${combatState.player.name} lance un ${item.name} !`;
         
-        // Animation et calcul de capture
+        // 1. Animation de "tentative" (on cache le menu et on fait trembler l'ennemi)
+        document.getElementById('combat-menu').style.pointerEvents = 'none';
+        enemyEnt.classList.add('anim-capture-attempt');
+        
+        // 2. Calcul des chances
+        // Formule simplifiée : (1 - (PV_actuels / PV_max)) * Multiplicateur_Objet
+        let multiplier = 1.0;
+        const hpRatio = combatState.enemy.hp / combatState.enemy.maxHp;
+
+        if (item.effect === 'catch_x1') multiplier = 1.0;
+        else if (item.effect === 'catch_x2_hp_bonus') {
+            multiplier = 2.0;
+            if (hpRatio < 0.5) multiplier += 0.5;
+        } else if (item.effect === 'catch_x3_status_type_bonus') {
+            multiplier = 3.0;
+            if (combatState.enemy.status) multiplier += 1.0;
+        } else if (item.effect === 'catch_guaranteed') {
+            multiplier = 100.0;
+        }
+
+        // Taux de base pondéré par les PV (plus ils sont bas, plus c'est facile)
+        // On divise par 1.5 pour que ce ne soit pas trop facile à 100% PV
+        const catchChance = ((1 - hpRatio) * multiplier) / 1.5;
+        const success = Math.random() < catchChance || item.effect === 'catch_guaranteed';
+
+        // Temps d'attente pour l'animation de suspens (3 secousses)
         await new Promise(r => setTimeout(r, 1000));
-        const success = Math.random() > 0.5; // TODO: utiliser les taux réels
+        enemyEnt.classList.remove('anim-capture-attempt');
         
         if (success) {
-            log.textContent = "Capture réussie !";
+            log.textContent = `Félicitations ! ${combatState.enemy.name} a été capturé !`;
+            
+            // Animation de disparition
+            enemyEnt.style.transition = 'all 0.5s ease';
+            enemyEnt.style.transform = 'scale(0) rotate(360deg)';
+            enemyEnt.style.opacity = '0';
+
+            // Ajout à l'équipe ou stockage
+            const newMember = {
+                ...combatState.enemy,
+                hp: combatState.enemy.hp, // Garde ses PV actuels
+                xp: 0,
+                maxXp: 100,
+                inventory: {}
+            };
+
+            if (gameState.playerTeam.length < 6) {
+                gameState.playerTeam.push(newMember);
+            } else {
+                // LUNARIS_TODO: Envoyer au stockage/PC
+                console.log("Équipe pleine, envoyé au stockage.");
+            }
+
             setTimeout(() => {
                 gameState.wave++;
-                showRewardScreen();
+                // Si c'était un combat normal, on continue le run
+                if (gameState.mode === 'roguelike') {
+                    showRewardScreen();
+                } else {
+                    showMainMenu();
+                }
             }, 1000);
         } else {
             log.textContent = "Le Lunaris sauvage s'est libéré !";
