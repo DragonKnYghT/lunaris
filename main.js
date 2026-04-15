@@ -688,7 +688,7 @@ function startGame(mode, playerCount, isMultiplayer) {
                     { name: 'Griffe', power: 10, pp: 35, maxPp: 35, type: 'Normal' },
                     { name: 'Rugissement', power: 0, pp: 40, maxPp: 40, type: 'Normal' }
                 ],
-                inventory: {},
+                inventory: { "lunadisque": 5 }, // Ajout des 5 disques dès le début
                 sprite: 'sprite/Lunaris/Starteur/Starteur 1.png'
             };
             gameState.playerTeam = [starter];
@@ -835,10 +835,10 @@ function showCombatScreen(player, enemy) {
                     Que doit faire ${player.name} ?
                 </div>
                 <div class="combat-actions-grid" id="combat-menu">
-                    <button class="menu-button" onclick="showAttackMenu()">Attaque</button>
-                    <button class="menu-button secondary" onclick="handleCombatAction('bag')">Sac</button>
-                    <button class="menu-button secondary" onclick="handleCombatAction('team')">Équipe</button>
-                    <button class="menu-button" onclick="handleCombatAction('run')">Fuite</button>
+                    <button class="menu-button" onclick="playSelectSound(); showAttackMenu()">Attaque</button>
+                    <button class="menu-button secondary" onclick="playSelectSound(); handleCombatAction('bag')">Sac</button>
+                    <button class="menu-button secondary" onclick="playSelectSound(); handleCombatAction('team')">Équipe</button>
+                    <button class="menu-button" onclick="playSelectSound(); handleCombatAction('run')">Fuite</button>
                 </div>
             </div>
             <div class="combat-item-bar" id="combat-item-bar">
@@ -847,6 +847,16 @@ function showCombatScreen(player, enemy) {
         </div>
     `;
     renderScreen('combat-screen', '', content);
+
+    // Animation de spawn au chargement du combat
+    setTimeout(() => {
+        const pSprite = document.querySelector('.sprite-player');
+        if (pSprite) pSprite.classList.add('anim-spawn');
+    }, 100);
+}
+
+function playSelectSound() {
+    if (audioSettings) audioSettings.playSfx('click'); // Utilise le système audio existant
 }
 
 function showAttackMenu() {
@@ -857,7 +867,7 @@ function showAttackMenu() {
         return `
             <button class="menu-button move-btn" 
                     ${isDisabled} 
-                    onclick="executeAttack(${index})">
+                    onclick="playSelectSound(); executeAttack(${index})">
                 <span class="move-name">${move.name}</span>
                 <span class="move-pp">${move.pp}/${move.maxPp}</span>
             </button>
@@ -906,6 +916,9 @@ async function executeAttack(moveIndex) {
     
     await new Promise(r => setTimeout(r, 300));
     playerEnt.classList.remove('anim-attack-player');
+    
+    // Animation d'impact blanc sur l'ennemi
+    enemyEnt.classList.add('anim-impact');
     enemyEnt.classList.add('anim-hit');
 
     // 2. Calcul Dégâts
@@ -931,6 +944,7 @@ async function executeAttack(moveIndex) {
 
     await new Promise(r => setTimeout(r, 1000));
     enemyEnt.classList.remove('anim-hit');
+    enemyEnt.classList.remove('anim-impact');
 
     if (combatState.enemy.hp <= 0) {
         const xpGained = combatState.enemy.level * 25;
@@ -985,6 +999,8 @@ async function triggerEnemyTurn() {
     enemyEnt.classList.add('anim-attack-enemy');
     await new Promise(r => setTimeout(r, 300));
     enemyEnt.classList.remove('anim-attack-enemy');
+    
+    playerEnt.classList.add('anim-impact');
     playerEnt.classList.add('anim-hit');
 
     const enemyDamage = 5; 
@@ -998,6 +1014,7 @@ async function triggerEnemyTurn() {
 
     await new Promise(r => setTimeout(r, 1000));
     playerEnt.classList.remove('anim-hit');
+    playerEnt.classList.remove('anim-impact');
     
     updateTemporaryBuffs();
     
@@ -1402,10 +1419,9 @@ async function useItemInBattle(itemId) {
         if (success) {
             log.textContent = `Félicitations ! ${combatState.enemy.name} a été capturé !`;
             
-            // Animation de disparition
-            enemyEnt.style.transition = 'all 0.5s ease';
-            enemyEnt.style.transform = 'scale(0) rotate(360deg)';
-            enemyEnt.style.opacity = '0';
+            // Nouvelle animation d'absorption
+            enemyEnt.classList.add('anim-capture-absorb');
+            if (audioSettings) audioSettings.playSfx('capture_success');
 
             // Ajout à l'équipe ou stockage
             const newMember = {

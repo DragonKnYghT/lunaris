@@ -1704,6 +1704,28 @@ html, body {
 .anim-attack-player { animation: bumpPlayer 0.3s ease-in-out; }
 .anim-attack-enemy { animation: bumpEnemy 0.3s ease-in-out; }
 
+/* Animation d'impact blanc */
+.anim-impact { animation: impactFlash 0.2s ease-out; }
+@keyframes impactFlash {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(10); }
+    100% { filter: brightness(1); }
+}
+
+/* Animation d'apparition (Spawn) */
+.anim-spawn { animation: spawnEffect 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes spawnEffect {
+    0% { transform: scale(0) rotate(720deg); filter: brightness(5) blue(100%); }
+    100% { transform: scale(1.4); filter: brightness(1); }
+}
+
+/* Animation d'absorption (Capture) */
+.anim-capture-absorb { animation: captureAbsorb 0.5s ease-in forwards; }
+@keyframes captureAbsorb {
+    0% { transform: scale(1); filter: hue-rotate(90deg) brightness(2); }
+    100% { transform: scale(0) translateY(-50px); filter: hue-rotate(180deg) brightness(10); opacity: 0; }
+}
+
 .anim-hit { animation: flashRed 0.2s ease-in-out 2; }
 
 .combat-ui-footer {
