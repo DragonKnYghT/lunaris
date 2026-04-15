@@ -701,7 +701,10 @@ function startGame(mode, playerCount, isMultiplayer) {
         };
 
         // Nouvel ennemi pour cette vague
-        const enemyLevel = isBoss ? gameState.wave + 2 : Math.max(1, gameState.wave + Math.floor(Math.random() * 3) - 1);
+        // On se base sur le niveau du joueur plutôt que sur la vague pour éviter les trop gros écarts
+        const playerLevel = gameState.playerTeam[0]?.level || 5;
+        const enemyLevel = isBoss ? playerLevel + 2 : Math.max(1, playerLevel + Math.floor(Math.random() * 3) - 1);
+        
         const baseEnemyHp = 20 + (enemyLevel * 2);
         
         combatState.enemy = {
